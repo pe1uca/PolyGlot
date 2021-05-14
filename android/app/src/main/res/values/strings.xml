@@ -1,0 +1,41 @@
+<resources>
+    <string name="app_name">PolyGlot</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_lang_properties">Language properties</string>
+    <string name="menu_lexicon">Lexicon</string>
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+
+    <string name="label_lang_name">Language name</string>
+    <string name="label_local_lang">Local language</string>
+    <string name="label_author">Author / Copyright info</string>
+    <string name="label_kerning">Kerning</string>
+
+    <string name="check_pos_mandatory">Part of speech mandatory</string>
+    <string name="check_tooltip_pos_mandatory">Select to enforce selection of a part of speech on each created word.</string>
+    <string name="check_local_uniqueness">Local uniqueness</string>
+    <string name="check_tooltip_local_uniqueness">Select to enforce mandatory uniqueness for local word equivalents.</string>
+    <string name="check_word_uniqueness">Word uniqueness</string>
+    <string name="check_tooltip_word_uniqueness">Select to enforce mandatory uniqueness of each word.</string>
+    <string name="check_ignore_case">Ignore case</string>
+    <string name="check_tooltip_ignore_case">Ignore character casing through PolyGlot. (only applies to western characters).</string>
+    <string name="check_disable_ortho_regex">Disable Orthographic regex</string>
+    <string name="check_tooltip_disable_ortho_regex">Disable regex features in orthography. (this allows for ignoring case properly).</string>
+    <string name="check_enforce_rtl">Enforce RTL</string>
+    <string name="check_tooltip_enforce_rtl">Check this to force all conlang text to appear in RTL fashion through PolyGlot. This works even if the character set you are using is not typically RTL.</string>
+    <string name="check_local_mandatory">Local mandatory</string>
+    <string name="check_tooltip_local_mandatory">Select to enforce mandatory values for local word equivalents.</string>
+    <string name="check_override_regex_font">Override regex font</string>
+    <string name="check_tooltip_override_regex_font">This overrides the font of all display elements within PolyGlot to show a default font (if your script makes regexes hard to work with).</string>
+    <string name="check_local_word_display">Local word lexicon display</string>
+    <string name="check_tooltip_local_word_display">Display the local word rather than the conlang word in the lexicon display.</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
