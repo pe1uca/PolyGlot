@@ -60,3 +60,16 @@ So. Some parts of PolyGlot rely on libraries that are pretty fundamentally roote
 5) Copy the newly created "java_8_bridge.zip" file into the assets/assets/org/DarisaDesigns folder inside of the primary PolyGlot application's project folder.
 
 This will replace the Java 8 dependencies that run these select functions in PolyGlot.
+
+
+
+	-----------                         ANDROID DEVELOPMENT SETUP				-----------
+
+1) Download the latest version of android studio.
+2) Download the SDK to compile for API level 26.
+3) Copy from /src/main/java all the core files to /android/app/src/main/java, expect these packages/files:
+	- module-info.java
+	- org.darisadesigns.polyglotlina.Desktop
+	- org.darisadesigns.polyglotlina.ExternalCode
+	- org.darisadesigns.polyglotlina.Screens
+	- org.darisadesigns.polyglotlina.ToolsHelpers
