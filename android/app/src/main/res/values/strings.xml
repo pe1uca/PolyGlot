@@ -7,17 +7,20 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
+    <!-- Nav drawer options -->
     <string name="menu_lang_properties">Language properties</string>
     <string name="menu_lexicon">Lexicon</string>
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
 
+    <!-- Language properties screen -->
     <string name="label_lang_name">Language name</string>
     <string name="label_local_lang">Local language</string>
     <string name="label_author">Author / Copyright info</string>
     <string name="label_kerning">Kerning</string>
 
+    <!-- Labels and tooltips for the properties checkboxes -->
     <string name="check_pos_mandatory">Part of speech mandatory</string>
     <string name="check_tooltip_pos_mandatory">Select to enforce selection of a part of speech on each created word.</string>
     <string name="check_local_uniqueness">Local uniqueness</string>
@@ -36,6 +39,13 @@
     <string name="check_tooltip_override_regex_font">This overrides the font of all display elements within PolyGlot to show a default font (if your script makes regexes hard to work with).</string>
     <string name="check_local_word_display">Local word lexicon display</string>
     <string name="check_tooltip_local_word_display">Display the local word rather than the conlang word in the lexicon display.</string>
+
+    <!-- Lexeme info screen -->
+    <string name="title_activity_lexeme_info">Lexeme info</string>
+    <string name="lexeme_info_tab_general">General Info</string>
+    <string name="lexeme_info_tab_conjugations">Conjugations</string>
+    <string name="lexeme_info_tab_etymology">Etymology</string>
+    <string name="lexeme_info_tab_logographs">Logographs</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

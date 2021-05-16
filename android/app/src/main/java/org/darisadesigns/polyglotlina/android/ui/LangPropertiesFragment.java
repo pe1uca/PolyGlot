@@ -88,7 +88,7 @@ public class LangPropertiesFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        DictCore core = pViewModel.getCore();
+        DictCore core = pViewModel.getLiveCore().getValue();
         PropertiesManager manager = core.getPropertiesManager();
         manager.setLangName(txtLangName.getText().toString());
         manager.setLocalLangName(txtLocalLang.getText().toString());

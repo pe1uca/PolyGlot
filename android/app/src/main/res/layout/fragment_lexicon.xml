@@ -13,5 +13,5 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         app:layoutManager="LinearLayoutManager"
-        tools:listitem="@layout/fragment_lexeme" />
+        tools:listitem="@layout/fragment_lexeme_row" />
 </androidx.constraintlayout.widget.ConstraintLayout>

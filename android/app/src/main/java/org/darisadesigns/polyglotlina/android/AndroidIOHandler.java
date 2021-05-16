@@ -1,5 +1,8 @@
 package org.darisadesigns.polyglotlina.android;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Log;
 
@@ -11,20 +14,26 @@ import org.darisadesigns.polyglotlina.ManagersCollections.GrammarManager;
 import org.darisadesigns.polyglotlina.ManagersCollections.ImageCollection;
 import org.darisadesigns.polyglotlina.ManagersCollections.LogoCollection;
 import org.darisadesigns.polyglotlina.ManagersCollections.ReversionManager;
+import org.darisadesigns.polyglotlina.Nodes.ImageNode;
 import org.darisadesigns.polyglotlina.PGTUtil;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Path;
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -35,33 +44,56 @@ import javax.xml.transform.TransformerException;
 
 public class AndroidIOHandler implements IOHandler {
     private static final String TAG = "IOHandler";
+
+    private final Context context;
+
+    public AndroidIOHandler(Context context) {
+        this.context = context;
+    }
+
+    private void missingImplementation() {
+        StackTraceElement[] stackTrace = new Throwable().getStackTrace();
+
+        Log.e(TAG, "Missing implementation: " + stackTrace[1].getMethodName());
+    }
+
     @Override
     public File createTmpFileWithContents(String contents, String extension) throws IOException {
+        missingImplementation();
         return null;
     }
 
     @Override
     public File createTmpFileFromImageBytes(byte[] imageBytes, String fileName) throws IOException {
-        return null;
+        File tmpFile = File.createTempFile(fileName, ".png");
+        Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+        OutputStream outStream = new FileOutputStream(tmpFile);
+        bitmap.compress(Bitmap.CompressFormat.PNG, 85, outStream);
+        outStream.close();
+        return tmpFile;
     }
 
     @Override
     public File createFileWithContents(String path, String contents) throws IOException {
+        missingImplementation();
         return null;
     }
 
     @Override
     public byte[] getByteArrayFromFile(File file) throws IOException {
+        missingImplementation();
         return new byte[0];
     }
 
     @Override
     public byte[] streamToByetArray(InputStream is) throws IOException {
+        missingImplementation();
         return new byte[0];
     }
 
     @Override
     public byte[] getFileByteArray(String filePath) throws IOException {
+        missingImplementation();
         return new byte[0];
     }
 
@@ -103,12 +135,13 @@ public class AndroidIOHandler implements IOHandler {
 
     @Override
     public String getFilenameFromPath(String fullPath) {
+        missingImplementation();
         return null;
     }
 
     @Override
     public void deleteIni(String workingDirectory) {
-
+        missingImplementation();
     }
 
     @Override
@@ -156,22 +189,24 @@ public class AndroidIOHandler implements IOHandler {
 
     @Override
     public void writeFile(String _fileName, Document doc, DictCore core, File workingDirectory, Instant saveTime) throws IOException, TransformerException {
-
+        missingImplementation();
     }
 
     @Override
     public File getTempSaveFileIfExists(File workingDirectory) {
+        missingImplementation();
         return null;
     }
 
     @Override
     public File archiveFile(File source, File workingDirectory) throws IOException {
+        missingImplementation();
         return null;
     }
 
     @Override
     public void copyFile(Path fromLocation, Path toLocation, boolean replaceExisting) throws IOException {
-
+        missingImplementation();
     }
 
     @Override
@@ -182,116 +217,167 @@ public class AndroidIOHandler implements IOHandler {
 
     @Override
     public void loadImageAssets(ImageCollection imageCollection, String fileName) throws Exception {
+        try (ZipFile zipFile = new ZipFile(fileName)) {
+            Enumeration<? extends ZipEntry> entries = zipFile.entries();
+            ZipEntry entry;
+            while (entries.hasMoreElements()) { // find images directory (zip paths are linear, only simulating tree structure)
+                entry = entries.nextElement();
+                if (!entry.getName().equals(PGTUtil.IMAGES_SAVE_PATH)) {
+                    continue;
+                }
+                break;
+            }
 
+            while (entries.hasMoreElements()) {
+                entry = entries.nextElement();
+
+                if (entry.isDirectory()) { // kills process after last image found
+                    break;
+                }
+
+                try (InputStream imageStream = zipFile.getInputStream(entry)) {
+                    String name = entry.getName().replace(".png", "")
+                            .replace(PGTUtil.IMAGES_SAVE_PATH, "");
+                    int imageId = Integer.parseInt(name);
+                    Bitmap bitmap = BitmapFactory.decodeStream(imageStream);
+                    ImageNode imageNode = new ImageNode(((PolyGlot)context).getCore());
+                    imageNode.setId(imageId);
+                    imageNode.setImageBytes(
+                            loadImageBytesFromBitmap(bitmap)
+                    );
+                    imageCollection.getBuffer().setEqual(imageNode);
+                    imageCollection.insert(imageId);
+                }
+            }
+        }
+    }
+
+    private byte[] loadImageBytesFromBitmap(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        return stream.toByteArray();
     }
 
     @Override
     public void loadLogographs(LogoCollection logoCollection, String fileName) throws Exception {
-
+        missingImplementation();
     }
 
     @Override
     public void loadReversionStates(ReversionManager reversionManager, String fileName) throws IOException {
-
+        missingImplementation();
     }
 
     @Override
     public void exportFont(String exportPath, String dictionaryPath) throws IOException {
-
+        missingImplementation();
     }
 
     @Override
     public void exportCharisFont(String exportPath) throws IOException {
-
+        missingImplementation();
     }
 
     @Override
     public void loadGrammarSounds(String fileName, GrammarManager grammarManager) throws Exception {
-
+        missingImplementation();
     }
 
     @Override
     public boolean openFileNativeOS(String path) {
+        missingImplementation();
         return false;
     }
 
     @Override
     public File getDirectoryFromPath(String path) {
+        missingImplementation();
         return null;
     }
 
     @Override
     public File getFileFromPath(String path) {
+        missingImplementation();
         return null;
     }
 
     @Override
     public void writeErrorLog(Throwable exception) {
-
+        Log.e(TAG, "Error", exception);
     }
 
     @Override
     public void writeErrorLog(Throwable exception, String comment) {
-
+        Log.e(TAG, comment, exception);
     }
 
     @Override
     public File getErrorLogFile() {
+        missingImplementation();
         return null;
     }
 
     @Override
     public String getErrorLog() throws FileNotFoundException {
+        missingImplementation();
         return null;
     }
 
     @Override
     public String getSystemInformation() {
+        missingImplementation();
         return null;
     }
 
     @Override
     public File unzipResourceToTempLocation(String resourceLocation) throws IOException {
+        missingImplementation();
         return null;
     }
 
     @Override
     public void unzipResourceToDir(String internalPath, Path target) throws IOException {
-
+        missingImplementation();
     }
 
     @Override
     public void addFileAttributeOSX(String filePath, String attribute, String value, boolean isHexVal) throws Exception {
-
+        missingImplementation();
     }
 
     @Override
     public String getFileAttributeOSX(String filePath, String attribute) throws Exception {
+        missingImplementation();
         return null;
     }
 
     @Override
     public String[] runAtConsole(String[] arguments, boolean addSpaces) {
+        missingImplementation();
         return new String[0];
     }
 
     @Override
     public String getTerminalJavaVersion() {
+        missingImplementation();
         return null;
     }
 
     @Override
     public boolean isJavaAvailableInTerminal() {
+        missingImplementation();
         return false;
     }
 
     @Override
     public byte[] clearCarrigeReturns(byte[] filthyWithWindows) {
+        missingImplementation();
         return new byte[0];
     }
 
     @Override
     public byte[] loadImageBytes(String path) throws IOException {
+        missingImplementation();
         return new byte[0];
     }
 }

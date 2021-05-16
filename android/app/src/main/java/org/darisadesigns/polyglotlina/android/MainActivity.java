@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.provider.DocumentsContract;
 import android.provider.OpenableColumns;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 import android.widget.TextView;
@@ -22,6 +23,7 @@ import com.google.android.material.navigation.NavigationView;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -89,12 +91,13 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navigationView, navController);
 
         osHandler = new AndroidOSHandler(
-                new AndroidIOHandler(),
+                new AndroidIOHandler(getApplicationContext()),
                 new AndroidInfoBox(this),
                 new AndroidHelpHandler(),
                 new AndroidPFontHandler()
         );
         core = new DictCore(new AndroidPropertiesManager(), osHandler, new AndroidPGTUtil());
+        ((PolyGlot)getApplicationContext()).setCore(core);
         PViewModel viewModel = new ViewModelProvider(this).get(PViewModel.class);
         viewModel.updateCore(core);
     }
@@ -170,6 +173,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void readFile(String path) {
         try {
+            Log.e(TAG, path);
             core = new DictCore(new AndroidPropertiesManager(), osHandler, new AndroidPGTUtil());
             core.readFile(path);
 
@@ -177,6 +181,7 @@ public class MainActivity extends AppCompatActivity {
             // Fragments must use requireActivity as provider owner
             PViewModel viewModel = new ViewModelProvider(this).get(PViewModel.class);
             viewModel.updateCore(core);
+            ((PolyGlot)getApplicationContext()).setCore(core);
         } catch (IOException e) {
             e.printStackTrace();
         }
