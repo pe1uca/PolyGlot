@@ -19,7 +19,6 @@ import org.darisadesigns.polyglotlina.DictCore;
 import org.darisadesigns.polyglotlina.android.MainActivity;
 import org.darisadesigns.polyglotlina.android.R;
 import org.darisadesigns.polyglotlina.android.ui.PViewModel;
-import org.darisadesigns.polyglotlina.android.ui.PViewModelFactory;
 
 public class HomeFragment extends Fragment {
 

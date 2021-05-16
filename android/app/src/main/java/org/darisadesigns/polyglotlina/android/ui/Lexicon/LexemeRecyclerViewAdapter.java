@@ -14,29 +14,37 @@ import java.util.List;
 
 public class LexemeRecyclerViewAdapter extends RecyclerView.Adapter<LexemeRecyclerViewAdapter.ViewHolder> {
 
-    private final List<ConWord> mValues;
+    private final List<ConWord> items;
+    private final OnItemClickListener listener;
 
-    public LexemeRecyclerViewAdapter(List<ConWord> items) {
-        mValues = items;
+    public LexemeRecyclerViewAdapter(List<ConWord> items, OnItemClickListener listener) {
+        this.items = items;
+        this.listener = listener;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_lexeme, parent, false);
+                .inflate(R.layout.fragment_lexeme_row, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.conWord = mValues.get(position);
-        holder.vConWord.setText(mValues.get(position).getValue());
-        holder.vLocalWord.setText(mValues.get(position).getLocalWord());
+        holder.conWord = items.get(position);
+        holder.vConWord.setText(items.get(position).getValue());
+        holder.vLocalWord.setText(items.get(position).getLocalWord());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onItemClick(holder.conWord);
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return mValues.size();
+        return items.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -56,5 +64,9 @@ public class LexemeRecyclerViewAdapter extends RecyclerView.Adapter<LexemeRecycl
         public String toString() {
             return super.toString() + " '" + vConWord.getText() + "'";
         }
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(ConWord item);
     }
 }
