@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -36,13 +37,16 @@ public class LexiconFragment extends Fragment {
 
     private static final String TAG = "Lexicon";
 
+    private RecyclerView lexiconView;
+    private Parcelable recyclerViewState;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         PViewModel pViewModel = new ViewModelProvider(requireActivity()).get(PViewModel.class);
         View view = inflater.inflate(R.layout.fragment_lexicon, container, false);
 
-        RecyclerView lexiconView = view.findViewById(R.id.lexiconList);
+        lexiconView = view.findViewById(R.id.lexiconList);
         Context context = view.getContext();
         lexiconView.setLayoutManager(new LinearLayoutManager(context));
 
@@ -60,6 +64,8 @@ public class LexiconFragment extends Fragment {
                             new LexemeRecyclerViewAdapter(words, new LexemeRecyclerViewAdapter.OnItemClickListener() {
                                 @Override
                                 public void onItemClick(ConWord item) {
+                                    /* Store list position */
+                                    recyclerViewState = lexiconView.getLayoutManager().onSaveInstanceState();
                                     Intent intent = new Intent(LexiconFragment.this.requireActivity(), LexemeInfoActivity.class);
                                     intent.putExtra(LexemeInfoActivity.CON_WORD_ID_EXTRA, item.getId());
                                     startActivity(intent);
@@ -70,5 +76,14 @@ public class LexiconFragment extends Fragment {
             }
         });
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        /* Force lexicon list to redraw  */
+        lexiconView.setAdapter(lexiconView.getAdapter());
+        /* Restore lexicon position for better UX */
+        lexiconView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
     }
 }

@@ -46,6 +46,18 @@
     <string name="lexeme_info_tab_conjugations">Conjugations</string>
     <string name="lexeme_info_tab_etymology">Etymology</string>
     <string name="lexeme_info_tab_logographs">Logographs</string>
+
+    <string name="label_con_word">Conlang word</string>
+    <string name="label_local_word">Local language word</string>
+    <string name="label_pronunciation">Pronunciation</string>
+    <string name="label_definition">Definition</string>
+    <string name="label_part_of_speech">Part of speech</string>
+    <string name="label_tooltip_class">%1$s value</string>
+
+    <string name="check_override_pronunciation">Override Pronunciation Rules</string>
+    <string name="check_tooltip_override_pronunciation">Select this to override auto pronunciation generation for this word.</string>
+    <string name="check_override_rules">Override Lexical Rules</string>
+    <string name="check_tooltip_override_rules">Overrides all typically enforced requirements for this word, allowing it to be saved as an exception</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

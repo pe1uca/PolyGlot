@@ -21,12 +21,29 @@ import jp.wasabeef.richeditor.RichEditor;
 public class HTMLEditorFragment extends Fragment {
 
     private static final String TAG = "HTMLEditor";
-    private static final String DEFAULT_TEXT_ARG = "default-text";
+    private static final String PLACEHOLDER_TEXT_ARG = "placeholder-text";
     private RichEditor mEditor;
+    private String placeHolder;
     private boolean internalChange = false;
 
     public static HTMLEditorFragment newInstance() {
-        return new HTMLEditorFragment();
+        return HTMLEditorFragment.newInstance("");
+    }
+
+    public static HTMLEditorFragment newInstance(String placeholder) {
+        HTMLEditorFragment fragment = new HTMLEditorFragment();
+
+        Bundle args = new Bundle();
+        args.putString(PLACEHOLDER_TEXT_ARG, placeholder);
+        fragment.setArguments(args);
+
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        placeHolder = getArguments().getString(PLACEHOLDER_TEXT_ARG);
     }
 
     @Override
@@ -36,6 +53,7 @@ public class HTMLEditorFragment extends Fragment {
         EditorViewModel viewModel = new ViewModelProvider(getParentFragment()).get(EditorViewModel.class);
 
         mEditor = root.findViewById(R.id.editor);
+        mEditor.setPlaceholder(placeHolder);
         viewModel.getLiveText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String text) {
