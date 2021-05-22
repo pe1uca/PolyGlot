@@ -20,7 +20,7 @@ public class AndroidPropertiesManager extends PropertiesManager {
 
     @Override
     public String getFontConFamily() {
-        return null;
+        return "Charis SIL";
     }
 
     @Override

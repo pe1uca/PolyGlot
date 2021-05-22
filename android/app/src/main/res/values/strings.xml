@@ -1,4 +1,8 @@
 <resources>
+
+    <string name="settings_key_tmp_file">tmp_file</string>
+    <string name="settings_key_source_uri">source_uri</string>
+
     <string name="app_name">PolyGlot</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -6,7 +10,10 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_open">Open file</string>
+    <string name="action_save">Save file</string>
     <string name="action_settings">Settings</string>
+
+    <string name="toast_file_saved">File saved</string>
 
     <!-- Nav drawer options -->
     <string name="menu_lang_properties">Language properties</string>
