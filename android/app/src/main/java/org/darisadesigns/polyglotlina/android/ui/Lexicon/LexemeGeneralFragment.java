@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -50,12 +51,14 @@ public class LexemeGeneralFragment extends Fragment {
 
     private TextInputEditText txtConWord;
     private TextInputEditText txtLocalWord;
+    private TextInputEditText txtRomanization;
     private TextInputEditText txtPronunciation;
 
     private CheckBox chkOverridePronunciation;
     private CheckBox chkOverrideRules;
 
     private LinearLayout classesLinearLayout;
+    private TextInputLayout romanizationLayout;
 
     public static LexemeGeneralFragment newInstance() {
         return new LexemeGeneralFragment();
@@ -72,6 +75,7 @@ public class LexemeGeneralFragment extends Fragment {
 
         txtConWord = root.findViewById(R.id.txtConWord);
         txtLocalWord = root.findViewById(R.id.txtLocalWord);
+        txtRomanization = root.findViewById(R.id.txtRomanization);
         txtPronunciation = root.findViewById(R.id.txtPronunciation);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         HTMLEditorFragment htmlEditor = HTMLEditorFragment.newInstance(getResources().getString(R.string.label_definition));
@@ -81,6 +85,7 @@ public class LexemeGeneralFragment extends Fragment {
         chkOverrideRules = root.findViewById(R.id.chkOverrideRules);
 
         classesLinearLayout = root.findViewById(R.id.classesLayout);
+        romanizationLayout = root.findViewById(R.id.romanizationLayout);
 
         core = ((PolyGlot)requireActivity().getApplicationContext()).getCore();
         TypeNode[] posItems = core.getTypes().getNodes();
@@ -114,6 +119,10 @@ public class LexemeGeneralFragment extends Fragment {
                             setupClassView(conWord, newType.getId());
                         }
                     });
+                    if(core.getRomManager().isEnabled()) {
+                        romanizationLayout.setVisibility(View.VISIBLE);
+                        generateRomanization(conWord.getValue());
+                    }
                     setupClassView(conWord, type.getId());
                 }
             }
@@ -135,6 +144,9 @@ public class LexemeGeneralFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
+                if(core.getRomManager().isEnabled()) {
+                    generateRomanization(s.toString());
+                }
                 if (chkOverridePronunciation.isChecked()) return;
 
                 try {
@@ -164,6 +176,15 @@ public class LexemeGeneralFragment extends Fragment {
         /* Part of speech saved with posAutocomplete listener */
         /* Classes being saved with txtClass and classAutocomplete listeners */
         word.setPronunciation(txtPronunciation.getText().toString());
+    }
+
+    private void generateRomanization(String conWord) {
+        try {
+            String rom = core.getRomManager().getPronunciation(conWord);
+            txtRomanization.setText(rom);
+        } catch (Exception e) {
+            core.getOSHandler().getIOHandler().writeErrorLog(e);
+        }
     }
 
     private void setupClassView(ConWord conWord, int typeId) {

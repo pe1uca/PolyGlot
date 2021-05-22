@@ -57,6 +57,7 @@
 
     <string name="label_con_word">Conlang word</string>
     <string name="label_local_word">Local language word</string>
+    <string name="label_romanization">Romanization</string>
     <string name="label_pronunciation">Pronunciation</string>
     <string name="label_definition">Definition</string>
     <string name="label_part_of_speech">Part of speech</string>
