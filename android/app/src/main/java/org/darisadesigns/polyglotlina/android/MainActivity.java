@@ -4,11 +4,14 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.ParcelFileDescriptor;
+import android.preference.PreferenceManager;
 import android.provider.DocumentsContract;
 import android.provider.OpenableColumns;
 import android.util.Log;
@@ -44,11 +47,15 @@ import org.darisadesigns.polyglotlina.PGTUtil;
 import org.darisadesigns.polyglotlina.android.ui.PViewModel;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.concurrent.Executor;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -81,10 +88,11 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navigationView, navController);
 
         osHandler = new AndroidOSHandler(
-                new AndroidIOHandler(getApplicationContext()),
+                new AndroidIOHandler(getApplicationContext(), this),
                 new AndroidInfoBox(this),
                 new AndroidHelpHandler(),
-                new AndroidPFontHandler()
+                new AndroidPFontHandler(),
+                getApplicationContext()
         );
         core = new DictCore(new AndroidPropertiesManager(), osHandler, new AndroidPGTUtil());
         ((PolyGlot)getApplicationContext()).setCore(core);
@@ -118,7 +126,11 @@ public class MainActivity extends AppCompatActivity {
                 else
                     openFile();
                 return true;
-
+            case R.id.action_save:
+                AndroidOSHandler.animateView(progressOverlay, View.VISIBLE, 0.4f, 200);
+                Executor executor = ((PolyGlot)getApplicationContext()).getExecutorService();
+                executor.execute(this::saveFile);
+                return true;
             default:
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
@@ -166,10 +178,19 @@ public class MainActivity extends AppCompatActivity {
                         String display_name = cursor.getString(cursor.getColumnIndexOrThrow("_display_name"));
                         Executor executor = ((PolyGlot)getApplicationContext()).getExecutorService();
                         AndroidOSHandler.animateView(progressOverlay, View.VISIBLE, 0.4f, 200);
+                        getContentResolver().takePersistableUriPermission(uri,
+                                Intent.FLAG_GRANT_READ_URI_PERMISSION
+                                        | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                         Uri finalUri = uri;
                         executor.execute(() -> {
                             try {
                                 String tmpFileName = copyToTmp(finalUri, display_name);
+                                SharedPreferences.Editor editor =  PreferenceManager
+                                        .getDefaultSharedPreferences(getApplicationContext())
+                                        .edit();
+                                editor.putString(getString(R.string.settings_key_tmp_file), tmpFileName);
+                                editor.putString(getString(R.string.settings_key_source_uri), finalUri.toString());
+                                editor.apply();
                                 readFile(tmpFileName);
                             } catch (IOException e) {
                                 core.getOSHandler().getIOHandler().writeErrorLog(e);
@@ -197,15 +218,7 @@ public class MainActivity extends AppCompatActivity {
         InputStream inputStream = getContentResolver().openInputStream(contentUri);
         OutputStream outputStream = new FileOutputStream(tmpFile);
 
-        byte[] buf = new byte[1024];
-        int len;
-        if (null != inputStream) {
-            while((len = inputStream.read(buf)) > 0) {
-                outputStream.write(buf, 0, len);
-            }
-            outputStream.close();
-            inputStream.close();
-        }
+        ((AndroidIOHandler)core.getOSHandler().getIOHandler()).moveInputToOutput(inputStream, outputStream);
 
         return tmpFile.getPath();
     }
@@ -215,6 +228,10 @@ public class MainActivity extends AppCompatActivity {
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("*/*");
 
+        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
+                | Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+
         // Optionally, specify a URI for the file that should appear in the
         // system file picker when it loads.
         // intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
@@ -223,7 +240,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void readFile(String path) throws IOException {
-        Log.e(TAG, path);
         core = new DictCore(new AndroidPropertiesManager(), osHandler, new AndroidPGTUtil());
         core.readFile(path);
         Handler threadHandler = ((PolyGlot)getApplicationContext()).getMainThreadHandler();
@@ -239,6 +255,35 @@ public class MainActivity extends AppCompatActivity {
         viewModel.updateCore(core);
         ((PolyGlot)getApplicationContext()).setCore(core);
         AndroidOSHandler.animateView(progressOverlay, View.GONE, 0, 200);
+    }
+
+    private void saveFile() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String tmpFile = preferences.getString(getString(R.string.settings_key_tmp_file), "");
+        String sourceUri = preferences.getString(getString(R.string.settings_key_source_uri), "");
+        if (tmpFile.isEmpty()) return;
+        try {
+
+            core.writeFile(tmpFile);
+            FileInputStream inputStream = new FileInputStream(new File(tmpFile));
+            Uri uri = Uri.parse(sourceUri);
+            ParcelFileDescriptor pgdFile = getContentResolver().openFileDescriptor(uri, "w");
+            OutputStream outputStream = new FileOutputStream(pgdFile.getFileDescriptor());
+
+            ((AndroidIOHandler)core.getOSHandler().getIOHandler()).moveInputToOutput(inputStream, outputStream);
+            pgdFile.close();
+            Handler threadHandler = ((PolyGlot)getApplicationContext()).getMainThreadHandler();
+            threadHandler.post(() -> {
+                AndroidOSHandler.animateView(progressOverlay, View.GONE, 0, 200);
+                Toast.makeText(this, R.string.toast_file_saved, Toast.LENGTH_SHORT).show();
+            });
+        } catch (ParserConfigurationException | TransformerException | IOException e) {
+            core.getOSHandler().getIOHandler().writeErrorLog(e);
+            core.getOSHandler().getInfoBox().error(
+                    "File could not be saved",
+                    "The file '" + core.getCurFileName() + "' could not be saved."
+            );
+        }
     }
 
     @Override

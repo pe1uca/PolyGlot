@@ -20,15 +20,16 @@ import java.util.List;
 public class AndroidOSHandler extends OSHandler {
 
     private static final String TAG = "OSHandler";
+    private final Context context;
 
-    public AndroidOSHandler(IOHandler _ioHandler, InfoBox _infoBox, HelpHandler _helpHandler, PFontHandler _fontHandler) {
+    public AndroidOSHandler(IOHandler _ioHandler, InfoBox _infoBox, HelpHandler _helpHandler, PFontHandler _fontHandler, Context context) {
         super(_ioHandler, _infoBox, _helpHandler, _fontHandler);
+        this.context = context;
     }
 
     @Override
     public File getWorkingDirectory() {
-        missingImplementation();
-        return null;
+        return context.getCacheDir();
     }
 
     @Override
