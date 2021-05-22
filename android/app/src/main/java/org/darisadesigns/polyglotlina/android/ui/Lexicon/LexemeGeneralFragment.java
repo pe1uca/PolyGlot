@@ -50,6 +50,7 @@ public class LexemeGeneralFragment extends Fragment {
 
     private TextInputEditText txtConWord;
     private TextInputEditText txtLocalWord;
+    private TextInputEditText txtPronunciation;
 
     private CheckBox chkOverridePronunciation;
     private CheckBox chkOverrideRules;
@@ -71,6 +72,7 @@ public class LexemeGeneralFragment extends Fragment {
 
         txtConWord = root.findViewById(R.id.txtConWord);
         txtLocalWord = root.findViewById(R.id.txtLocalWord);
+        txtPronunciation = root.findViewById(R.id.txtPronunciation);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         HTMLEditorFragment htmlEditor = HTMLEditorFragment.newInstance(getResources().getString(R.string.label_definition));
         transaction.replace(R.id.fragment_container_view, htmlEditor).commit();
@@ -93,6 +95,11 @@ public class LexemeGeneralFragment extends Fragment {
                 if (null != conWord) {
                     txtConWord.setText(conWord.getValue());
                     txtLocalWord.setText(conWord.getLocalWord());
+                    try {
+                        txtPronunciation.setText(conWord.getPronunciation());
+                    } catch (Exception e) {
+                        core.getOSHandler().getIOHandler().writeErrorLog(e);
+                    }
                     editorViewModel.updateText(conWord.getDefinition());
 
                     chkOverridePronunciation.setChecked(conWord.isProcOverride());
@@ -119,6 +126,29 @@ public class LexemeGeneralFragment extends Fragment {
             }
         });
 
+        txtConWord.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (chkOverridePronunciation.isChecked()) return;
+
+                try {
+                    String pronunciation = core.getPronunciationMgr().getPronunciation(s.toString());
+
+                    if (!pronunciation.isEmpty() || s.toString().isEmpty()) {
+                        txtPronunciation.setText(pronunciation);
+                    }
+                } catch (Exception e) {
+                    core.getOSHandler().getIOHandler().writeErrorLog(e);
+                }
+            }
+        });
+
         return root;
     }
 
@@ -133,6 +163,7 @@ public class LexemeGeneralFragment extends Fragment {
         word.setRulesOverride(chkOverrideRules.isChecked());
         /* Part of speech saved with posAutocomplete listener */
         /* Classes being saved with txtClass and classAutocomplete listeners */
+        word.setPronunciation(txtPronunciation.getText().toString());
     }
 
     private void setupClassView(ConWord conWord, int typeId) {
