@@ -1,7 +1,10 @@
 package org.darisadesigns.polyglotlina.android;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
 
 import org.darisadesigns.polyglotlina.DictCore;
 import org.darisadesigns.polyglotlina.HelpHandler;
@@ -42,5 +45,22 @@ public class AndroidOSHandler extends OSHandler {
         StackTraceElement[] stackTrace = new Throwable().getStackTrace();
 
         Log.e(TAG, "Missing implementation: " + stackTrace[1].getMethodName());
+    }
+
+    public static void animateView(final View view, final int toVisibility, float toAlpha, int duration) {
+        boolean show = toVisibility == View.VISIBLE;
+        if (show) {
+            view.setAlpha(0);
+        }
+        view.setVisibility(View.VISIBLE);
+        view.animate()
+                .setDuration(duration)
+                .alpha(show ? toAlpha : 0)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        view.setVisibility(toVisibility);
+                    }
+                });
     }
 }

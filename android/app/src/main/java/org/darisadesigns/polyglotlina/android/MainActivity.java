@@ -2,21 +2,25 @@ package org.darisadesigns.polyglotlina.android;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.DocumentsContract;
 import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
@@ -40,12 +44,17 @@ import org.darisadesigns.polyglotlina.PGTUtil;
 import org.darisadesigns.polyglotlina.android.ui.PViewModel;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.concurrent.Executor;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "Main";
     private AppBarConfiguration mAppBarConfiguration;
+    private View progressOverlay;
     private static final int PICK_PGD_FILE = 2;
     private static final int STORAGE_PERMISSION_CODE = 3;
     private DictCore core;
@@ -55,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        progressOverlay = findViewById(R.id.progress_overlay);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -150,22 +160,54 @@ public class MainActivity extends AppCompatActivity {
             Uri uri = null;
             if (resultData != null) {
                 uri = resultData.getData();
-                Log.e("TAG", "onActivityResult: " + uri.getPath());
+
                 try (Cursor cursor = getContentResolver().query(uri, null, null, null)) {
                     if (cursor != null && cursor.moveToFirst()) {
-                        String path = cursor.getString(cursor.getColumnIndexOrThrow("path"));
-                        readFile(path);
+                        String display_name = cursor.getString(cursor.getColumnIndexOrThrow("_display_name"));
+                        Executor executor = ((PolyGlot)getApplicationContext()).getExecutorService();
+                        AndroidOSHandler.animateView(progressOverlay, View.VISIBLE, 0.4f, 200);
+                        Uri finalUri = uri;
+                        executor.execute(() -> {
+                            try {
+                                String tmpFileName = copyToTmp(finalUri, display_name);
+                                readFile(tmpFileName);
+                            } catch (IOException e) {
+                                core.getOSHandler().getIOHandler().writeErrorLog(e);
+                                core.getOSHandler().getInfoBox().error(
+                                        "File could not be open",
+                                        "The file selected could not be open."
+                                );
+                            }
+                        });
                     }
                 } catch (IllegalArgumentException e) {
+                    core.getOSHandler().getIOHandler().writeErrorLog(e);
                     core.getOSHandler().getInfoBox().error(
                             "File could not be open",
-                            "The file selected could not be open.\n" +
-                                    "Provide a file in your local storage."
+                            "The file selected could not be open."
                     );
                 }
                 // Perform operations on the document using its URI.
             }
         }
+    }
+
+    private String copyToTmp(Uri contentUri, String fileName) throws IOException {
+        File tmpFile = File.createTempFile(fileName.replace(".pgd", ""), ".pgd");
+        InputStream inputStream = getContentResolver().openInputStream(contentUri);
+        OutputStream outputStream = new FileOutputStream(tmpFile);
+
+        byte[] buf = new byte[1024];
+        int len;
+        if (null != inputStream) {
+            while((len = inputStream.read(buf)) > 0) {
+                outputStream.write(buf, 0, len);
+            }
+            outputStream.close();
+            inputStream.close();
+        }
+
+        return tmpFile.getPath();
     }
 
     private void openFile() {
@@ -180,20 +222,47 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(intent, PICK_PGD_FILE);
     }
 
-    private void readFile(String path) {
-        try {
-            Log.e(TAG, path);
-            core = new DictCore(new AndroidPropertiesManager(), osHandler, new AndroidPGTUtil());
-            core.readFile(path);
+    private void readFile(String path) throws IOException {
+        Log.e(TAG, path);
+        core = new DictCore(new AndroidPropertiesManager(), osHandler, new AndroidPGTUtil());
+        core.readFile(path);
+        Handler threadHandler = ((PolyGlot)getApplicationContext()).getMainThreadHandler();
+        threadHandler.post(() -> {
+           fileRead(core);
+        });
+    }
 
-            // Update core in model to update all fragments
-            // Fragments must use requireActivity as provider owner
-            PViewModel viewModel = new ViewModelProvider(this).get(PViewModel.class);
-            viewModel.updateCore(core);
-            ((PolyGlot)getApplicationContext()).setCore(core);
-        } catch (IOException e) {
-            e.printStackTrace();
+    private void fileRead(DictCore core) {
+        // Update core in model to update all fragments
+        // Fragments must use requireActivity as provider owner
+        PViewModel viewModel = new ViewModelProvider(this).get(PViewModel.class);
+        viewModel.updateCore(core);
+        ((PolyGlot)getApplicationContext()).setCore(core);
+        AndroidOSHandler.animateView(progressOverlay, View.GONE, 0, 200);
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(!isChangingConfigurations()) {
+            deleteTempFiles(getCacheDir());
         }
+        super.onDestroy();
+    }
+
+    private boolean deleteTempFiles(File file) {
+        if (file.isDirectory()) {
+            File[] files = file.listFiles();
+            if (files != null) {
+                for (File f : files) {
+                    if (f.isDirectory()) {
+                        deleteTempFiles(f);
+                    } else {
+                        f.delete();
+                    }
+                }
+            }
+        }
+        return file.delete();
     }
 
     public DictCore getCore() {
