@@ -18,22 +18,54 @@
             android:minHeight="?attr/actionBarSize"
             app:titleTextColor="@android:color/white"
             android:background="?attr/colorPrimary"/>
-
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tabs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:tabMode="scrollable"
-            android:theme="@style/Theme.PolyGlot"
-            app:tabTextColor="?attr/colorOnPrimary"
-            android:background="?attr/colorPrimary" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/view_pager"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_container_view"
+        android:name="org.darisadesigns.polyglotlina.android.ui.Lexicon.LexemeGeneralFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingBottom="60dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <LinearLayout
+        android:id="@+id/bottomSheet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+        android:background="?attr/colorPrimary"
+        app:behavior_peekHeight="60dp">
+        <TextView
+            android:id="@+id/sheetPeek"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="?attr/colorPrimaryVariant"
+            android:gravity="center"
+            android:text="@string/lexeme_utilities"
+            android:textColor="@android:color/white" />
+        <Button
+            android:id="@+id/btnConjugations"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/colorOnPrimary"
+            android:text="@string/lexeme_info_tab_conjugations"
+            style="@style/Widget.MaterialComponents.Button.TextButton"/>
+        <Button
+            android:id="@+id/btnEtymology"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/colorOnPrimary"
+            android:text="@string/lexeme_info_tab_etymology"
+            style="@style/Widget.MaterialComponents.Button.TextButton"/>
+        <Button
+            android:id="@+id/btnLogographs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/colorOnPrimary"
+            android:text="@string/lexeme_info_tab_logographs"
+            style="@style/Widget.MaterialComponents.Button.TextButton"/>
+    </LinearLayout>
 
     <!--<com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"

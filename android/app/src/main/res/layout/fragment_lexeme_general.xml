@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".ui.Lexicon.LexemeGeneralFragment">
 
     <ScrollView
@@ -120,33 +121,19 @@
                             android:maxLines="1" />
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <LinearLayout
-                        android:id="@+id/checkboxLayout"
+                    <CheckBox
+                        android:id="@+id/chkOverridePronunciation"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:text="@string/check_override_pronunciation"
+                        android:tooltipText="@string/check_tooltip_override_pronunciation"/>
 
-                        <LinearLayout
-                            android:layout_height="wrap_content"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <CheckBox
-                                android:id="@+id/chkOverridePronunciation"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="@string/check_override_pronunciation"
-                                android:tooltipText="@string/check_tooltip_override_pronunciation"/>
-
-                            <CheckBox
-                                android:id="@+id/chkOverrideRules"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="@string/check_override_rules"
-                                android:tooltipText="@string/check_tooltip_override_rules"/>
-                        </LinearLayout>
-                    </LinearLayout>
+                    <CheckBox
+                        android:id="@+id/chkOverrideRules"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/check_override_rules"
+                        android:tooltipText="@string/check_tooltip_override_rules"/>
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/editorLayout"

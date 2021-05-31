@@ -51,6 +51,7 @@
     <!-- Lexeme info screen -->
     <string name="title_activity_lexeme_info">Lexeme info</string>
     <string name="lexeme_info_tab_general">General Info</string>
+    <string name="lexeme_utilities">Lexeme utilities</string>
     <string name="lexeme_info_tab_conjugations">Conjugations</string>
     <string name="lexeme_info_tab_etymology">Etymology</string>
     <string name="lexeme_info_tab_logographs">Logographs</string>
@@ -67,6 +68,12 @@
     <string name="check_tooltip_override_pronunciation">Select this to override auto pronunciation generation for this word.</string>
     <string name="check_override_rules">Override Lexical Rules</string>
     <string name="check_tooltip_override_rules">Overrides all typically enforced requirements for this word, allowing it to be saved as an exception</string>
+
+    <!-- Lexeme conjugations -->
+    <string name="message_no_conjugations">No conjugations/declensions for %1$s</string>
+    <string name="message_no_word_type">Word must have a part of Speech set and the part of speech must have declensions defined before using this feature.</string>
+    <string name="spinner_rows">Rows</string>
+    <string name="spinner_columns">Columns</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

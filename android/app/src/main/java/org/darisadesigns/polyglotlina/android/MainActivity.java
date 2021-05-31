@@ -97,6 +97,19 @@ public class MainActivity extends AppCompatActivity {
         core = new DictCore(new AndroidPropertiesManager(), osHandler, new AndroidPGTUtil());
         ((PolyGlot)getApplicationContext()).setCore(core);
         PViewModel viewModel = new ViewModelProvider(this).get(PViewModel.class);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String tmpFile = preferences.getString(getString(R.string.settings_key_tmp_file), "");
+        if (!tmpFile.isEmpty()) {
+            Executor executor = ((PolyGlot)getApplicationContext()).getExecutorService();
+            AndroidOSHandler.animateView(progressOverlay, View.VISIBLE, 0.4f, 200);
+            executor.execute(() -> {
+                try {
+                    readFile(tmpFile);
+                } catch (IOException e) {
+                    core.getOSHandler().getIOHandler().writeErrorLog(e);
+                }
+            });
+        }
         viewModel.updateCore(core);
     }
 
@@ -182,6 +195,7 @@ public class MainActivity extends AppCompatActivity {
                                 Intent.FLAG_GRANT_READ_URI_PERMISSION
                                         | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                         Uri finalUri = uri;
+                        deleteTempFiles(getCacheDir());
                         executor.execute(() -> {
                             try {
                                 String tmpFileName = copyToTmp(finalUri, display_name);
@@ -289,7 +303,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         if(!isChangingConfigurations()) {
-            deleteTempFiles(getCacheDir());
+            // deleteTempFiles(getCacheDir());
         }
         super.onDestroy();
     }
