@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentContainerView;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +19,9 @@ import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import org.darisadesigns.polyglotlina.DictCore;
 import org.darisadesigns.polyglotlina.Nodes.ConWord;
@@ -37,11 +42,6 @@ public class LexemeInfoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lexeme_info);
-        LexemeInfoPagerAdapter lexemeInfoPagerAdapter = new LexemeInfoPagerAdapter(this, getSupportFragmentManager());
-        ViewPager viewPager = findViewById(R.id.view_pager);
-        viewPager.setAdapter(lexemeInfoPagerAdapter);
-        TabLayout tabs = findViewById(R.id.tabs);
-        tabs.setupWithViewPager(viewPager);
 
         setSupportActionBar((Toolbar) findViewById(R.id.app_bar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -56,6 +56,20 @@ public class LexemeInfoActivity extends AppCompatActivity {
 
         LexemeInfoViewModel viewModel= new ViewModelProvider(this).get(LexemeInfoViewModel.class);
         viewModel.updateWord(conWord);
+
+        TextView sheetPeek = findViewById(R.id.sheetPeek);
+        sheetPeek.setOnClickListener((view) -> {
+            LinearLayout bottomSheet = findViewById(R.id.bottomSheet);
+            BottomSheetBehavior<LinearLayout> bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        });
+
+        Button btnConjugations = findViewById(R.id.btnConjugations);
+        btnConjugations.setOnClickListener((view) -> {
+            Intent conjugationsIntent = new Intent(LexemeInfoActivity.this, LexemeConjugationsActivity.class);
+            conjugationsIntent.putExtra(LexemeConjugationsActivity.CON_WORD_ID_EXTRA, wordId);
+            startActivity(conjugationsIntent);
+        });
 
         /*FloatingActionButton fab = findViewById(R.id.fab);
 
