@@ -103,11 +103,7 @@ public class MainActivity extends AppCompatActivity {
             Executor executor = ((PolyGlot)getApplicationContext()).getExecutorService();
             AndroidOSHandler.animateView(progressOverlay, View.VISIBLE, 0.4f, 200);
             executor.execute(() -> {
-                try {
                     readFile(tmpFile);
-                } catch (IOException e) {
-                    core.getOSHandler().getIOHandler().writeErrorLog(e);
-                }
             });
         }
         viewModel.updateCore(core);
@@ -195,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
                                 Intent.FLAG_GRANT_READ_URI_PERMISSION
                                         | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                         Uri finalUri = uri;
-                        deleteTempFiles(getCacheDir());
+                        deleteTempFiles();
                         executor.execute(() -> {
                             try {
                                 String tmpFileName = copyToTmp(finalUri, display_name);
@@ -253,16 +249,20 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(intent, PICK_PGD_FILE);
     }
 
-    private void readFile(String path) throws IOException {
+    private void readFile(String path) {
+        try {
         core = new DictCore(new AndroidPropertiesManager(), osHandler, new AndroidPGTUtil());
         core.readFile(path);
+        } catch (IOException e) {
+            core.getOSHandler().getIOHandler().writeErrorLog(e);
+        }
         Handler threadHandler = ((PolyGlot)getApplicationContext()).getMainThreadHandler();
         threadHandler.post(() -> {
-           fileRead(core);
+            fileReadingFinished(core);
         });
     }
 
-    private void fileRead(DictCore core) {
+    private void fileReadingFinished(DictCore core) {
         // Update core in model to update all fragments
         // Fragments must use requireActivity as provider owner
         PViewModel viewModel = new ViewModelProvider(this).get(PViewModel.class);
@@ -306,6 +306,20 @@ public class MainActivity extends AppCompatActivity {
             // deleteTempFiles(getCacheDir());
         }
         super.onDestroy();
+    }
+
+    private void deleteTempFiles() {
+        deleteTempFiles(getCacheDir());
+        File[] files = getCacheDir().listFiles();
+        if (files != null) {
+            for (File f : files) {
+                if (f.isDirectory()) {
+                    deleteTempFiles(f);
+                } else {
+                    f.delete();
+                }
+            }
+        }
     }
 
     private boolean deleteTempFiles(File file) {
