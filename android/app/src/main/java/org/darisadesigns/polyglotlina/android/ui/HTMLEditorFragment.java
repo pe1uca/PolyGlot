@@ -101,7 +101,9 @@ public class HTMLEditorFragment extends Fragment {
             }
         });
 
-        root.findViewById(R.id.action_subscript).setOnClickListener(new View.OnClickListener() {
+        // There's no way to get out of these options, so let's not include them
+        // To activate them also see fragment_html_editor.xml
+        /*root.findViewById(R.id.action_subscript).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mEditor.setSubscript();
@@ -113,7 +115,7 @@ public class HTMLEditorFragment extends Fragment {
             public void onClick(View v) {
                 mEditor.setSuperscript();
             }
-        });
+        });*/
 
         root.findViewById(R.id.action_strikethrough).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -247,7 +249,9 @@ public class HTMLEditorFragment extends Fragment {
             }
         });
 
-        root.findViewById(R.id.action_insert_image).setOnClickListener(new View.OnClickListener() {
+        // Would need to figure out how to handle each one to accept user input
+        // To activate them also see fragment_html_editor.xml
+        /*root.findViewById(R.id.action_insert_image).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mEditor.insertImage("https://raw.githubusercontent.com/wasabeef/art/master/chip.jpg",
@@ -281,7 +285,7 @@ public class HTMLEditorFragment extends Fragment {
             public void onClick(View v) {
                 mEditor.insertLink("https://github.com/wasabeef", "wasabeef");
             }
-        });
+        });*/
         root.findViewById(R.id.action_insert_checkbox).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
