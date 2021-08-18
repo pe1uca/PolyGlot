@@ -7,6 +7,14 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".ui.Lexicon.LexemeGeneralFragment">
 
+    <TextView
+        android:id="@+id/errorMessage"
+        android:visibility="gone"
+        app:errorEnabled="true"
+        android:textColor="@color/red"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -33,11 +41,13 @@
                     android:orientation="vertical">
 
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/txtConWordLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="4dp"
                         android:hint="@string/label_con_word"
                         app:layout_constraintTop_toTopOf="parent"
+                        app:errorEnabled="true"
                         tools:layout_editor_absoluteX="4dp">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -49,11 +59,13 @@
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/txtLocalWordLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="4dp"
                         android:hint="@string/label_local_word"
                         app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
+                        app:errorEnabled="true"
                         tools:layout_editor_absoluteX="4dp">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -65,12 +77,13 @@
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/posSpinner"
+                        android:id="@+id/posInputLayout"
                         style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="4dp"
                         android:hint="@string/label_part_of_speech"
+                        app:errorEnabled="true"
                         tools:layout_editor_absoluteX="4dp" >
 
                         <AutoCompleteTextView
@@ -106,11 +119,13 @@
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/txtPronunciationLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="4dp"
                         android:hint="@string/label_pronunciation"
                         app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
+                        app:errorEnabled="true"
                         tools:layout_editor_absoluteX="4dp">
 
                         <com.google.android.material.textfield.TextInputEditText
