@@ -187,11 +187,9 @@ public class LexemeGeneralFragment extends Fragment {
         word.setDefinition(editorViewModel.getLiveText().getValue());
         word.setProcOverride(chkOverridePronunciation.isChecked());
         word.setRulesOverride(chkOverrideRules.isChecked());
-        int posId = 0;
         int posIndex = posAutocomplete.getListSelection();
         if (posIndex != ListView.INVALID_POSITION)
-            posId = ((TypeNode)posAutocomplete.getAdapter().getItem(posIndex)).getId();
-        word.setWordTypeId(posId);
+            word.setWordTypeId(((TypeNode)posAutocomplete.getAdapter().getItem(posIndex)).getId());
         /* Classes being saved with txtClass and classAutocomplete listeners. Check setupClassView() */
         word.setPronunciation(txtPronunciation.getText().toString());
     }
@@ -205,7 +203,7 @@ public class LexemeGeneralFragment extends Fragment {
         ConWord testWord = new ConWord();
         testWord.setId(currWord.getId());
 
-        int posId = 0;
+        int posId = currWord.getWordTypeId();
         int posIndex = posAutocomplete.getListSelection();
         if (posIndex != ListView.INVALID_POSITION)
             posId = ((TypeNode)posAutocomplete.getAdapter().getItem(posIndex)).getId();

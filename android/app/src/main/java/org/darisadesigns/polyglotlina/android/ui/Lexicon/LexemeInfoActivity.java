@@ -65,7 +65,14 @@ public class LexemeInfoActivity extends AppCompatActivity {
         sheetPeek.setOnClickListener((view) -> {
             LinearLayout bottomSheet = findViewById(R.id.bottomSheet);
             BottomSheetBehavior<LinearLayout> bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
-            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            switch (bottomSheetBehavior.getState()) {
+                case BottomSheetBehavior.STATE_COLLAPSED:
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    break;
+                case BottomSheetBehavior.STATE_EXPANDED:
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    break;
+            }
         });
 
         Button btnConjugations = findViewById(R.id.btnConjugations);
@@ -124,7 +131,7 @@ public class LexemeInfoActivity extends AppCompatActivity {
                getSupportFragmentManager()
                        .findFragmentById(R.id.lexeme_general_fragment_container_view);
 
-        boolean isValid =fragment.isLexemeValid();
+        boolean isValid = fragment.isLexemeValid();
         if (!isValid) {
             if (errorsWarned) {
                 try {

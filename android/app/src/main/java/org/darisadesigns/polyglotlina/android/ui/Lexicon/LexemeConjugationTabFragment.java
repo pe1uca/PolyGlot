@@ -210,7 +210,7 @@ public class LexemeConjugationTabFragment extends Fragment {
 
     private void createTable(DataTableHeader header, ArrayList<DataTableRow> tableRows) {
         table.setHeader(header);
-        table.setRows(tableRows);
         table.inflate(requireActivity());
+        table.setRows(tableRows);
     }
 }
