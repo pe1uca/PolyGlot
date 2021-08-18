@@ -16,12 +16,14 @@ import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.darisadesigns.polyglotlina.DictCore;
 import org.darisadesigns.polyglotlina.Nodes.ConWord;
@@ -37,6 +39,8 @@ public class LexemeInfoActivity extends AppCompatActivity {
 
     private ConWord conWord;
     private DictCore core;
+
+    private boolean errorsWarned = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,9 +108,44 @@ public class LexemeInfoActivity extends AppCompatActivity {
                     );
                 }
                 return true;
+            case android.R.id.home:
+                onBackPressed();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
 
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.d(TAG, "Back pressed invoked");
+        LexemeGeneralFragment fragment = (LexemeGeneralFragment)
+               getSupportFragmentManager()
+                       .findFragmentById(R.id.lexeme_general_fragment_container_view);
+
+        boolean isValid =fragment.isLexemeValid();
+        if (!isValid) {
+            if (errorsWarned) {
+                try {
+                    core.getWordCollection().deleteNodeById(conWord.getId());
+                } catch (Exception e) {
+                    core.getOSHandler().getIOHandler().writeErrorLog(e);
+                    core.getOSHandler().getInfoBox().error(
+                            "Deletion Error",
+                            "Unable to delete word: " + e.getLocalizedMessage()
+                    );
+                }
+            }
+            else {
+                errorsWarned = true;
+                CharSequence text = getResources().getString(R.string.toast_lexeme_errors);
+                Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
+                /* Make the deletion reset when the toast disappears */
+                new Handler().postDelayed(() -> errorsWarned = false, 2000);
+                return;
+            }
+        }
+        super.onBackPressed();
     }
 }
