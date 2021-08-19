@@ -68,9 +68,7 @@ public class LexemeConjugationTabFragment extends Fragment {
         viewModel.getLiveConjugation().observe(getViewLifecycleOwner(), new Observer<ConjugationViewModel.Conjugation>() {
             @Override
             public void onChanged(ConjugationViewModel.Conjugation conjugation) {
-                Log.e(TAG, "conjugation changed");
                 if(null != conjugation) {
-                    Log.e(TAG, "conjugation not null");
                     if (null != conjugation.conjugationColumn && null != conjugation.conjugationRow) {
                         generateTabName(conjugation.conWord);
                         conjugateDimensional(conjugation);
@@ -130,8 +128,8 @@ public class LexemeConjugationTabFragment extends Fragment {
     }
 
     private void buildModel(ConjugationViewModel.Conjugation conjugation) {
-        int columnsIndex = getDeclensionIndexOf(partialConjugationId, "X");
-        int rowsIndex = getDeclensionIndexOf(partialConjugationId, "Y");
+        int rowsIndex = getDeclensionIndexOf(partialConjugationId, "X");
+        int columnsIndex = getDeclensionIndexOf(partialConjugationId, "Y");
         ConjugationNode columnsNode = conjugationManager
                 .getDimensionalConjugationTemplateByIndex(
                         conjugation.conWord.getWordTypeId(),
@@ -193,14 +191,13 @@ public class LexemeConjugationTabFragment extends Fragment {
             rowBuilder.value(rowLabels.get(rowPos));
             for (int columnPos = 0; columnsIterator.hasNext(); columnPos++) {
                 ConjugationDimension conjugationDimensionColumn = columnsIterator.next();
-                String fullDecId = partialConjugationId.replace("X", conjugationDimensionColumn.getId().toString());
-                fullDecId = fullDecId.replace("Y", conjugationDimensionRow.getId().toString());
+                String fullDecId = partialConjugationId.replace("Y", conjugationDimensionColumn.getId().toString());
+                fullDecId = fullDecId.replace("X", conjugationDimensionRow.getId().toString());
                 if (conjugationManager.isCombinedConjlSurpressed(fullDecId, conjugation.conWord.getWordTypeId())) {
                     rowBuilder.value("");
                 }
                 else {
                     String wordForm = conjugation.conWord.getWordForm(fullDecId);
-                    Log.e(TAG, "Word: " + wordForm);
                     rowBuilder.value(wordForm);
                 }
             }

@@ -26,11 +26,11 @@ public class ConjugationViewModel extends ViewModel {
 
         Conjugation(
                 ConWord conWord,
-                ConjugationNode conjugationColumn,
-                ConjugationNode conjugationRow
+                ConjugationNode conjugationRow,
+                ConjugationNode conjugationColumn
         ) {
-            this.conjugationColumn = conjugationColumn;
             this.conjugationRow = conjugationRow;
+            this.conjugationColumn = conjugationColumn;
             this.conWord = conWord;
         }
 

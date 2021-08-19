@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -66,6 +67,9 @@ public class LexemeConjugationsActivity extends AppCompatActivity {
     private View spinnersLayout;
     private AutoCompleteTextView rowsAutocomplete;
     private AutoCompleteTextView columnsAutocomplete;
+
+    private int rowsIndex = -1;
+    private int columnsIndex = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,9 +147,17 @@ public class LexemeConjugationsActivity extends AppCompatActivity {
         columnsAutocomplete.setAdapter(conjugationsArrayAdapter);
 
         rowsAutocomplete.setText(conjugationsArrayAdapter.getItem(0).toString(), false);
+        rowsAutocomplete.setOnItemClickListener((parent, view, position, id) -> {
+            rowsIndex = position;
+            populateConjugationsTable();
+        });
 
         if (conjugationNodes.length > 1) {
             columnsAutocomplete.setText(conjugationsArrayAdapter.getItem(1).toString(), false);
+            columnsAutocomplete.setOnItemClickListener((parent, view, position, id) -> {
+                columnsIndex = position;
+                populateConjugationsTable();
+            });
         }
     }
 
@@ -164,7 +176,6 @@ public class LexemeConjugationsActivity extends AppCompatActivity {
     }
 
     private void populateConjugationsTable() {
-
         if(shouldRenderDimensional()) {
             populateMultiConjugationTables();
         }
@@ -174,19 +185,16 @@ public class LexemeConjugationsActivity extends AppCompatActivity {
     }
 
     private void populateMultiConjugationTables() {
-        int row = rowsAutocomplete.getListSelection();
-        int col = columnsAutocomplete.getListSelection();
         ConjugationNode conjugationRows;
         ConjugationNode conjugationsColumns;
-        if(row == -1 || col == -1) {
-            conjugationRows = conjugationsArrayAdapter.getItem(0);
-            conjugationsColumns = conjugationsArrayAdapter.getItem(1);
-        } else {
-            conjugationRows = conjugationsArrayAdapter.getItem(row);
-            conjugationsColumns = conjugationsArrayAdapter.getItem(col);
+        if(rowsIndex == -1 || columnsIndex == -1) {
+            rowsIndex = 0;
+            columnsIndex = 1;
         }
+        conjugationRows = conjugationsArrayAdapter.getItem(rowsIndex);
+        conjugationsColumns = conjugationsArrayAdapter.getItem(columnsIndex);
         if (conjugationRows.equals(conjugationsColumns)) {
-            //TODO: show "Please select different values"
+            Toast.makeText(getApplicationContext(), R.string.toast_same_dimension_error, Toast.LENGTH_SHORT).show();
             return;
         }
         ArrayList<LexemeConjugationTabFragment> fragmentArrayList = new ArrayList<>();
