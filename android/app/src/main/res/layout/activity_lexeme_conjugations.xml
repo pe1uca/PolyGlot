@@ -112,8 +112,8 @@
                     android:id="@+id/chkOverridePronunciation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/check_override_pronunciation"
-                    android:tooltipText="@string/check_tooltip_override_pronunciation"/>
+                    android:text="@string/check_override_conjugations"
+                    android:tooltipText="@string/check_tooltip_override_conjugations"/>
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
