@@ -1,18 +1,11 @@
 package org.darisadesigns.polyglotlina.android.ui.Lexicon;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.tabs.TabLayout;
 
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentContainerView;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -27,10 +20,8 @@ import android.widget.Toast;
 
 import org.darisadesigns.polyglotlina.DictCore;
 import org.darisadesigns.polyglotlina.Nodes.ConWord;
-import org.darisadesigns.polyglotlina.android.MainActivity;
 import org.darisadesigns.polyglotlina.android.PolyGlot;
 import org.darisadesigns.polyglotlina.android.R;
-import org.darisadesigns.polyglotlina.android.ui.PViewModel;
 
 public class LexemeInfoActivity extends AppCompatActivity {
 
@@ -80,6 +71,13 @@ public class LexemeInfoActivity extends AppCompatActivity {
             Intent conjugationsIntent = new Intent(LexemeInfoActivity.this, LexemeConjugationsActivity.class);
             conjugationsIntent.putExtra(LexemeConjugationsActivity.CON_WORD_ID_EXTRA, wordId);
             startActivity(conjugationsIntent);
+        });
+
+        Button btnEtymology = findViewById(R.id.btnEtymology);
+        btnEtymology.setOnClickListener((view) -> {
+            Intent etymologyIntent = new Intent(LexemeInfoActivity.this, LexemeEtymologyActivity.class);
+            etymologyIntent.putExtra(LexemeEtymologyActivity.CON_WORD_ID_EXTRA, wordId);
+            startActivity(etymologyIntent);
         });
 
         /*FloatingActionButton fab = findViewById(R.id.fab);
