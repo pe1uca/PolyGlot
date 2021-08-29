@@ -77,6 +77,10 @@
     <string name="check_override_conjugations">Override autogeneration</string>
     <string name="check_tooltip_override_conjugations">Check to override autogeneration of declension forms (if autogeneration patterns exist)</string>
 
+    <!-- Lexeme etymology -->
+    <string name="etymology_tab_parents">Parents</string>
+    <string name="etymology_tab_children">Children</string>
+
     <!-- Toasts -->
     <string name="toast_lexeme_errors">Invalid word. Press back again to delete it.</string>
     <string name="toast_same_dimension_error">Please select differing Row and Column values.</string>

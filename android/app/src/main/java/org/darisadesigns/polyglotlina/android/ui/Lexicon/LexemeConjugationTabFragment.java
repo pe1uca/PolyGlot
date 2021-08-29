@@ -112,7 +112,6 @@ public class LexemeConjugationTabFragment extends Fragment {
         ArrayList<DataTableRow> tableRows = new ArrayList<>();
         for(ConjugationPair pair: completeList) {
             String wordForm = conjugation.conWord.getWordForm(pair.combinedId);
-            Log.e(TAG, wordForm);
             tableRows.add(
                     new DataTableRow.Builder()
                             .value(pair.label)
