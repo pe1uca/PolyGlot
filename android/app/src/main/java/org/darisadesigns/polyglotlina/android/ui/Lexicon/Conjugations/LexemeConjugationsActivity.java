@@ -1,4 +1,4 @@
-package org.darisadesigns.polyglotlina.android.ui.Lexicon;
+package org.darisadesigns.polyglotlina.android.ui.Lexicon.Conjugations;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -6,7 +6,6 @@ import androidx.appcompat.widget.Toolbar;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
@@ -30,17 +29,13 @@ import org.darisadesigns.polyglotlina.Nodes.ConjugationNode;
 import org.darisadesigns.polyglotlina.Nodes.ConjugationPair;
 import org.darisadesigns.polyglotlina.android.PolyGlot;
 import org.darisadesigns.polyglotlina.android.R;
+import org.darisadesigns.polyglotlina.android.ui.Lexicon.LexemeInfoViewModel;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import ir.androidexception.datatable.DataTable;
-import ir.androidexception.datatable.model.DataTableHeader;
-import ir.androidexception.datatable.model.DataTableRow;
 
 public class LexemeConjugationsActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package org.darisadesigns.polyglotlina.android.ui.Lexicon;
+package org.darisadesigns.polyglotlina.android.ui.Lexicon.Conjugations;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
