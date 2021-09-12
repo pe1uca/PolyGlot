@@ -22,6 +22,8 @@ import org.darisadesigns.polyglotlina.DictCore;
 import org.darisadesigns.polyglotlina.Nodes.ConWord;
 import org.darisadesigns.polyglotlina.android.PolyGlot;
 import org.darisadesigns.polyglotlina.android.R;
+import org.darisadesigns.polyglotlina.android.ui.Lexicon.Conjugations.LexemeConjugationsActivity;
+import org.darisadesigns.polyglotlina.android.ui.Lexicon.Etymology.LexemeEtymologyActivity;
 
 public class LexemeInfoActivity extends AppCompatActivity {
 

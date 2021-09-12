@@ -1,4 +1,4 @@
-package org.darisadesigns.polyglotlina.android.ui.Lexicon;
+package org.darisadesigns.polyglotlina.android.ui.Lexicon.Etymology;
 
 import android.content.Intent;
 import android.os.Bundle;
