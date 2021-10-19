@@ -46,11 +46,27 @@
     <include layout="@layout/content_lexeme_etymology" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
+        android:id="@+id/fab_add_etymon_external"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        app:layout_anchorGravity="top"
+        app:layout_anchor="@id/fab_add_etymon_internal"
+        app:srcCompat="@drawable/outline_translate_24"
+        app:useCompatPadding="true"
+        android:contentDescription="@string/fab_add_etymon_external"
+        android:tooltipText="@string/fab_add_etymon_external" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_add_etymon_internal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+        app:srcCompat="@android:drawable/ic_input_add"
+        app:useCompatPadding="true"
+        android:contentDescription="@string/fab_add_etymon_internal"
+        android:tooltipText="@string/fab_add_etymon_internal" />
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

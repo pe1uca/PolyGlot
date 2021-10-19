@@ -7,21 +7,27 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import org.darisadesigns.polyglotlina.DictCore;
+import org.darisadesigns.polyglotlina.ManagersCollections.EtymologyManager;
 import org.darisadesigns.polyglotlina.Nodes.ConWord;
 import org.darisadesigns.polyglotlina.Nodes.EtyExternalParent;
+import org.darisadesigns.polyglotlina.Nodes.TypeNode;
 import org.darisadesigns.polyglotlina.android.PolyGlot;
 import org.darisadesigns.polyglotlina.android.R;
 
@@ -48,6 +54,13 @@ public class LexemeEtymologyActivity extends AppCompatActivity {
     private AbstractGraphAdapter<NodeViewHolder> adapter;
     private TabLayout tabLayout;
 
+    ActivityResultLauncher<Intent> resultInternalRoot = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK)
+                    addInternalRoot(result.getData().getIntExtra(AddInternalRootActivity.ROOT_WORD_ID_EXTRA, -1));
+            }
+    );
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,11 +79,19 @@ public class LexemeEtymologyActivity extends AppCompatActivity {
 
         tabLayout = findViewById(R.id.tabs);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fab_internal = findViewById(R.id.fab_add_etymon_internal);
+        fab_internal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                resultInternalRoot.launch(new Intent(LexemeEtymologyActivity.this, AddInternalRootActivity.class));
+            }
+        });
+
+        FloatingActionButton fab_external = findViewById(R.id.fab_add_etymon_external);
+        fab_external.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Coming soon", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
@@ -89,6 +110,25 @@ public class LexemeEtymologyActivity extends AppCompatActivity {
             @Override
             public void onTabReselected(TabLayout.Tab tab) { }
         });
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        conWord.setEtymNotes(conWord.getEtymNotes());
+    }
+
+    private void addInternalRoot(int rootId) {
+        if (rootId == -1) return;
+        try {
+            core.getEtymologyManager().addRelation(rootId, conWord.getId());
+            if (tabLayout.getSelectedTabPosition() == TAB_PARENTS_POSITION) inflateEtymologyTree(TAB_PARENTS_POSITION);
+            else tabLayout.selectTab(tabLayout.getTabAt(TAB_PARENTS_POSITION));
+        } catch (EtymologyManager.IllegalLoopException e) {
+            core.getOSHandler().getIOHandler().writeErrorLog(e);
+            core.getOSHandler().getInfoBox().error("Illegal Loop: Parent not Added", e.getLocalizedMessage());
+        }
     }
 
     private void inflateEtymologyTree(int tabPosition) {
