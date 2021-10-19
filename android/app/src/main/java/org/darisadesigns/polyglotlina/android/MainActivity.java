@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,6 +15,8 @@ import android.os.ParcelFileDescriptor;
 import android.preference.PreferenceManager;
 import android.provider.DocumentsContract;
 import android.provider.OpenableColumns;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -113,6 +116,16 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+
+        /* Hack to change text color, otherwise it stays white on white */
+        for (int i = 0; i < menu.size(); i++) {
+            MenuItem item = menu.getItem(i);
+            SpannableString s = new SpannableString(item.getTitle());
+            int color = (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_YES) == 0 ?
+                    R.color.design_default_color_on_secondary : R.color.design_default_color_on_primary;
+            s.setSpan(new ForegroundColorSpan(getColor(color)), 0, s.length(), 0);
+            item.setTitle(s);
+        }
         return true;
     }
 
