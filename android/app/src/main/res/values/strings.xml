@@ -78,8 +78,10 @@
     <string name="check_tooltip_override_conjugations">Check to override autogeneration of declension forms (if autogeneration patterns exist)</string>
 
     <!-- Lexeme etymology -->
-    <string name="etymology_tab_parents">Parents</string>
-    <string name="etymology_tab_children">Children</string>
+    <string name="etymology_tab_parents">Etymons</string>
+    <string name="etymology_tab_children">Derivatives</string>
+    <string name="fab_add_etymon_internal">Add internal etymon</string>
+    <string name="fab_add_etymon_external">Add external etymon</string>
 
     <!-- Toasts -->
     <string name="toast_lexeme_errors">Invalid word. Press back again to delete it.</string>
