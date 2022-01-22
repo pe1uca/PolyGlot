@@ -292,7 +292,9 @@ public class DictCore {
             public void run() {
                 String reportContents = PLanguageStats.buildWordReport(core, progress);
                 
-                core.getOSHandler().openLanguageReport(reportContents);
+                if (!reportContents.isBlank()) {
+                    core.getOSHandler().openLanguageReport(reportContents);
+                }
             }
         }.start();
     }
@@ -640,7 +642,8 @@ public class DictCore {
     public boolean equals(Object comp) {
         boolean ret = false;
 
-        if (comp instanceof DictCore compCore) {
+        if (comp instanceof DictCore) {
+            DictCore compCore = (DictCore)comp;
             
             ret = wordCollection.equals(compCore.wordCollection);
             ret = ret && typeCollection.equals(compCore.typeCollection);

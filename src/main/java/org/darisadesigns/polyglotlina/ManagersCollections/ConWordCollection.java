@@ -42,7 +42,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Random;
-import org.darisadesigns.polyglotlina.Desktop.PFontHandler;
 import org.darisadesigns.polyglotlina.Nodes.EvolutionPair;
 import org.darisadesigns.polyglotlina.Nodes.EvolutionPair.EvolutionType;
 import org.darisadesigns.polyglotlina.RegexTools;
@@ -179,7 +178,7 @@ public class ConWordCollection extends DictionaryCollection<ConWord> {
         }
 
         if (word.getWordTypeId() == 0 && core.getPropertiesManager().isTypesMandatory()) {
-            ret.typeError = "Types set to mandatory.";
+            ret.typeError = "Part of Speech set to mandatory.";
         }
 
         if (word.getLocalWord().isEmpty() && core.getPropertiesManager().isLocalMandatory()) {
@@ -225,8 +224,8 @@ public class ConWordCollection extends DictionaryCollection<ConWord> {
                         + "Definition required for " + wordPos.getValue() + " words.");
             }
         }
-        
-        if (!new PFontHandler().canStringBeRendered(word.getValue(), true)) {
+
+        if (!core.getOSHandler().getPFontHandler().canStringBeRendered(word.getValue(), true)) {
             ret.setValue(ret.getValue() + "\nWord: \"" + word.getValue() + "\" with local value: \"" + word.getLocalWord() 
                     + "\" cannot be rendered properly using font: " + core.getPropertiesManager().getFontConFamily());
         }
@@ -728,11 +727,28 @@ public class ConWordCollection extends DictionaryCollection<ConWord> {
      * @return
      */
     public ConWord[] getWordNodes() {
+        return this.getWordNodesList().toArray(new ConWord[0]);
+    }
+
+    /**
+     * Returns list of conlang words nodes
+     *
+     * @return List of ConWords
+     */
+    public List<ConWord> getWordNodesList() {
         List<ConWord> retList = new ArrayList<>(nodeMap.values());
 
         this.safeSort(retList);
 
-        return retList.toArray(new ConWord[0]);
+        return retList;
+    }
+    
+    public List<ConWord> getWordNodesList() {
+        List<ConWord> retList = new ArrayList<>(nodeMap.values());
+
+        this.safeSort(retList);
+        
+        return retList;
     }
     
     public List<ConWord> getWordNodesList() {
