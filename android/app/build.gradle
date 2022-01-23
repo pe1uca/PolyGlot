@@ -5,6 +5,17 @@ plugins {
 android {
     compileSdkVersion 29
 
+    task copyCore(type: Copy) {
+        description = 'Copy core files of Polyglot (without desktop specific files)'
+        from('../../src/main/java/org/darisadesigns/polyglotlina') {
+            include '**/*.java'
+            exclude 'PolyGlot.java', 'ZompistVocabGenerator.java', 'Desktop/', 'ExternalCode/', 'QuizEngine/', 'Screens/', 'ToolsHelpers/'
+        }
+        into './src/main/java/org/darisadesigns/polyglotlina'
+    }
+
+    tasks.preBuild.dependsOn copyCore
+
     defaultConfig {
         applicationId "org.darisadesigns.polyglotlina.android"
         minSdkVersion 26
@@ -29,7 +40,7 @@ android {
 
 dependencies {
 
-    implementation group: 'org.jsoup', name: 'jsoup', version: '1.13.1'
+    implementation group: 'org.jsoup', name: 'jsoup', version: '1.14.3'
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'jp.wasabeef:richeditor-android:2.0.0'
     implementation 'dev.bandb.graphview:graphview:0.8.1'
