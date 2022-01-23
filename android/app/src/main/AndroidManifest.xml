@@ -23,7 +23,7 @@
                 android:value=".MainActivity" />
         </activity>
         <activity
-            android:name=".ui.Lexicon.LexemeConjugationsActivity"
+            android:name=".ui.Lexicon.Conjugations.LexemeConjugationsActivity"
             android:label="Lexeme conjugations"
             android:theme="@style/Theme.PolyGlot.NoActionBar">
             <meta-data
@@ -31,12 +31,21 @@
                 android:value=".ui.Lexicon.LexemeInfoActivity" />
         </activity>
         <activity
-            android:name=".ui.Lexicon.LexemeEtymologyActivity"
+            android:name=".ui.Lexicon.Etymology.LexemeEtymologyActivity"
             android:label="Lexeme etymology"
+            android:launchMode="singleTop"
             android:theme="@style/Theme.PolyGlot.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.Lexicon.LexemeInfoActivity" />
+        </activity>
+        <activity
+            android:name=".ui.Lexicon.Etymology.AddInternalRootActivity"
+            android:label="@string/title_activity_add_intenral_root"
+            android:theme="@style/Theme.PolyGlot.NoActionBar" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.Lexicon.Etymology.LexemeEtymologyActivity" />
         </activity>
         <activity
             android:name=".MainActivity"

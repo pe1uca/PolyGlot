@@ -2,7 +2,6 @@ package org.darisadesigns.polyglotlina.android;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -13,27 +12,20 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.ParcelFileDescriptor;
 import android.preference.PreferenceManager;
-import android.provider.DocumentsContract;
-import android.provider.OpenableColumns;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.progressindicator.LinearProgressIndicator;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -44,9 +36,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import org.darisadesigns.polyglotlina.DictCore;
-import org.darisadesigns.polyglotlina.ManagersCollections.PropertiesManager;
 import org.darisadesigns.polyglotlina.OSHandler;
-import org.darisadesigns.polyglotlina.PGTUtil;
 import org.darisadesigns.polyglotlina.android.ui.PViewModel;
 
 import java.io.File;
@@ -65,10 +55,19 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "Main";
     private AppBarConfiguration mAppBarConfiguration;
     private View progressOverlay;
-    private static final int PICK_PGD_FILE = 2;
     private static final int STORAGE_PERMISSION_CODE = 3;
     private DictCore core;
     private OSHandler osHandler;
+    ActivityResultLauncher<Intent> openDocumentActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK &&
+                    result.getData() != null) {
+                    // There are no request codes
+                    Intent data = result.getData();
+                    openFile(data.getData());
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_lang_properties, R.id.nav_lexicon,
                 R.id.nav_gallery, R.id.nav_slideshow)
-                .setDrawerLayout(drawer)
+                .setOpenableLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
@@ -98,6 +97,11 @@ public class MainActivity extends AppCompatActivity {
                 getApplicationContext()
         );
         core = new DictCore(new AndroidPropertiesManager(), osHandler, new AndroidPGTUtil(), new AndroidGrammarManager());
+        /*try {
+            core.readFile("/storage/emulated/0/Documents/Starter.pgd");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
         ((PolyGlot)getApplicationContext()).setCore(core);
         PViewModel viewModel = new ViewModelProvider(this).get(PViewModel.class);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -106,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
             Executor executor = ((PolyGlot)getApplicationContext()).getExecutorService();
             AndroidOSHandler.animateView(progressOverlay, View.VISIBLE, 0.4f, 200);
             executor.execute(() -> {
-                    readFile(tmpFile);
+                readFile(tmpFile);
             });
         }
         viewModel.updateCore(core);
@@ -146,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
                     );
                 }
                 else
-                    openFile();
+                    selectFile();
                 return true;
             case R.id.action_save:
                 AndroidOSHandler.animateView(progressOverlay, View.VISIBLE, 0.4f, 200);
@@ -175,63 +179,10 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == STORAGE_PERMISSION_CODE) {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                openFile();
+                selectFile();
             }
             else {
                 Toast.makeText(MainActivity.this, "Storage Permission Denied", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode,
-                                 Intent resultData) {
-        super.onActivityResult(requestCode, resultCode, resultData);
-        if (requestCode == PICK_PGD_FILE
-                && resultCode == Activity.RESULT_OK) {
-            // The result data contains a URI for the document or directory that
-            // the user selected.
-            Uri uri = null;
-            if (resultData != null) {
-                uri = resultData.getData();
-
-                try (Cursor cursor = getContentResolver().query(uri, null, null, null)) {
-                    if (cursor != null && cursor.moveToFirst()) {
-                        String display_name = cursor.getString(cursor.getColumnIndexOrThrow("_display_name"));
-                        Executor executor = ((PolyGlot)getApplicationContext()).getExecutorService();
-                        AndroidOSHandler.animateView(progressOverlay, View.VISIBLE, 0.4f, 200);
-                        getContentResolver().takePersistableUriPermission(uri,
-                                Intent.FLAG_GRANT_READ_URI_PERMISSION
-                                        | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                        Uri finalUri = uri;
-                        deleteTempFiles();
-                        executor.execute(() -> {
-                            try {
-                                String tmpFileName = copyToTmp(finalUri, display_name);
-                                SharedPreferences.Editor editor =  PreferenceManager
-                                        .getDefaultSharedPreferences(getApplicationContext())
-                                        .edit();
-                                editor.putString(getString(R.string.settings_key_tmp_file), tmpFileName);
-                                editor.putString(getString(R.string.settings_key_source_uri), finalUri.toString());
-                                editor.apply();
-                                readFile(tmpFileName);
-                            } catch (IOException e) {
-                                core.getOSHandler().getIOHandler().writeErrorLog(e);
-                                core.getOSHandler().getInfoBox().error(
-                                        "File could not be open",
-                                        "The file selected could not be open."
-                                );
-                            }
-                        });
-                    }
-                } catch (IllegalArgumentException e) {
-                    core.getOSHandler().getIOHandler().writeErrorLog(e);
-                    core.getOSHandler().getInfoBox().error(
-                            "File could not be open",
-                            "The file selected could not be open."
-                    );
-                }
-                // Perform operations on the document using its URI.
             }
         }
     }
@@ -246,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
         return tmpFile.getPath();
     }
 
-    private void openFile() {
+    private void selectFile() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("*/*");
@@ -258,14 +209,51 @@ public class MainActivity extends AppCompatActivity {
         // Optionally, specify a URI for the file that should appear in the
         // system file picker when it loads.
         // intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
+        openDocumentActivityResultLauncher.launch(intent);
+    }
 
-        startActivityForResult(intent, PICK_PGD_FILE);
+    private void openFile(Uri uri) {
+        try (Cursor cursor = getContentResolver().query(uri, null, null, null)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                String display_name = cursor.getString(cursor.getColumnIndexOrThrow("_display_name"));
+                Executor executor = ((PolyGlot)getApplicationContext()).getExecutorService();
+                AndroidOSHandler.animateView(progressOverlay, View.VISIBLE, 0.4f, 200);
+                getContentResolver().takePersistableUriPermission(uri,
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION
+                                | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                deleteTempFiles();
+                executor.execute(() -> {
+                    try {
+                        String tmpFileName = copyToTmp(uri, display_name);
+                        SharedPreferences.Editor editor =  PreferenceManager
+                                .getDefaultSharedPreferences(getApplicationContext())
+                                .edit();
+                        editor.putString(getString(R.string.settings_key_tmp_file), tmpFileName);
+                        editor.putString(getString(R.string.settings_key_source_uri), uri.toString());
+                        editor.apply();
+                        readFile(tmpFileName);
+                    } catch (IOException e) {
+                        core.getOSHandler().getIOHandler().writeErrorLog(e);
+                        core.getOSHandler().getInfoBox().error(
+                                "File could not be open",
+                                "The file selected could not be open."
+                        );
+                    }
+                });
+            }
+        } catch (IllegalArgumentException e) {
+            core.getOSHandler().getIOHandler().writeErrorLog(e);
+            core.getOSHandler().getInfoBox().error(
+                    "File could not be open",
+                    "The file selected could not be open."
+            );
+        }
     }
 
     private void readFile(String path) {
         try {
             core = new DictCore(new AndroidPropertiesManager(), osHandler, new AndroidPGTUtil(), new AndroidGrammarManager());
-        core.readFile(path);
+            core.readFile(path);
         } catch (IOException e) {
             core.getOSHandler().getIOHandler().writeErrorLog(e);
         }
