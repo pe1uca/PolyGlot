@@ -216,7 +216,7 @@ public class AndroidIOHandler implements IOHandler {
     }
 
     @Override
-    public void writeFile(String _fileName, Document doc, DictCore core, File workingDirectory, Instant saveTime) throws IOException, TransformerException {
+    public void writeFile(String _fileName, Document doc, DictCore core, File workingDirectory, Instant saveTime, boolean writeToReversionMgr) throws IOException, TransformerException {
         File finalFile = new File(_fileName);
         String writeLog = "";
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -272,7 +272,7 @@ public class AndroidIOHandler implements IOHandler {
                         new AndroidPFontHandler(),
                         context
                 );
-                DictCore test = new DictCore(new AndroidPropertiesManager(), osHandler, new AndroidPGTUtil());
+                DictCore test = new DictCore(new AndroidPropertiesManager(), osHandler, new AndroidPGTUtil(), new AndroidGrammarManager());
                 test.readFile(tmpSaveLocation.getAbsolutePath());
             }
             catch (Exception ex) {
@@ -529,7 +529,12 @@ public class AndroidIOHandler implements IOHandler {
     }
 
     @Override
-    public void exportFont(String exportPath, String dictionaryPath) throws IOException {
+    public void exportConFont(String exportPath, String dictionaryPath) throws IOException {
+        missingImplementation();
+    }
+
+    @Override
+    public void exportLocalFont(String exportPath, String dictionaryPath) throws IOException {
         missingImplementation();
     }
 
@@ -544,8 +549,10 @@ public class AndroidIOHandler implements IOHandler {
 
         try (ZipFile zipFile = new ZipFile(fileName)) {
             for (GrammarChapNode curChap : grammarManager.getChapters()) {
-                for (int i = 0; i < curChap.getChildCount(); i++) {
-                    GrammarSectionNode curNode = (GrammarSectionNode) curChap.children.get(i);
+                AndroidGrammarChapNode aCurChap = (AndroidGrammarChapNode)curChap;
+                for (int i = 0; i < aCurChap.getChildCount(); i++) {
+
+                    GrammarSectionNode curNode = (GrammarSectionNode) aCurChap.children.get(i);
 
                     if (curNode.getRecordingId() == -1) {
                         continue;

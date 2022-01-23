@@ -10,4 +10,14 @@ public class AndroidPFontHandler extends PFontHandler {
     public void setFontFrom(String _path, DictCore core) throws IOException, Exception {
 
     }
+
+    @Override
+    public boolean canStringBeRendered(String value, boolean conFont) {
+        return false;
+    }
+
+    @Override
+    public void updateLocalFont() {
+
+    }
 }

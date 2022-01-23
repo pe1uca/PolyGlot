@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
                 new AndroidPFontHandler(),
                 getApplicationContext()
         );
-        core = new DictCore(new AndroidPropertiesManager(), osHandler, new AndroidPGTUtil());
+        core = new DictCore(new AndroidPropertiesManager(), osHandler, new AndroidPGTUtil(), new AndroidGrammarManager());
         ((PolyGlot)getApplicationContext()).setCore(core);
         PViewModel viewModel = new ViewModelProvider(this).get(PViewModel.class);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -264,7 +264,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void readFile(String path) {
         try {
-        core = new DictCore(new AndroidPropertiesManager(), osHandler, new AndroidPGTUtil());
+            core = new DictCore(new AndroidPropertiesManager(), osHandler, new AndroidPGTUtil(), new AndroidGrammarManager());
         core.readFile(path);
         } catch (IOException e) {
             core.getOSHandler().getIOHandler().writeErrorLog(e);
@@ -291,7 +291,7 @@ public class MainActivity extends AppCompatActivity {
         if (tmpFile.isEmpty()) return;
         try {
 
-            core.writeFile(tmpFile);
+            core.writeFile(tmpFile, false);
             FileInputStream inputStream = new FileInputStream(new File(tmpFile));
             Uri uri = Uri.parse(sourceUri);
             ParcelFileDescriptor pgdFile = getContentResolver().openFileDescriptor(uri, "w");
