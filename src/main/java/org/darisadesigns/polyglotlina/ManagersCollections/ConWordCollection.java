@@ -742,22 +742,6 @@ public class ConWordCollection extends DictionaryCollection<ConWord> {
 
         return retList;
     }
-    
-    public List<ConWord> getWordNodesList() {
-        List<ConWord> retList = new ArrayList<>(nodeMap.values());
-
-        this.safeSort(retList);
-        
-        return retList;
-    }
-    
-    public List<ConWord> getWordNodesList() {
-        List<ConWord> retList = new ArrayList<>(nodeMap.values());
-
-        this.safeSort(retList);
-        
-        return retList;
-    }
 
     /**
      * gets and returns iterator of all words based on alphabetical order of
