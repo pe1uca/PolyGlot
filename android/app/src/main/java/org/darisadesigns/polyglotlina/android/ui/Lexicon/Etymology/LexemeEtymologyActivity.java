@@ -75,7 +75,7 @@ public class LexemeEtymologyActivity extends AppCompatActivity {
         core = polyGlot.getCore();
         int wordId = intent.getIntExtra(CON_WORD_ID_EXTRA, -1);
         conWord = core.getWordCollection().getNodeById(wordId);
-        getSupportActionBar().setTitle(conWord.getValue());
+        getSupportActionBar().setTitle(conWord.toString());
 
         tabLayout = findViewById(R.id.tabs);
 

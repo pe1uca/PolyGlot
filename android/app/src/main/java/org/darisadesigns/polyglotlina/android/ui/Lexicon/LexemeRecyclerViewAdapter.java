@@ -32,7 +32,7 @@ public class LexemeRecyclerViewAdapter extends RecyclerView.Adapter<LexemeRecycl
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.conWord = items.get(position);
-        holder.vConWord.setText(items.get(position).getValue());
+        holder.vConWord.setText(items.get(position).toString());
         holder.vLocalWord.setText(items.get(position).getLocalWord());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -13,7 +13,7 @@ public class AndroidPFontHandler extends PFontHandler {
 
     @Override
     public boolean canStringBeRendered(String value, boolean conFont) {
-        return false;
+        return true;
     }
 
     @Override

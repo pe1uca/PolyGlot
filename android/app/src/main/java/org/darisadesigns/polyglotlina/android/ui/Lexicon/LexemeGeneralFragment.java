@@ -33,6 +33,7 @@ import org.darisadesigns.polyglotlina.Nodes.ConWord;
 import org.darisadesigns.polyglotlina.Nodes.TypeNode;
 import org.darisadesigns.polyglotlina.Nodes.WordClass;
 import org.darisadesigns.polyglotlina.Nodes.WordClassValue;
+import org.darisadesigns.polyglotlina.PGTUtil;
 import org.darisadesigns.polyglotlina.android.PolyGlot;
 import org.darisadesigns.polyglotlina.android.R;
 import org.darisadesigns.polyglotlina.android.ui.EditorViewModel;
@@ -117,7 +118,7 @@ public class LexemeGeneralFragment extends Fragment {
             public void onChanged(ConWord conWord) {
                 if (null != conWord) {
                     forceUpdate = true;
-                    txtConWord.setText(conWord.getValue());
+                    txtConWord.setText(conWord.toString());
                     txtLocalWord.setText(conWord.getLocalWord());
                     try {
                         txtPronunciation.setText(conWord.getPronunciation());
@@ -156,6 +157,10 @@ public class LexemeGeneralFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
+                if (!s.toString().startsWith(PGTUtil.RTL_CHARACTER) &&
+                    core.getPropertiesManager().isEnforceRTL()) {
+                    txtConWord.setText(PGTUtil.RTL_CHARACTER + s.toString());
+                }
                 if(core.getRomManager().isEnabled()) {
                     generateRomanization(s.toString());
                 }

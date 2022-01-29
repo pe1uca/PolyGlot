@@ -80,7 +80,7 @@ public class LexemeConjugationsActivity extends AppCompatActivity {
         core = polyGlot.getCore();
         int wordId = intent.getIntExtra(CON_WORD_ID_EXTRA, -1);
         conWord = core.getWordCollection().getNodeById(wordId);
-        getSupportActionBar().setTitle(conWord.getValue());
+        getSupportActionBar().setTitle(conWord.toString());
 
         noConjugationsLayout = findViewById(R.id.noConjugationsLayout);
         noConjugationMessage = findViewById(R.id.error_message);
