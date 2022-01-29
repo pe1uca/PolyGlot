@@ -10,12 +10,12 @@ public class AndroidPropertiesManager extends PropertiesManager {
 
     @Override
     public void setFontStyle(Integer _fontStyle) {
-
+        this.conFontStyle = _fontStyle;
     }
 
     @Override
     public void setFontSize(double _fontSize) {
-
+        this.conFontSize = _fontSize;
     }
 
     @Override
