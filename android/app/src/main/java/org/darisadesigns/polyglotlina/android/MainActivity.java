@@ -43,6 +43,7 @@ import org.darisadesigns.polyglotlina.android.ui.PViewModel;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -333,6 +334,8 @@ public class MainActivity extends AppCompatActivity {
 
             ((AndroidIOHandler)core.getOSHandler().getIOHandler()).moveInputToOutput(inputStream, outputStream);
             wasFileSaved = true;
+        } catch (FileNotFoundException e) {
+            selectFile();
         } catch (ParserConfigurationException | TransformerException | IOException e) {
             core.getOSHandler().getIOHandler().writeErrorLog(e);
             this.runOnUiThread(() -> {
