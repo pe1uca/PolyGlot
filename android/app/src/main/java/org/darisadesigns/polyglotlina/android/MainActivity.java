@@ -17,6 +17,7 @@ import android.text.style.ForegroundColorSpan;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "Main";
     private AppBarConfiguration mAppBarConfiguration;
     private View progressOverlay;
+    private TextView headerTitle;
     private static final int STORAGE_PERMISSION_CODE = 3;
     private DictCore core;
     private OSHandler osHandler;
@@ -95,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+        headerTitle = navigationView.getHeaderView(0).findViewById(R.id.header_title);
 
         osHandler = new AndroidOSHandler(
                 new AndroidIOHandler(getApplicationContext(), this),
@@ -271,6 +274,7 @@ public class MainActivity extends AppCompatActivity {
         }
         Handler threadHandler = ((PolyGlot)getApplicationContext()).getMainThreadHandler();
         threadHandler.post(() -> {
+            headerTitle.setText(core.getPropertiesManager().getLangName());
             fileReadingFinished(core);
         });
     }
