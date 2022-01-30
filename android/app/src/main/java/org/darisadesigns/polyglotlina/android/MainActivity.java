@@ -4,13 +4,13 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.UriPermission;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.ParcelFileDescriptor;
 import android.preference.PreferenceManager;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -37,6 +37,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import org.darisadesigns.polyglotlina.DictCore;
 import org.darisadesigns.polyglotlina.OSHandler;
+import org.darisadesigns.polyglotlina.android.ui.LangPropertiesFragment;
 import org.darisadesigns.polyglotlina.android.ui.PViewModel;
 
 import java.io.File;
@@ -45,6 +46,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 import java.util.concurrent.Executor;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -58,6 +60,10 @@ public class MainActivity extends AppCompatActivity {
     private static final int STORAGE_PERMISSION_CODE = 3;
     private DictCore core;
     private OSHandler osHandler;
+    /**
+     * if true opens the file to read, if false it opens it to save
+     */
+    private boolean shouldReadFile = true;
     ActivityResultLauncher<Intent> openDocumentActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -65,7 +71,8 @@ public class MainActivity extends AppCompatActivity {
                     result.getData() != null) {
                     // There are no request codes
                     Intent data = result.getData();
-                    openFile(data.getData());
+                    if (shouldReadFile) openFile(data.getData());
+                    else saveToFile(data.getData());
                 }
             });
 
@@ -137,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_open:
+                shouldReadFile = true;
                 if(ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)
                         != PackageManager.PERMISSION_GRANTED)
                 {
@@ -153,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
                     selectFile();
                 return true;
             case R.id.action_save:
+                shouldReadFile = false;
                 AndroidOSHandler.animateView(progressOverlay, View.VISIBLE, 0.4f, 200);
                 Executor executor = ((PolyGlot)getApplicationContext()).getExecutorService();
                 executor.execute(this::saveFile);
@@ -212,35 +221,38 @@ public class MainActivity extends AppCompatActivity {
         openDocumentActivityResultLauncher.launch(intent);
     }
 
+    private void takeFilePermissions(Uri uri) {
+        getContentResolver().takePersistableUriPermission(uri,
+                Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+    }
+
     private void openFile(Uri uri) {
         try (Cursor cursor = getContentResolver().query(uri, null, null, null)) {
-            if (cursor != null && cursor.moveToFirst()) {
-                String display_name = cursor.getString(cursor.getColumnIndexOrThrow("_display_name"));
-                Executor executor = ((PolyGlot)getApplicationContext()).getExecutorService();
-                AndroidOSHandler.animateView(progressOverlay, View.VISIBLE, 0.4f, 200);
-                getContentResolver().takePersistableUriPermission(uri,
-                        Intent.FLAG_GRANT_READ_URI_PERMISSION
-                                | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                deleteTempFiles();
-                executor.execute(() -> {
-                    try {
-                        String tmpFileName = copyToTmp(uri, display_name);
-                        SharedPreferences.Editor editor =  PreferenceManager
-                                .getDefaultSharedPreferences(getApplicationContext())
-                                .edit();
-                        editor.putString(getString(R.string.settings_key_tmp_file), tmpFileName);
-                        editor.putString(getString(R.string.settings_key_source_uri), uri.toString());
-                        editor.apply();
-                        readFile(tmpFileName);
-                    } catch (IOException e) {
-                        core.getOSHandler().getIOHandler().writeErrorLog(e);
-                        core.getOSHandler().getInfoBox().error(
-                                "File could not be open",
-                                "The file selected could not be open."
-                        );
-                    }
-                });
-            }
+            if (cursor == null || !cursor.moveToFirst()) return;
+            String display_name = cursor.getString(cursor.getColumnIndexOrThrow("_display_name"));
+            Executor executor = ((PolyGlot)getApplicationContext()).getExecutorService();
+            AndroidOSHandler.animateView(progressOverlay, View.VISIBLE, 0.4f, 200);
+            takeFilePermissions(uri);
+            deleteTempFiles();
+            executor.execute(() -> {
+                try {
+                    String tmpFileName = copyToTmp(uri, display_name);
+                    SharedPreferences.Editor editor =  PreferenceManager
+                            .getDefaultSharedPreferences(getApplicationContext())
+                            .edit();
+                    editor.putString(getString(R.string.settings_key_tmp_file), tmpFileName);
+                    editor.putString(getString(R.string.settings_key_source_uri), uri.toString());
+                    editor.apply();
+                    readFile(tmpFileName);
+                } catch (IOException e) {
+                    core.getOSHandler().getIOHandler().writeErrorLog(e);
+                    core.getOSHandler().getInfoBox().error(
+                            "File could not be open",
+                            "The file selected could not be open."
+                    );
+                }
+            });
         } catch (IllegalArgumentException e) {
             core.getOSHandler().getIOHandler().writeErrorLog(e);
             core.getOSHandler().getInfoBox().error(
@@ -272,32 +284,84 @@ public class MainActivity extends AppCompatActivity {
         AndroidOSHandler.animateView(progressOverlay, View.GONE, 0, 200);
     }
 
+    /**
+     * Takes files permissions and saves core to file
+     *
+     * @param uri
+     */
+    private void saveToFile(Uri uri) {
+        takeFilePermissions(uri);
+        SharedPreferences.Editor editor =  PreferenceManager
+                .getDefaultSharedPreferences(getApplicationContext())
+                .edit();
+        editor.putString(getString(R.string.settings_key_source_uri), uri.toString());
+        editor.apply();
+        saveFile();
+    }
+
+    /**
+     * Saves core (from temp file) to uri.
+     * Both paths should have been previously saved in preferences.
+     * If we don't have permissions for uri we open to select the file again.
+     *
+     */
     private void saveFile() {
+        /* If we are on lang properties the values might have not been saved yet */
+        tryCallSaveLangProperties();
+
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         String tmpFile = preferences.getString(getString(R.string.settings_key_tmp_file), "");
         String sourceUri = preferences.getString(getString(R.string.settings_key_source_uri), "");
         if (tmpFile.isEmpty()) return;
+        boolean wasFileSaved = false;
         try {
 
             core.writeFile(tmpFile, false);
-            FileInputStream inputStream = new FileInputStream(new File(tmpFile));
+            FileInputStream inputStream = new FileInputStream(tmpFile);
             Uri uri = Uri.parse(sourceUri);
-            ParcelFileDescriptor pgdFile = getContentResolver().openFileDescriptor(uri, "w");
-            OutputStream outputStream = new FileOutputStream(pgdFile.getFileDescriptor());
+            if (!hasWriteStoragePermissions(uri)) {
+                selectFile();
+                return;
+            }
+            OutputStream outputStream = getContentResolver().openOutputStream(uri, "w");
 
             ((AndroidIOHandler)core.getOSHandler().getIOHandler()).moveInputToOutput(inputStream, outputStream);
-            pgdFile.close();
-            Handler threadHandler = ((PolyGlot)getApplicationContext()).getMainThreadHandler();
-            threadHandler.post(() -> {
-                AndroidOSHandler.animateView(progressOverlay, View.GONE, 0, 200);
-                Toast.makeText(this, R.string.toast_file_saved, Toast.LENGTH_SHORT).show();
-            });
+            wasFileSaved = true;
         } catch (ParserConfigurationException | TransformerException | IOException e) {
             core.getOSHandler().getIOHandler().writeErrorLog(e);
-            core.getOSHandler().getInfoBox().error(
-                    "File could not be saved",
-                    "The file '" + core.getCurFileName() + "' could not be saved."
-            );
+            this.runOnUiThread(() -> {
+                core.getOSHandler().getInfoBox().error(
+                        "File could not be saved",
+                        "The file '" + core.getCurFileName() + "' could not be saved."
+                );
+            });
+        }
+        finally {
+            Handler threadHandler = ((PolyGlot)getApplicationContext()).getMainThreadHandler();
+            boolean finalWasFileSaved = wasFileSaved;
+            threadHandler.post(() -> {
+                AndroidOSHandler.animateView(progressOverlay, View.GONE, 0, 200);
+                if (finalWasFileSaved)
+                    Toast.makeText(this, R.string.toast_file_saved, Toast.LENGTH_SHORT).show();
+            });
+        }
+    }
+
+    private boolean hasWriteStoragePermissions(Uri myUri) {
+        List<UriPermission> list = getContentResolver().getPersistedUriPermissions();
+        for (UriPermission uriPermission: list){
+            if(uriPermission.getUri().equals(myUri) && uriPermission.isWritePermission())
+                return true;
+        }
+        return false;
+    }
+
+    private void tryCallSaveLangProperties() {
+        var fragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        if (fragment == null) return;
+        var navFragment = fragment.getChildFragmentManager().getPrimaryNavigationFragment();
+        if (navFragment instanceof LangPropertiesFragment) {
+            ((LangPropertiesFragment)navFragment).saveProperties();
         }
     }
 
