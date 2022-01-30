@@ -192,10 +192,7 @@ public class LexemeGeneralFragment extends Fragment {
         word.setDefinition(editorViewModel.getLiveText().getValue());
         word.setProcOverride(chkOverridePronunciation.isChecked());
         word.setRulesOverride(chkOverrideRules.isChecked());
-        int posIndex = posAutocomplete.getListSelection();
-        if (posIndex != ListView.INVALID_POSITION)
-            word.setWordTypeId(((TypeNode)posAutocomplete.getAdapter().getItem(posIndex)).getId());
-        /* Classes being saved with txtClass and classAutocomplete listeners. Check setupClassView() */
+        /* Classes and part of speech being saved with txtClass and classAutocomplete listeners. Check setupClassView() */
         word.setPronunciation(txtPronunciation.getText().toString());
     }
 
@@ -208,16 +205,12 @@ public class LexemeGeneralFragment extends Fragment {
         ConWord testWord = new ConWord();
         testWord.setId(currWord.getId());
 
-        int posId = currWord.getWordTypeId();
-        int posIndex = posAutocomplete.getListSelection();
-        if (posIndex != ListView.INVALID_POSITION)
-            posId = ((TypeNode)posAutocomplete.getAdapter().getItem(posIndex)).getId();
-
         testWord.setValue(txtConWord.getText().toString());
         testWord.setLocalWord(txtLocalWord.getText().toString());
         testWord.setDefinition(editorViewModel.getLiveText().getValue());
         testWord.setPronunciation(txtPronunciation.getText().toString());
-        testWord.setWordTypeId(posId);
+        /* pos is already updated with listeners */
+        testWord.setWordTypeId(currWord.getWordTypeId());
         testWord.setRulesOverride(chkOverrideRules.isChecked());
         testWord.setCore(core);
 
@@ -262,6 +255,8 @@ public class LexemeGeneralFragment extends Fragment {
     }
 
     private void setupClassView(ConWord conWord, int typeId) {
+        /* Save new part of speech in here */
+        conWord.setWordTypeId(typeId);
         WordClass[] classesList = core.getWordClassCollection().getClassesForType(typeId);
 
         classesLinearLayout.removeAllViews();
