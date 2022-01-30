@@ -666,9 +666,9 @@ public class AndroidIOHandler implements IOHandler {
     }
 
     @Override
-    public boolean isJavaAvailableInTerminal() {
+    public boolean isJavaAvailable() {
         missingImplementation();
-        return false;
+        return true;
     }
 
     @Override
