@@ -182,8 +182,8 @@ public class LexemeGeneralFragment extends Fragment {
     }
 
     @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
+    public void onPause() {
+        super.onPause();
         if (!isLexemeValid()) return; // Don't save the word (Fix classes always being saved)
 
         ConWord word = viewModel.getLiveWord().getValue();
