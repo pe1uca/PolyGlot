@@ -125,7 +125,7 @@
                 android:contentDescription="@null"
                 android:src="@drawable/h6" />
 
-            <ImageButton
+            <!--<ImageButton
                 android:id="@+id/action_txt_color"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
@@ -139,7 +139,7 @@
                 android:layout_height="48dp"
                 android:background="@null"
                 android:contentDescription="@null"
-                android:src="@drawable/bg_color" />
+                android:src="@drawable/bg_color" /> -->
 
 
             <ImageButton
@@ -244,7 +244,7 @@
                 android:layout_height="48dp"
                 android:background="@null"
                 android:contentDescription="@null"
-                android:src="@drawable/insert_link" />-->
+                android:src="@drawable/insert_link" />
 
             <ImageButton
                 android:id="@+id/action_insert_checkbox"
@@ -252,7 +252,7 @@
                 android:layout_height="48dp"
                 android:background="@null"
                 android:contentDescription="@null"
-                android:src="@android:drawable/checkbox_on_background" />
+                android:src="@android:drawable/checkbox_on_background" />-->
 
         </LinearLayout>
     </HorizontalScrollView>

@@ -173,7 +173,7 @@ public class HTMLEditorFragment extends Fragment {
             }
         });
 
-        root.findViewById(R.id.action_txt_color).setOnClickListener(new View.OnClickListener() {
+        /* root.findViewById(R.id.action_txt_color).setOnClickListener(new View.OnClickListener() {
             private boolean isChanged;
 
             @Override
@@ -191,7 +191,7 @@ public class HTMLEditorFragment extends Fragment {
                 mEditor.setTextBackgroundColor(isChanged ? Color.TRANSPARENT : Color.YELLOW);
                 isChanged = !isChanged;
             }
-        });
+        }); */
 
         root.findViewById(R.id.action_indent).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -251,7 +251,7 @@ public class HTMLEditorFragment extends Fragment {
 
         // Would need to figure out how to handle each one to accept user input
         // To activate them also see fragment_html_editor.xml
-        /*root.findViewById(R.id.action_insert_image).setOnClickListener(new View.OnClickListener() {
+        /* root.findViewById(R.id.action_insert_image).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mEditor.insertImage("https://raw.githubusercontent.com/wasabeef/art/master/chip.jpg",
@@ -285,13 +285,13 @@ public class HTMLEditorFragment extends Fragment {
             public void onClick(View v) {
                 mEditor.insertLink("https://github.com/wasabeef", "wasabeef");
             }
-        });*/
+        });
         root.findViewById(R.id.action_insert_checkbox).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mEditor.insertTodo();
             }
-        });
+        }); */
         return root;
     }
 }
