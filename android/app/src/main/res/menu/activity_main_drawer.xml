@@ -6,23 +6,39 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_lang_properties"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/ic_tune_24"
             android:title="@string/menu_lang_properties" />
         <item
             android:id="@+id/nav_lexicon"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/ic_list_alt_24"
             android:title="@string/menu_lexicon" />
-        <!--<item
-            android:id="@+id/nav_home"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="@string/menu_home" />-->
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="@string/menu_gallery" />
+            android:id="@+id/nav_part_of_speech"
+            android:icon="@drawable/ic_bubble_chart_24"
+            android:title="@string/menu_part_of_speech"
+            android:enabled="false" />
         <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/menu_slideshow" />
+            android:id="@+id/nav_classes"
+            android:icon="@drawable/ic_category_24"
+            android:title="@string/menu_classes"
+            android:enabled="false" />
+
+        <item
+            android:id="@+id/nav_grammar"
+            android:icon="@drawable/ic_rule_24"
+            android:title="@string/menu_grammar"
+            android:enabled="false" />
+
+        <item
+            android:id="@+id/nav_logographs"
+            android:icon="@drawable/ic_draw_24"
+            android:title="@string/menu_logographs"
+            android:enabled="false" />
+
+        <item
+            android:id="@+id/nav_phonology"
+            android:icon="@drawable/ic_record_voice_over_24"
+            android:title="@string/menu_phonology"
+            android:enabled="false" />
     </group>
 </menu>

@@ -18,9 +18,12 @@
     <!-- Nav drawer options -->
     <string name="menu_lang_properties">Language properties</string>
     <string name="menu_lexicon">Lexicon</string>
-    <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_part_of_speech">Part of speech</string>
+    <string name="menu_classes">Classes</string>
+    <string name="menu_grammar">Grammar</string>
+    <string name="menu_logographs">Logographs</string>
+    <string name="menu_phonology">Phonology</string>
+    <string name="soon_default_text">This feature will be coming soon!</string>
 
     <!-- Language properties screen -->
     <string name="label_lang_name">Language name</string>

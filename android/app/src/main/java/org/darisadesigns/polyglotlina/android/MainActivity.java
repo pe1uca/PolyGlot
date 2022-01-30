@@ -91,7 +91,9 @@ public class MainActivity extends AppCompatActivity {
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_lang_properties, R.id.nav_lexicon,
-                R.id.nav_gallery, R.id.nav_slideshow)
+                R.id.nav_part_of_speech, R.id.nav_classes,
+                R.id.nav_grammar, R.id.nav_logographs,
+                R.id.nav_phonology)
                 .setOpenableLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);

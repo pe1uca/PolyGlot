@@ -17,21 +17,34 @@
         android:label="@string/menu_lexicon"
         tools:layout="@layout/fragment_lexicon" />
 
-    <!--<fragment
-        android:id="@+id/nav_home"
-        android:name="org.darisadesigns.polyglotlina.android.ui.home.HomeFragment"
-        android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" />-->
+    <fragment
+        android:id="@+id/nav_part_of_speech"
+        android:name="org.darisadesigns.polyglotlina.android.ui.SoonFragment"
+        android:label="@string/menu_part_of_speech"
+        tools:layout="@layout/fragment_soon" />
 
     <fragment
-        android:id="@+id/nav_gallery"
-        android:name="org.darisadesigns.polyglotlina.android.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
+        android:id="@+id/nav_classes"
+        android:name="org.darisadesigns.polyglotlina.android.ui.SoonFragment"
+        android:label="@string/menu_classes"
+        tools:layout="@layout/fragment_soon" />
 
     <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="org.darisadesigns.polyglotlina.android.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
+        android:id="@+id/nav_grammar"
+        android:name="org.darisadesigns.polyglotlina.android.ui.SoonFragment"
+        android:label="@string/menu_grammar"
+        tools:layout="@layout/fragment_soon" />
+
+    <fragment
+        android:id="@+id/nav_logographs"
+        android:name="org.darisadesigns.polyglotlina.android.ui.SoonFragment"
+        android:label="@string/menu_logographs"
+        tools:layout="@layout/fragment_soon" />
+
+    <fragment
+        android:id="@+id/nav_phonology"
+        android:name="org.darisadesigns.polyglotlina.android.ui.SoonFragment"
+        android:label="@string/menu_phonology"
+        tools:layout="@layout/fragment_soon" />
+
 </navigation>
