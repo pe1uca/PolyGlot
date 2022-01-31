@@ -29,7 +29,6 @@ public class LexemeConjugationsPagerAdapter extends FragmentStateAdapter impleme
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        Log.e(TAG, "createFragment: " + position);
         return fragmentList.get(position);
     }
 

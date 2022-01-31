@@ -69,7 +69,7 @@ public class LexemeConjugationTabFragment extends Fragment {
             public void onChanged(ConjugationViewModel.Conjugation conjugation) {
                 if(null != conjugation) {
                     if (null != conjugation.conjugationColumn && null != conjugation.conjugationRow) {
-                        generateTabName(conjugation.conWord);
+                        generateTabName(conjugation.conWord, partialConjugationId, conjugationManager);
                         conjugateDimensional(conjugation);
                     }
                     else {
@@ -82,7 +82,7 @@ public class LexemeConjugationTabFragment extends Fragment {
         return root;
     }
 
-    private void generateTabName(ConWord conWord) {
+    public void generateTabName(ConWord conWord, String partialConjugationId, ConjugationManager conjugationManager) {
         String[] dimArray = partialConjugationId.split(",");
         dimArray = Arrays.copyOfRange(dimArray, 1, dimArray.length); // first value always empty
 
@@ -96,10 +96,11 @@ public class LexemeConjugationTabFragment extends Fragment {
                 tabName += node.getConjugationDimensionById(Integer.parseInt(curId)).getValue() + " ";
             }
         }
+        if (tabName.trim().isEmpty()) tabName = "Declensions/Conjugations";
     }
 
     public String getTabName() {
-        return this.tabName.trim().isEmpty() ? "Declensions/Conjugations" : this.tabName;
+        return this.tabName;
     }
 
     private void conjugateSimple(ConjugationViewModel.Conjugation conjugation) {

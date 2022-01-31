@@ -195,7 +195,6 @@ public class LexemeConjugationsActivity extends AppCompatActivity {
         }
         ArrayList<LexemeConjugationTabFragment> fragmentArrayList = new ArrayList<>();
         getPanelPartialConjugationIds(conjugationRows, conjugationsColumns).forEach((partialConjugation) -> {
-            Log.e(TAG, "Partial: " + partialConjugation);
             LexemeConjugationTabFragment fragment = LexemeConjugationTabFragment.newInstance(partialConjugation);
             ConjugationViewModel viewModel = new ViewModelProvider(LexemeConjugationsActivity.this)
                     .get(partialConjugation, ConjugationViewModel.class);
@@ -204,6 +203,7 @@ public class LexemeConjugationsActivity extends AppCompatActivity {
                     conjugationRows,
                     conjugationsColumns
             ));
+            fragment.generateTabName(conWord, partialConjugation, core.getConjugationManager());
             fragmentArrayList.add(fragment);
         });
         spinnersLayout.setVisibility(View.VISIBLE);
