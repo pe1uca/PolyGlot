@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.darisadesigns.polyglotlina.Nodes.ConWord;
+import org.darisadesigns.polyglotlina.android.AndroidPropertiesManager;
 import org.darisadesigns.polyglotlina.android.R;
 
 import java.util.List;
@@ -33,6 +34,7 @@ public class LexemeRecyclerViewAdapter extends RecyclerView.Adapter<LexemeRecycl
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.conWord = items.get(position);
         holder.vConWord.setText(items.get(position).toString());
+        ((AndroidPropertiesManager)holder.conWord.getCore().getPropertiesManager()).setConViewTypeface(holder.vConWord);
         holder.vLocalWord.setText(items.get(position).getLocalWord());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

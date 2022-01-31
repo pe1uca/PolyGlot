@@ -2,14 +2,11 @@ package org.darisadesigns.polyglotlina.android.ui.Lexicon;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -21,25 +18,22 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import org.darisadesigns.polyglotlina.DictCore;
-import org.darisadesigns.polyglotlina.ManagersCollections.PropertiesManager;
 import org.darisadesigns.polyglotlina.Nodes.ConWord;
 import org.darisadesigns.polyglotlina.Nodes.TypeNode;
 import org.darisadesigns.polyglotlina.Nodes.WordClass;
 import org.darisadesigns.polyglotlina.Nodes.WordClassValue;
 import org.darisadesigns.polyglotlina.PGTUtil;
+import org.darisadesigns.polyglotlina.android.AndroidPropertiesManager;
 import org.darisadesigns.polyglotlina.android.PolyGlot;
 import org.darisadesigns.polyglotlina.android.R;
 import org.darisadesigns.polyglotlina.android.ui.EditorViewModel;
 import org.darisadesigns.polyglotlina.android.ui.HTMLEditorFragment;
-
-import jp.wasabeef.richeditor.RichEditor;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -112,6 +106,8 @@ public class LexemeGeneralFragment extends Fragment {
                 (requireActivity(), R.layout.list_item, posItems);
         posAutocomplete = root.findViewById(R.id.posAutocomplete);
         posAutocomplete.setAdapter(spinnerArrayAdapter);
+
+        ((AndroidPropertiesManager)core.getPropertiesManager()).setConViewTypeface(txtConWord);
 
         viewModel.getLiveWord().observe(getViewLifecycleOwner(), new Observer<ConWord>() {
             @Override

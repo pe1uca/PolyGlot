@@ -28,6 +28,7 @@ import org.darisadesigns.polyglotlina.ManagersCollections.EtymologyManager;
 import org.darisadesigns.polyglotlina.Nodes.ConWord;
 import org.darisadesigns.polyglotlina.Nodes.EtyExternalParent;
 import org.darisadesigns.polyglotlina.Nodes.TypeNode;
+import org.darisadesigns.polyglotlina.android.AndroidPropertiesManager;
 import org.darisadesigns.polyglotlina.android.PolyGlot;
 import org.darisadesigns.polyglotlina.android.R;
 
@@ -75,7 +76,7 @@ public class LexemeEtymologyActivity extends AppCompatActivity {
         core = polyGlot.getCore();
         int wordId = intent.getIntExtra(CON_WORD_ID_EXTRA, -1);
         conWord = core.getWordCollection().getNodeById(wordId);
-        getSupportActionBar().setTitle(conWord.toString());
+        ((AndroidPropertiesManager)core.getPropertiesManager()).setConActionBarTitle(getSupportActionBar(), conWord.toString());
 
         tabLayout = findViewById(R.id.tabs);
 

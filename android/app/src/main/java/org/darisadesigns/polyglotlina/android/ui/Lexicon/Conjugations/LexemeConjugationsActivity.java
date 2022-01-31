@@ -27,6 +27,7 @@ import org.darisadesigns.polyglotlina.ManagersCollections.ConjugationManager;
 import org.darisadesigns.polyglotlina.Nodes.ConWord;
 import org.darisadesigns.polyglotlina.Nodes.ConjugationNode;
 import org.darisadesigns.polyglotlina.Nodes.ConjugationPair;
+import org.darisadesigns.polyglotlina.android.AndroidPropertiesManager;
 import org.darisadesigns.polyglotlina.android.PolyGlot;
 import org.darisadesigns.polyglotlina.android.R;
 import org.darisadesigns.polyglotlina.android.ui.Lexicon.LexemeInfoViewModel;
@@ -80,7 +81,7 @@ public class LexemeConjugationsActivity extends AppCompatActivity {
         core = polyGlot.getCore();
         int wordId = intent.getIntExtra(CON_WORD_ID_EXTRA, -1);
         conWord = core.getWordCollection().getNodeById(wordId);
-        getSupportActionBar().setTitle(conWord.toString());
+        ((AndroidPropertiesManager)core.getPropertiesManager()).setConActionBarTitle(getSupportActionBar(), conWord.toString());
 
         noConjugationsLayout = findViewById(R.id.noConjugationsLayout);
         noConjugationMessage = findViewById(R.id.error_message);

@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import org.darisadesigns.polyglotlina.DictCore;
 import org.darisadesigns.polyglotlina.Nodes.ConWord;
+import org.darisadesigns.polyglotlina.android.AndroidPropertiesManager;
 import org.darisadesigns.polyglotlina.android.PolyGlot;
 import org.darisadesigns.polyglotlina.android.R;
 import org.darisadesigns.polyglotlina.android.ui.Lexicon.Conjugations.LexemeConjugationsActivity;
@@ -49,7 +50,7 @@ public class LexemeInfoActivity extends AppCompatActivity {
         core = polyGlot.getCore();
         int wordId = intent.getIntExtra(CON_WORD_ID_EXTRA, -1);
         conWord = core.getWordCollection().getNodeById(wordId);
-        getSupportActionBar().setTitle(conWord.toString());
+        ((AndroidPropertiesManager)core.getPropertiesManager()).setConActionBarTitle(getSupportActionBar(), conWord.toString());
 
         LexemeInfoViewModel viewModel= new ViewModelProvider(this).get(LexemeInfoViewModel.class);
         viewModel.updateWord(conWord);
