@@ -87,7 +87,7 @@ public class TableViewAdapter extends AbstractTableAdapter<ColumnHeader, RowHead
 
         // Get the holder to update cell item text
         MyCellViewHolder viewHolder = (MyCellViewHolder) holder;
-        viewHolder.cell_textview.setText(cell.getData() + "Lorem ipsum dolor sit amet");
+        viewHolder.cell_textview.setText(cell.getData());
         ((AndroidPropertiesManager)core.getPropertiesManager()).setConViewTypeface(viewHolder.cell_textview);
 
         // If your TableView should have auto resize for cells & columns.

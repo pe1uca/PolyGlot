@@ -2,5 +2,5 @@
 
 # Seems counter intuitive but this have some tmp files copied from the core project.
 # Only the sub package android contains the code for the andorid app.
-src/main/java*
-!src/main/java**/android
+src/main/java/org/darisadesigns/polyglotlina/*
+!src/main/java/org/darisadesigns/polyglotlina/android
