@@ -45,7 +45,7 @@ dependencies {
     implementation 'jp.wasabeef:richeditor-android:2.0.0'
     implementation 'dev.bandb.graphview:graphview:0.8.1'
     implementation 'com.otaliastudios:zoomlayout:1.9.0'
-    implementation 'com.github.D31m05z:DataTable:v1.2.1'
+    implementation 'com.github.pe1uca:TableView:v0.8.11'
     implementation 'com.github.pe1uca:AndroidTreeView:v1.0.0'
     implementation 'com.google.android.material:material:1.3.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'

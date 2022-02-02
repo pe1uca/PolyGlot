@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.evrencoskun.tableview.TableView;
+
 import org.darisadesigns.polyglotlina.DictCore;
 import org.darisadesigns.polyglotlina.ManagersCollections.ConjugationManager;
 import org.darisadesigns.polyglotlina.Nodes.ConWord;
@@ -18,15 +20,15 @@ import org.darisadesigns.polyglotlina.Nodes.ConjugationNode;
 import org.darisadesigns.polyglotlina.Nodes.ConjugationPair;
 import org.darisadesigns.polyglotlina.android.PolyGlot;
 import org.darisadesigns.polyglotlina.android.R;
+import org.darisadesigns.polyglotlina.android.ui.Table.Cell;
+import org.darisadesigns.polyglotlina.android.ui.Table.ColumnHeader;
+import org.darisadesigns.polyglotlina.android.ui.Table.RowHeader;
+import org.darisadesigns.polyglotlina.android.ui.Table.TableViewAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-
-import ir.androidexception.datatable.DataTable;
-import ir.androidexception.datatable.model.DataTableHeader;
-import ir.androidexception.datatable.model.DataTableRow;
 
 public class LexemeConjugationTabFragment extends Fragment {
 
@@ -38,7 +40,8 @@ public class LexemeConjugationTabFragment extends Fragment {
     private ConjugationManager conjugationManager;
     private String tabName = "";
 
-    private DataTable table;
+    private TableView tableView;
+    private TableViewAdapter tableViewAdapter;
 
     public static LexemeConjugationTabFragment newInstance(String partialConjugation) {
         LexemeConjugationTabFragment fragment = new LexemeConjugationTabFragment();
@@ -62,7 +65,10 @@ public class LexemeConjugationTabFragment extends Fragment {
         core = polyGlot.getCore();
         conjugationManager = core.getConjugationManager();
 
-        table = root.findViewById(R.id.conjugationsTable);
+        tableView = root.findViewById(R.id.conjugationsTableView);
+
+        tableViewAdapter = new TableViewAdapter(core);
+        tableView.setAdapter(tableViewAdapter);
 
         viewModel.getLiveConjugation().observe(getViewLifecycleOwner(), new Observer<ConjugationViewModel.Conjugation>() {
             @Override
@@ -105,21 +111,19 @@ public class LexemeConjugationTabFragment extends Fragment {
 
     private void conjugateSimple(ConjugationViewModel.Conjugation conjugation) {
         ConjugationPair[] completeList = conjugationManager.getAllCombinedIds(conjugation.conWord.getWordTypeId());
-        DataTableHeader header = new DataTableHeader.Builder()
-                .item("Wordform", 1)
-                .item("Value", 1)
-                .build();
-        ArrayList<DataTableRow> tableRows = new ArrayList<>();
+        List<List<Cell>> cells = new ArrayList<>();
+        List<RowHeader> rowHeaders = new ArrayList<>();
+        List<ColumnHeader> columnHeaders = new ArrayList<>();
+        columnHeaders.add(new ColumnHeader("Value"));
         for(ConjugationPair pair: completeList) {
             String wordForm = conjugation.conWord.getWordForm(pair.combinedId);
-            tableRows.add(
-                    new DataTableRow.Builder()
-                            .value(pair.label)
-                            .value(wordForm)
-                            .build()
-            );
+            rowHeaders.add(new RowHeader(pair.label));
+            List<Cell> row = new ArrayList<>();
+            row.add(new Cell(wordForm));
+            cells.add(row);
         }
-        createTable(header, tableRows);
+        tableViewAdapter.setCornerText("Wordform");
+        tableViewAdapter.setAllItems(columnHeaders, rowHeaders, cells);
     }
 
     private void conjugateDimensional(ConjugationViewModel.Conjugation conjugation) {
@@ -137,17 +141,14 @@ public class LexemeConjugationTabFragment extends Fragment {
                 .getDimensionalConjugationTemplateByIndex(
                         conjugation.conWord.getWordTypeId(),
                         rowsIndex);
-        List<String> columnLabels = getLabels(columnsNode, true);
-        List<String> rowLabels = getLabels(rowsNode, false);
-        ArrayList<DataTableRow> tableRows = new ArrayList<>();
+        List<String> columnLabels = getLabels(columnsNode);
+        List<String> rowLabels = getLabels(rowsNode);
+        List<ColumnHeader> columnHeaders = ColumnHeader.getColumnHeaderList(columnLabels);
+        List<RowHeader> rowHeaders = RowHeader.getRowHeaderList(rowLabels);
+        List<List<Cell>> cells = new ArrayList<>();
 
-        DataTableHeader.Builder headerBuilder = new DataTableHeader.Builder();
-        columnLabels.forEach((label) -> {
-            headerBuilder.item(label, 1);
-        });
-
-        populateTableValues(rowLabels, tableRows, conjugation);
-        createTable(headerBuilder.build(), tableRows);
+        populateTableValues(cells, conjugation);
+        tableViewAdapter.setAllItems(columnHeaders, rowHeaders, cells);
     }
 
     private int getDeclensionIndexOf(String partialDeclensionsId, String marker) {
@@ -166,12 +167,8 @@ public class LexemeConjugationTabFragment extends Fragment {
         return ret;
     }
 
-    private List<String> getLabels(ConjugationNode node, boolean skipFirst) {
+    private List<String> getLabels(ConjugationNode node) {
         List<String> labels = new ArrayList<>();
-
-        if (skipFirst) {
-            labels.add("");
-        }
 
         node.getDimensions().forEach((dimension)->{
             labels.add(dimension.getValue());
@@ -180,33 +177,26 @@ public class LexemeConjugationTabFragment extends Fragment {
         return labels;
     }
 
-    private void populateTableValues(List<String> rowLabels, ArrayList<DataTableRow> tableRows, ConjugationViewModel.Conjugation conjugation) {
+    private void populateTableValues(List<List<Cell>> cells, ConjugationViewModel.Conjugation conjugation) {
 
         Iterator<ConjugationDimension> rowsIterator = conjugation.conjugationRow.getDimensions().iterator();
         for (int rowPos = 0; rowsIterator.hasNext(); rowPos++) {
             ConjugationDimension conjugationDimensionRow = rowsIterator.next();
             Iterator<ConjugationDimension> columnsIterator = conjugation.conjugationColumn.getDimensions().iterator();
-            DataTableRow.Builder rowBuilder = new DataTableRow.Builder();
-            rowBuilder.value(rowLabels.get(rowPos));
+            List<Cell> rowCells = new ArrayList<>();
             for (int columnPos = 0; columnsIterator.hasNext(); columnPos++) {
                 ConjugationDimension conjugationDimensionColumn = columnsIterator.next();
                 String fullDecId = partialConjugationId.replace("Y", conjugationDimensionColumn.getId().toString());
                 fullDecId = fullDecId.replace("X", conjugationDimensionRow.getId().toString());
                 if (conjugationManager.isCombinedConjlSurpressed(fullDecId, conjugation.conWord.getWordTypeId())) {
-                    rowBuilder.value("");
+                    rowCells.add(new Cell(""));
                 }
                 else {
                     String wordForm = conjugation.conWord.getWordForm(fullDecId);
-                    rowBuilder.value(wordForm);
+                    rowCells.add(new Cell(wordForm));
                 }
             }
-            tableRows.add(rowBuilder.build());
+            cells.add(rowCells);
         }
-    }
-
-    private void createTable(DataTableHeader header, ArrayList<DataTableRow> tableRows) {
-        table.setHeader(header);
-        table.inflate(requireActivity());
-        table.setRows(tableRows);
     }
 }
