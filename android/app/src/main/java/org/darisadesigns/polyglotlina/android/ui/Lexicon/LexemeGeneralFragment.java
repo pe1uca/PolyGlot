@@ -180,8 +180,12 @@ public class LexemeGeneralFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        if (!isLexemeValid()) return; // Don't save the word (Fix classes always being saved)
+        // Always save the word. This is needed to test word validity.
+        // TODO: fix needing to save the word. If a word is not valid it shouldn't be saved at all.
+        saveWord();
+    }
 
+    public void saveWord() {
         ConWord word = viewModel.getLiveWord().getValue();
         word.setValue(txtConWord.getText().toString());
         word.setLocalWord(txtLocalWord.getText().toString());
@@ -193,6 +197,8 @@ public class LexemeGeneralFragment extends Fragment {
     }
 
     public boolean isLexemeValid() {
+        // Word needs to be saved to properly check it's validity
+        saveWord();
         if (forceUpdate || chkOverrideRules.isChecked()) return true;
 
         errorMessage.setVisibility(View.GONE);
