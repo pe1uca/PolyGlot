@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -23,10 +24,10 @@ import org.darisadesigns.polyglotlina.android.R;
 public class LangPropertiesFragment extends Fragment {
 
     private PViewModel pViewModel;
+    private EditorViewModel editorViewModel;
 
     private TextInputEditText txtLangName;
     private TextInputEditText txtLocalLang;
-    private TextInputEditText txtAuthor;
     private TextInputEditText txtKerning;
 
     private CheckBox chkPosMandatory;
@@ -42,11 +43,11 @@ public class LangPropertiesFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         pViewModel = new ViewModelProvider(requireActivity()).get(PViewModel.class);
+        editorViewModel = new ViewModelProvider(this).get(EditorViewModel.class);
         View root = inflater.inflate(R.layout.fragment_lang_properties, container, false);
 
         txtLangName = root.findViewById(R.id.txtLangName);
         txtLocalLang = root.findViewById(R.id.txtLocalLang);
-        txtAuthor = root.findViewById(R.id.txtAuthor);
         txtKerning = root.findViewById(R.id.txtKerning);
 
         chkPosMandatory = root.findViewById(R.id.chkPosMandatory);
@@ -59,6 +60,10 @@ public class LangPropertiesFragment extends Fragment {
         chkOverrideRegexFont = root.findViewById(R.id.chkOverrideRegexFont);
         chkLocalWordLexiconDisplay = root.findViewById(R.id.chkLocalWordLexiconDisplay);
 
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        HTMLEditorFragment htmlEditor = HTMLEditorFragment.newInstance(getResources().getString(R.string.label_author));
+        transaction.replace(R.id.fragment_container_view, htmlEditor).commit();
+
         pViewModel.getLiveCore().observe(getViewLifecycleOwner(), new Observer<DictCore>() {
             @Override
             public void onChanged(@Nullable DictCore core) {
@@ -66,7 +71,7 @@ public class LangPropertiesFragment extends Fragment {
                     PropertiesManager manager = core.getPropertiesManager();
                     txtLangName.setText(manager.getLangName());
                     txtLocalLang.setText(manager.getLocalLangName());
-                    txtAuthor.setText(manager.getCopyrightAuthorInfo());
+                    editorViewModel.updateText(manager.getCopyrightAuthorInfo());
                     txtKerning.setText(Double.toString(manager.getKerningSpace()));
 
                     chkPosMandatory.setChecked(manager.isTypesMandatory());
@@ -96,7 +101,7 @@ public class LangPropertiesFragment extends Fragment {
         PropertiesManager manager = core.getPropertiesManager();
         manager.setLangName(txtLangName.getText().toString());
         manager.setLocalLangName(txtLocalLang.getText().toString());
-        manager.setCopyrightAuthorInfo(txtAuthor.getText().toString());
+        manager.setCopyrightAuthorInfo(editorViewModel.getLiveText().getValue());
         manager.setKerningSpace(Double.parseDouble(txtKerning.getText().toString()));
 
         manager.setTypesMandatory(chkPosMandatory.isChecked());
