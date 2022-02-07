@@ -3,6 +3,7 @@ package org.darisadesigns.polyglotlina.android.ui;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,6 +55,8 @@ public class HTMLEditorFragment extends Fragment {
 
         mEditor = root.findViewById(R.id.editor);
         mEditor.setPlaceholder(placeHolder);
+        int minHeight = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, getResources().getDisplayMetrics());
+        mEditor.setEditorHeight(minHeight);
         viewModel.getLiveText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(String text) {
