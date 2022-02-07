@@ -70,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
     private static final int STORAGE_PERMISSION_CODE = 3;
     private DictCore core;
     private OSHandler osHandler;
-    private String newFileName = "";
     /**
      * if true opens the file to read, if false it opens it to save
      */
@@ -84,9 +83,6 @@ public class MainActivity extends AppCompatActivity {
                     Intent data = result.getData();
                     if (shouldReadFile) openFile(data.getData());
                     else saveToFile(data.getData());
-                }
-                else {
-                    newFileName = "";
                 }
             });
 
@@ -235,37 +231,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void selectFile(boolean create) {
-        if (create && newFileName.isEmpty() && Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-            this.runOnUiThread(() -> {
-                AndroidInfoBox infoBox = (AndroidInfoBox)core.getOSHandler().getInfoBox();
-                infoBox.stringInputDialog(
-                        getString(R.string.title_save_language),
-                        "",
-                        getString(R.string.hint_file_name),
-                        (String res) -> {
-                            if (res == null) {
-                                Toast.makeText(this, "Save file cancelled", Toast.LENGTH_SHORT).show();
-                                return;
-                            }
-                            newFileName = res;
-                            startSavingFile();
-                        }
-                );
-            });
-            return;
-        }
         String action = Intent.ACTION_OPEN_DOCUMENT;
-        if (create && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) action = Intent.ACTION_CREATE_DOCUMENT;
-        else if (create) action = Intent.ACTION_OPEN_DOCUMENT_TREE;
+        if (create) action = Intent.ACTION_CREATE_DOCUMENT;
         Intent intent = new Intent(action);
-        if (!create || Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.setType("*/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("*/*");
 
-            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
-                    | Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-                    | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
-        }
+        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
+                | Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
 
         // Optionally, specify a URI for the file that should appear in the
         // system file picker when it loads.
@@ -354,23 +328,16 @@ public class MainActivity extends AppCompatActivity {
      */
     private void saveToFile(Uri uri) {
         takeFilePermissions(uri);
-        if (DocumentsContract.isTreeUri(uri)) {
-            DocumentFile documentFile = DocumentFile.fromTreeUri(getApplicationContext(), uri);
-            newFileName = newFileName.replace(".pgd", "").concat(".pgd");
-            uri = documentFile.createFile("*/*", newFileName).getUri();
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            try (Cursor cursor = getContentResolver().query(uri, null, null, null)) {
-                if (cursor == null || !cursor.moveToFirst()) return;
-                String display_name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DISPLAY_NAME));
-                if (!display_name.endsWith(".pgd")) {
-                    uri = DocumentsContract.renameDocument(getContentResolver(), uri, display_name.concat(".pgd"));
-                    takeFilePermissions(uri);
-                }
-            } catch (FileNotFoundException e) {
-                core.getOSHandler().getIOHandler().writeErrorLog(e);
-                Toast.makeText(getApplicationContext(), "", Toast.LENGTH_SHORT).show();
+        try (Cursor cursor = getContentResolver().query(uri, null, null, null)) {
+            if (cursor == null || !cursor.moveToFirst()) return;
+            String display_name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DISPLAY_NAME));
+            if (!display_name.endsWith(".pgd")) {
+                uri = DocumentsContract.renameDocument(getContentResolver(), uri, display_name.trim().concat(".pgd"));
+                takeFilePermissions(uri);
             }
+        } catch (FileNotFoundException e) {
+            core.getOSHandler().getIOHandler().writeErrorLog(e);
+            Toast.makeText(getApplicationContext(), "", Toast.LENGTH_SHORT).show();
         }
         // DocumentFile.fromSingleUri(getApplicationContext(), uri).renameTo("force.pdg");
         SharedPreferences.Editor editor =  PreferenceManager
@@ -431,6 +398,7 @@ public class MainActivity extends AppCompatActivity {
             ((AndroidIOHandler)core.getOSHandler().getIOHandler()).moveInputToOutput(inputStream, outputStream);
             wasFileSaved = true;
         } catch (FileNotFoundException e) {
+            /* Thrown by core when saving to tmp file. After user has selected file to create. */
             selectFile(false);
         } catch (ParserConfigurationException | TransformerException | IOException e) {
             core.getOSHandler().getIOHandler().writeErrorLog(e);
@@ -456,7 +424,7 @@ public class MainActivity extends AppCompatActivity {
             if(uriPermission.getUri().equals(myUri) && uriPermission.isWritePermission())
                 return true;
         }
-        return !newFileName.isEmpty() && myUri.getPath().endsWith(newFileName);
+        return false;
     }
 
     private void tryCallSaveLangProperties() {
