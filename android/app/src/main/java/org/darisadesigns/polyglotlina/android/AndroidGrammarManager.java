@@ -8,17 +8,17 @@ public class AndroidGrammarManager extends GrammarManager {
 
     public AndroidGrammarManager() {
         super();
-        buffer = new AndroidGrammarChapNode(this);
+        clear();
     }
 
     @Override
     public void clear() {
-
+        buffer = new AndroidGrammarChapNode(this);
     }
 
     @Override
     public GrammarChapNode[] getChapters() {
-        return new GrammarChapNode[0];
+        return chapters.toArray(new AndroidGrammarChapNode[0]);
     }
 
     @Override

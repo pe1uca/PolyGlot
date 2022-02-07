@@ -142,8 +142,8 @@ public class AndroidGrammarChapNode extends TreeNode implements GrammarChapNode 
         chapElement = doc.createElement(PGTUtil.GRAMMAR_SECTIONS_LIST_XID);
 
         for (int i = 0; i < this.children.size(); i++) {
-            GrammarSectionNode curSec = (GrammarSectionNode)this.children.get(i);
-            // curSec.writeXML(doc, chapElement);
+            AndroidGrammarSectionNode curSec = (AndroidGrammarSectionNode)this.children.get(i);
+            curSec.writeXML(doc, chapElement);
         }
 
         chapNode.appendChild(chapElement);

@@ -101,8 +101,9 @@ public class AndroidIOHandler implements IOHandler {
 
     @Override
     public byte[] getByteArrayFromFile(File file) throws IOException {
-        missingImplementation();
-        return new byte[0];
+        try ( InputStream inputStream = new FileInputStream(file)) {
+            return streamToByetArray(inputStream);
+        }
     }
 
     @Override
@@ -240,17 +241,8 @@ public class AndroidIOHandler implements IOHandler {
 
                     out.closeEntry();
 
-                    /*writeLog += PFontHandler.writeFont(out,
-                            ((DesktopPropertiesManager)core.getPropertiesManager()).getFontCon(),
-                            core.getPropertiesManager().getCachedFont(),
-                            core,
-                            true);
-
-                    writeLog += PFontHandler.writeFont(out,
-                            ((DesktopPropertiesManager)core.getPropertiesManager()).getFontLocal(),
-                            core.getPropertiesManager().getCachedLocalFont(),
-                            core,
-                            false);*/
+                    writeLog += AndroidPFontHandler.writeFont(out, core, true);
+                    writeLog += AndroidPFontHandler.writeFont(out, core, false);
 
                     writeLog += writeLogoNodesToArchive(out, core);
                     writeLog += writeImagesToArchive(out, core);
@@ -464,11 +456,10 @@ public class AndroidIOHandler implements IOHandler {
                     String name = entry.getName().replace(".png", "")
                             .replace(PGTUtil.IMAGES_SAVE_PATH, "");
                     int imageId = Integer.parseInt(name);
-                    Bitmap bitmap = BitmapFactory.decodeStream(imageStream);
                     ImageNode imageNode = new ImageNode(((PolyGlot)context).getCore());
                     imageNode.setId(imageId);
                     imageNode.setImageBytes(
-                            loadImageBytesFromBitmap(bitmap)
+                            loadImageBytesFromStream(imageStream)
                     );
                     imageCollection.getBuffer().setEqual(imageNode);
                     imageCollection.insert(imageId);
@@ -657,18 +648,6 @@ public class AndroidIOHandler implements IOHandler {
     public String[] runAtConsole(String[] arguments, boolean addSpaces) {
         missingImplementation();
         return new String[0];
-    }
-
-    @Override
-    public String getTerminalJavaVersion() {
-        missingImplementation();
-        return null;
-    }
-
-    @Override
-    public boolean isJavaAvailable() {
-        missingImplementation();
-        return true;
     }
 
     @Override
