@@ -9,9 +9,13 @@
     <string name="nav_header_title">Android Studio</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
+    <string name="action_new">New file</string>
     <string name="action_open">Open file</string>
     <string name="action_save">Save file</string>
     <string name="action_settings">Settings</string>
+
+    <string name="title_save_language">Save language</string>
+    <string name="hint_file_name">File name</string>
 
     <string name="toast_file_saved">File saved</string>
 

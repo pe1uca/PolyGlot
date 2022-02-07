@@ -2,6 +2,8 @@ package org.darisadesigns.polyglotlina.android;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.UriPermission;
@@ -9,11 +11,15 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
@@ -27,6 +33,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.documentfile.provider.DocumentFile;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -63,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int STORAGE_PERMISSION_CODE = 3;
     private DictCore core;
     private OSHandler osHandler;
+    private String newFileName = "";
     /**
      * if true opens the file to read, if false it opens it to save
      */
@@ -76,6 +84,9 @@ public class MainActivity extends AppCompatActivity {
                     Intent data = result.getData();
                     if (shouldReadFile) openFile(data.getData());
                     else saveToFile(data.getData());
+                }
+                else {
+                    newFileName = "";
                 }
             });
 
@@ -110,11 +121,7 @@ public class MainActivity extends AppCompatActivity {
                 getApplicationContext()
         );
         core = new DictCore(new AndroidPropertiesManager(), osHandler, new AndroidPGTUtil(), new AndroidGrammarManager());
-        /*try {
-            core.readFile("/storage/emulated/0/Documents/Starter.pgd");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
+        core.getPropertiesManager().setFontStyle(0); // Fix for new file save
         ((PolyGlot)getApplicationContext()).setCore(core);
         PViewModel viewModel = new ViewModelProvider(this).get(PViewModel.class);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -149,28 +156,25 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.action_new:
+                SharedPreferences.Editor editor =  PreferenceManager
+                        .getDefaultSharedPreferences(getApplicationContext())
+                        .edit();
+                editor.remove(getString(R.string.settings_key_tmp_file));
+                editor.remove(getString(R.string.settings_key_source_uri));
+                if (editor.commit()) {
+                    finish();
+                    startActivity(getIntent());
+                    overridePendingTransition(0, 0);
+                }
+                return true;
             case R.id.action_open:
                 shouldReadFile = true;
-                if(ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED)
-                {
-                    ActivityCompat.requestPermissions(
-                            MainActivity.this,
-                            new String[] {
-                                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                            },
-                            STORAGE_PERMISSION_CODE
-                    );
-                }
-                else
-                    selectFile();
+                if (hasOrAskPermissions()) selectFile(false);
                 return true;
             case R.id.action_save:
                 shouldReadFile = false;
-                AndroidOSHandler.animateView(progressOverlay, View.VISIBLE, 0.4f, 200);
-                Executor executor = ((PolyGlot)getApplicationContext()).getExecutorService();
-                executor.execute(this::saveFile);
+                if (hasOrAskPermissions()) startSavingFile();
                 return true;
             default:
                 // If we got here, the user's action was not recognized.
@@ -194,12 +198,30 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == STORAGE_PERMISSION_CODE) {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                selectFile();
+                if (shouldReadFile) selectFile(false);
+                else startSavingFile();
             }
             else {
                 Toast.makeText(MainActivity.this, "Storage Permission Denied", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private boolean hasOrAskPermissions() {
+        if(ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED)
+        {
+            ActivityCompat.requestPermissions(
+                    MainActivity.this,
+                    new String[] {
+                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    },
+                    STORAGE_PERMISSION_CODE
+            );
+            return false;
+        }
+        return true;
     }
 
     private String copyToTmp(Uri contentUri, String fileName) throws IOException {
@@ -212,14 +234,38 @@ public class MainActivity extends AppCompatActivity {
         return tmpFile.getPath();
     }
 
-    private void selectFile() {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("*/*");
+    private void selectFile(boolean create) {
+        if (create && newFileName.isEmpty() && Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            this.runOnUiThread(() -> {
+                AndroidInfoBox infoBox = (AndroidInfoBox)core.getOSHandler().getInfoBox();
+                infoBox.stringInputDialog(
+                        getString(R.string.title_save_language),
+                        "",
+                        getString(R.string.hint_file_name),
+                        (String res) -> {
+                            if (res == null) {
+                                Toast.makeText(this, "Save file cancelled", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            newFileName = res;
+                            startSavingFile();
+                        }
+                );
+            });
+            return;
+        }
+        String action = Intent.ACTION_OPEN_DOCUMENT;
+        if (create && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) action = Intent.ACTION_CREATE_DOCUMENT;
+        else if (create) action = Intent.ACTION_OPEN_DOCUMENT_TREE;
+        Intent intent = new Intent(action);
+        if (!create || Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("*/*");
 
-        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
-                | Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-                | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    | Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                    | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+        }
 
         // Optionally, specify a URI for the file that should appear in the
         // system file picker when it loads.
@@ -236,13 +282,13 @@ public class MainActivity extends AppCompatActivity {
     private void openFile(Uri uri) {
         try (Cursor cursor = getContentResolver().query(uri, null, null, null)) {
             if (cursor == null || !cursor.moveToFirst()) return;
-            String display_name = cursor.getString(cursor.getColumnIndexOrThrow("_display_name"));
+            String display_name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DISPLAY_NAME));
             Executor executor = ((PolyGlot)getApplicationContext()).getExecutorService();
             AndroidOSHandler.animateView(progressOverlay, View.VISIBLE, 0.4f, 200);
             takeFilePermissions(uri);
-            deleteTempFiles();
             executor.execute(() -> {
                 try {
+                    deleteTempFiles();
                     String tmpFileName = copyToTmp(uri, display_name);
                     SharedPreferences.Editor editor =  PreferenceManager
                             .getDefaultSharedPreferences(getApplicationContext())
@@ -257,6 +303,11 @@ public class MainActivity extends AppCompatActivity {
                             "File could not be open",
                             "The file selected could not be open."
                     );
+                } finally {
+                    /* copyToTmp might throw exception and readFile won't be able to remove block */
+                    this.runOnUiThread(() -> {
+                        AndroidOSHandler.animateView(progressOverlay, View.GONE, 0, 200);
+                    });
                 }
             });
         } catch (IllegalArgumentException e) {
@@ -268,6 +319,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This function reads a Polyglot file in the file system.
+     * This should be called outside of the UI thread.
+     *
+     * @param path Path of the file to read
+     */
     private void readFile(String path) {
         try {
             core = new DictCore(new AndroidPropertiesManager(), osHandler, new AndroidPGTUtil(), new AndroidGrammarManager());
@@ -275,9 +332,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             core.getOSHandler().getIOHandler().writeErrorLog(e);
         }
-        Handler threadHandler = ((PolyGlot)getApplicationContext()).getMainThreadHandler();
-        threadHandler.post(() -> {
-            headerTitle.setText(core.getPropertiesManager().getLangName());
+        this.runOnUiThread(() -> {
             fileReadingFinished(core);
         });
     }
@@ -288,6 +343,7 @@ public class MainActivity extends AppCompatActivity {
         PViewModel viewModel = new ViewModelProvider(this).get(PViewModel.class);
         viewModel.updateCore(core);
         ((PolyGlot)getApplicationContext()).setCore(core);
+        headerTitle.setText(core.getPropertiesManager().getLangName());
         AndroidOSHandler.animateView(progressOverlay, View.GONE, 0, 200);
     }
 
@@ -298,12 +354,55 @@ public class MainActivity extends AppCompatActivity {
      */
     private void saveToFile(Uri uri) {
         takeFilePermissions(uri);
+        if (DocumentsContract.isTreeUri(uri)) {
+            DocumentFile documentFile = DocumentFile.fromTreeUri(getApplicationContext(), uri);
+            newFileName = newFileName.replace(".pgd", "").concat(".pgd");
+            uri = documentFile.createFile("*/*", newFileName).getUri();
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            try (Cursor cursor = getContentResolver().query(uri, null, null, null)) {
+                if (cursor == null || !cursor.moveToFirst()) return;
+                String display_name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DISPLAY_NAME));
+                if (!display_name.endsWith(".pgd")) {
+                    uri = DocumentsContract.renameDocument(getContentResolver(), uri, display_name.concat(".pgd"));
+                    takeFilePermissions(uri);
+                }
+            } catch (FileNotFoundException e) {
+                core.getOSHandler().getIOHandler().writeErrorLog(e);
+                Toast.makeText(getApplicationContext(), "", Toast.LENGTH_SHORT).show();
+            }
+        }
+        // DocumentFile.fromSingleUri(getApplicationContext(), uri).renameTo("force.pdg");
         SharedPreferences.Editor editor =  PreferenceManager
                 .getDefaultSharedPreferences(getApplicationContext())
                 .edit();
         editor.putString(getString(R.string.settings_key_source_uri), uri.toString());
         editor.apply();
-        saveFile();
+        startSavingFile();
+    }
+
+    private String saveToTmpFile(DictCore core) throws TransformerException, ParserConfigurationException, IOException {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String tmpFilePath = preferences.getString(getString(R.string.settings_key_tmp_file), "");
+        if (tmpFilePath.isEmpty()) {
+            File tmpFile = File.createTempFile("conlang", ".pgd");
+            tmpFilePath = tmpFile.getPath();
+            SharedPreferences.Editor editor =  preferences.edit();
+            editor.putString(getString(R.string.settings_key_tmp_file), tmpFilePath);
+            editor.apply();
+        }
+        core.writeFile(tmpFilePath, false);
+        return tmpFilePath;
+    }
+
+    /**
+     * This function starts the save file process in a separate thread,
+     * also displays a loading animation that should be removed in the saveFile method
+     */
+    private void startSavingFile() {
+        AndroidOSHandler.animateView(progressOverlay, View.VISIBLE, 0.4f, 200);
+        Executor executor = ((PolyGlot)getApplicationContext()).getExecutorService();
+        executor.execute(this::saveFile);
     }
 
     /**
@@ -316,26 +415,23 @@ public class MainActivity extends AppCompatActivity {
         /* If we are on lang properties the values might have not been saved yet */
         tryCallSaveLangProperties();
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String tmpFile = preferences.getString(getString(R.string.settings_key_tmp_file), "");
-        String sourceUri = preferences.getString(getString(R.string.settings_key_source_uri), "");
-        if (tmpFile.isEmpty()) return;
         boolean wasFileSaved = false;
         try {
-
-            core.writeFile(tmpFile, false);
-            FileInputStream inputStream = new FileInputStream(tmpFile);
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            String sourceUri = preferences.getString(getString(R.string.settings_key_source_uri), "");
             Uri uri = Uri.parse(sourceUri);
             if (!hasWriteStoragePermissions(uri)) {
-                selectFile();
+                selectFile(sourceUri.isEmpty());
                 return;
             }
+            String tmpFile = saveToTmpFile(this.core);
+            FileInputStream inputStream = new FileInputStream(tmpFile);
             OutputStream outputStream = getContentResolver().openOutputStream(uri, "w");
 
             ((AndroidIOHandler)core.getOSHandler().getIOHandler()).moveInputToOutput(inputStream, outputStream);
             wasFileSaved = true;
         } catch (FileNotFoundException e) {
-            selectFile();
+            selectFile(false);
         } catch (ParserConfigurationException | TransformerException | IOException e) {
             core.getOSHandler().getIOHandler().writeErrorLog(e);
             this.runOnUiThread(() -> {
@@ -344,11 +440,9 @@ public class MainActivity extends AppCompatActivity {
                         "The file '" + core.getCurFileName() + "' could not be saved."
                 );
             });
-        }
-        finally {
-            Handler threadHandler = ((PolyGlot)getApplicationContext()).getMainThreadHandler();
+        } finally {
             boolean finalWasFileSaved = wasFileSaved;
-            threadHandler.post(() -> {
+            this.runOnUiThread(() -> {
                 AndroidOSHandler.animateView(progressOverlay, View.GONE, 0, 200);
                 if (finalWasFileSaved)
                     Toast.makeText(this, R.string.toast_file_saved, Toast.LENGTH_SHORT).show();
@@ -362,7 +456,7 @@ public class MainActivity extends AppCompatActivity {
             if(uriPermission.getUri().equals(myUri) && uriPermission.isWritePermission())
                 return true;
         }
-        return false;
+        return !newFileName.isEmpty() && myUri.getPath().endsWith(newFileName);
     }
 
     private void tryCallSaveLangProperties() {
