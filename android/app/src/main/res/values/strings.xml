@@ -13,6 +13,7 @@
     <string name="action_open">Open file</string>
     <string name="action_save">Save file</string>
     <string name="action_settings">Settings</string>
+    <string name="action_search">Search</string>
 
     <string name="title_save_language">Save language</string>
     <string name="hint_file_name">File name</string>
@@ -56,6 +57,7 @@
     <string name="check_tooltip_local_word_display">Display the local word rather than the conlang word in the lexicon display.</string>
 
     <!-- Lexeme info screen -->
+    <string name="action_delete_lexeme">Delete lexeme</string>
     <string name="title_activity_lexeme_info">Lexeme info</string>
     <string name="lexeme_info_tab_general">General Info</string>
     <string name="lexeme_utilities">Lexeme utilities</string>
@@ -95,5 +97,5 @@
     <string name="toast_same_dimension_error">Please select differing Row and Column values.</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_add_intenral_root">AddIntenralRootActivity</string>
+    <string name="title_activity_add_internal_root">Add internal root</string>
 </resources>

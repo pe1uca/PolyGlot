@@ -41,7 +41,7 @@
         </activity>
         <activity
             android:name=".ui.Lexicon.Etymology.AddInternalRootActivity"
-            android:label="@string/title_activity_add_intenral_root"
+            android:label="@string/title_activity_add_internal_root"
             android:theme="@style/Theme.PolyGlot.NoActionBar" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
