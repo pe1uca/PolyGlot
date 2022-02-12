@@ -90,7 +90,7 @@ public class LexiconFragment extends Fragment implements LexemeRecyclerViewAdapt
                     LexiconFragment.this.core = core;
                     ConWordCollection collection = core.getWordCollection();
                     List<ConWord> words = collection.getWordNodesList();
-                    lexiconView.setAdapter(new LexemeRecyclerViewAdapter(words, LexiconFragment.this));
+                    lexiconView.setAdapter(new LexemeRecyclerViewAdapter(core, words, LexiconFragment.this));
                 }
             }
         });
@@ -105,14 +105,18 @@ public class LexiconFragment extends Fragment implements LexemeRecyclerViewAdapt
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Log.e(TAG, "onQueryTextSubmit: " + query);
-                return false;
+                LexemeRecyclerViewAdapter viewAdapter = ((LexemeRecyclerViewAdapter)lexiconView.getAdapter());
+                if (viewAdapter == null) return false;
+                viewAdapter.filter(query);
+                return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                Log.e(TAG, "onQueryTextChange: " + newText);
-                return false;
+                LexemeRecyclerViewAdapter viewAdapter = ((LexemeRecyclerViewAdapter)lexiconView.getAdapter());
+                if (viewAdapter == null) return false;
+                viewAdapter.filter(newText);
+                return true;
             }
         });
         super.onCreateOptionsMenu(menu, inflater);
@@ -142,7 +146,7 @@ public class LexiconFragment extends Fragment implements LexemeRecyclerViewAdapt
         /* Re make adapter to update added/removed lexemes */
         ConWordCollection collection = core.getWordCollection();
         List<ConWord> words = collection.getWordNodesList();
-        lexiconView.setAdapter(new LexemeRecyclerViewAdapter(words, LexiconFragment.this));
+        lexiconView.setAdapter(new LexemeRecyclerViewAdapter(core, words, LexiconFragment.this));
         /* Restore lexicon position for better UX */
         lexiconView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
     }

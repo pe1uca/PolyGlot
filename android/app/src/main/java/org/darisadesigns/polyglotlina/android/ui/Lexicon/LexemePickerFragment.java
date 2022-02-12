@@ -56,7 +56,7 @@ public class LexemePickerFragment extends Fragment implements LexemeRecyclerView
 
         ConWordCollection collection = core.getWordCollection();
         List<ConWord> words = collection.getWordNodesList();
-        lexiconView.setAdapter(new LexemeRecyclerViewAdapter(words, this));
+        lexiconView.setAdapter(new LexemeRecyclerViewAdapter(core, words, this));
         return view;
     }
 
