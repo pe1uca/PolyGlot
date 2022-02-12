@@ -332,8 +332,22 @@ public class MainActivity extends AppCompatActivity {
             if (cursor == null || !cursor.moveToFirst()) return;
             String display_name = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DISPLAY_NAME));
             if (!display_name.endsWith(".pgd")) {
-                uri = DocumentsContract.renameDocument(getContentResolver(), uri, display_name.trim().concat(".pgd"));
-                takeFilePermissions(uri);
+                display_name = display_name.trim().concat(".pgd");
+                uri = DocumentsContract.renameDocument(getContentResolver(), uri, display_name);
+                shouldReadFile = false;
+                try {
+                    takeFilePermissions(uri);
+                } catch (SecurityException se) {
+                    /* Rename causes to lose permissions. Ask to select file. */
+                    core.getOSHandler()
+                            .getInfoBox()
+                            .info(
+                                "File rename",
+                                "Your file was renamed.\n" +
+                                    "Please reselect it: " + display_name);
+                    selectFile(false);
+                    return;
+                }
             }
         } catch (FileNotFoundException e) {
             core.getOSHandler().getIOHandler().writeErrorLog(e);
@@ -440,6 +454,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         if(!isChangingConfigurations()) {
             // deleteTempFiles(getCacheDir());
+        }
+        try {
+            saveToTmpFile(this.core);
+        } catch (ParserConfigurationException | TransformerException | IOException e) {
+            core.getOSHandler().getIOHandler().writeErrorLog(e, "couldn't save tmp file");
         }
         super.onDestroy();
     }
