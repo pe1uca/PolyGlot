@@ -30,7 +30,6 @@ import org.darisadesigns.polyglotlina.Nodes.ConjugationPair;
 import org.darisadesigns.polyglotlina.android.AndroidPropertiesManager;
 import org.darisadesigns.polyglotlina.android.PolyGlot;
 import org.darisadesigns.polyglotlina.android.R;
-import org.darisadesigns.polyglotlina.android.ui.Lexicon.LexemeInfoViewModel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,7 +42,6 @@ public class LexemeConjugationsActivity extends AppCompatActivity {
     private static final String TAG = "LexemeConjugations";
     public static final String CON_WORD_ID_EXTRA = "con-word-id";
 
-    private LexemeInfoViewModel viewModel;
     private DictCore core;
     private ConWord conWord;
     private ConjugationManager conjugationManager;

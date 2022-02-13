@@ -45,11 +45,18 @@
             android:text="@string/lexeme_utilities"
             android:textColor="@android:color/white" />
         <Button
-            android:id="@+id/btnConjugations"
+            android:id="@+id/btnConjugationsTables"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="?attr/colorOnPrimary"
             android:text="@string/lexeme_info_tab_conjugations"
+            style="@style/Widget.MaterialComponents.Button.TextButton"/>
+        <Button
+            android:id="@+id/btnConjugationsSpinners"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/colorOnPrimary"
+            android:text="@string/lexeme_info_tab_conjugations_helper"
             style="@style/Widget.MaterialComponents.Button.TextButton"/>
         <Button
             android:id="@+id/btnEtymology"

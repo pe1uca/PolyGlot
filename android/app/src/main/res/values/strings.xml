@@ -61,7 +61,8 @@
     <string name="title_activity_lexeme_info">Lexeme info</string>
     <string name="lexeme_info_tab_general">General Info</string>
     <string name="lexeme_utilities">Lexeme utilities</string>
-    <string name="lexeme_info_tab_conjugations">Conjugations</string>
+    <string name="lexeme_info_tab_conjugations">Conjugations tables</string>
+    <string name="lexeme_info_tab_conjugations_helper">Conjugations selectors</string>
     <string name="lexeme_info_tab_etymology">Etymology</string>
     <string name="lexeme_info_tab_logographs">Logographs</string>
 

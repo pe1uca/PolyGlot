@@ -31,6 +31,14 @@
                 android:value=".ui.Lexicon.LexemeInfoActivity" />
         </activity>
         <activity
+            android:name=".ui.Lexicon.Conjugations.LexemeConjugationsSpinnersActivity"
+            android:label="Lexeme conjugations selectors"
+            android:theme="@style/Theme.PolyGlot.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.Lexicon.LexemeInfoActivity" />
+        </activity>
+        <activity
             android:name=".ui.Lexicon.Etymology.LexemeEtymologyActivity"
             android:label="Lexeme etymology"
             android:launchMode="singleTop"
@@ -42,7 +50,7 @@
         <activity
             android:name=".ui.Lexicon.Etymology.AddInternalRootActivity"
             android:label="@string/title_activity_add_internal_root"
-            android:theme="@style/Theme.PolyGlot.NoActionBar" >
+            android:theme="@style/Theme.PolyGlot.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.Lexicon.Etymology.LexemeEtymologyActivity" />

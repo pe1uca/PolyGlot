@@ -24,6 +24,7 @@ import org.darisadesigns.polyglotlina.android.AndroidPropertiesManager;
 import org.darisadesigns.polyglotlina.android.PolyGlot;
 import org.darisadesigns.polyglotlina.android.R;
 import org.darisadesigns.polyglotlina.android.ui.Lexicon.Conjugations.LexemeConjugationsActivity;
+import org.darisadesigns.polyglotlina.android.ui.Lexicon.Conjugations.LexemeConjugationsSpinnersActivity;
 import org.darisadesigns.polyglotlina.android.ui.Lexicon.Etymology.LexemeEtymologyActivity;
 
 public class LexemeInfoActivity extends AppCompatActivity {
@@ -69,10 +70,17 @@ public class LexemeInfoActivity extends AppCompatActivity {
             }
         });
 
-        Button btnConjugations = findViewById(R.id.btnConjugations);
-        btnConjugations.setOnClickListener((view) -> {
+        Button btnConjugationsTables = findViewById(R.id.btnConjugationsTables);
+        btnConjugationsTables.setOnClickListener((view) -> {
             Intent conjugationsIntent = new Intent(LexemeInfoActivity.this, LexemeConjugationsActivity.class);
             conjugationsIntent.putExtra(LexemeConjugationsActivity.CON_WORD_ID_EXTRA, wordId);
+            startActivity(conjugationsIntent);
+        });
+
+        Button btnConjugationsSpinners = findViewById(R.id.btnConjugationsSpinners);
+        btnConjugationsSpinners.setOnClickListener((view) -> {
+            Intent conjugationsIntent = new Intent(LexemeInfoActivity.this, LexemeConjugationsSpinnersActivity.class);
+            conjugationsIntent.putExtra(LexemeConjugationsSpinnersActivity.CON_WORD_ID_EXTRA, wordId);
             startActivity(conjugationsIntent);
         });
 
