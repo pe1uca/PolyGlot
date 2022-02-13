@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 public class LexemeRecyclerViewAdapter extends RecyclerView.Adapter<LexemeRecyclerViewAdapter.ViewHolder> {
 
     private static final String TAG = "LexemeRecyclerViewAdapter";
-
     private static enum FILTER_TYPE {
         CONWORD,
         LOCAL_WORD,
@@ -35,6 +34,7 @@ public class LexemeRecyclerViewAdapter extends RecyclerView.Adapter<LexemeRecycl
         PART_OF_SPEECH,
         PRONUNCIATION
     }
+    public static Pattern FILTER_STARTS_PATTERN = Pattern.compile("^(local|definition|pos|pronunciation):.*");
 
     private final DictCore core;
     private List<ConWord> items;
@@ -85,7 +85,7 @@ public class LexemeRecyclerViewAdapter extends RecyclerView.Adapter<LexemeRecycl
                 case "local":
                     filterType[0] = FILTER_TYPE.LOCAL_WORD;
                     break;
-                case "def":
+                case "definition":
                     filterType[0] = FILTER_TYPE.DEFINITION;
                     break;
                 case "pos":
@@ -97,7 +97,7 @@ public class LexemeRecyclerViewAdapter extends RecyclerView.Adapter<LexemeRecycl
                 default:
                     filterType[0] = FILTER_TYPE.CONWORD;
             }
-            filterText = filterText.replaceFirst("^(local|def|pos|pronunciation):", "");
+            filterText = filterText.replaceFirst("^(local|definition|pos|pronunciation):", "");
         }
         String regex = ".*" + filterText + ".*";
         Pattern pattern = Pattern.compile(regex);

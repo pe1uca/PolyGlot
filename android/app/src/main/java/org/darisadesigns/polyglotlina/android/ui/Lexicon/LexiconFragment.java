@@ -1,12 +1,17 @@
 package org.darisadesigns.polyglotlina.android.ui.Lexicon;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.MatrixCursor;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
+import androidx.cursoradapter.widget.CursorAdapter;
+import androidx.cursoradapter.widget.SimpleCursorAdapter;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -15,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Parcelable;
+import android.provider.BaseColumns;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,10 +34,15 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import org.darisadesigns.polyglotlina.DictCore;
 import org.darisadesigns.polyglotlina.ManagersCollections.ConWordCollection;
 import org.darisadesigns.polyglotlina.Nodes.ConWord;
+import org.darisadesigns.polyglotlina.Nodes.TypeNode;
 import org.darisadesigns.polyglotlina.android.R;
 import org.darisadesigns.polyglotlina.android.ui.PViewModel;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.regex.Pattern;
 
 /**
  * A fragment representing a list of Items.
@@ -44,6 +55,13 @@ public class LexiconFragment extends Fragment implements LexemeRecyclerViewAdapt
     private Parcelable recyclerViewState;
 
     private DictCore core;
+    private String[] suggestionsArray = {
+            "local:",
+            "def:",
+            "pos:",
+            "pronunciation:"
+    };
+    ArrayList<String> suggestionsList = new ArrayList<>(Arrays.asList(suggestionsArray));
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -102,12 +120,21 @@ public class LexiconFragment extends Fragment implements LexemeRecyclerViewAdapt
         inflater.inflate(R.menu.search, menu);
         MenuItem menuItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) menuItem.getActionView();
+        String[] sAutocompleteColNames = new String[] {
+                BaseColumns._ID,                         // necessary for adapter
+                SearchManager.SUGGEST_COLUMN_TEXT_1      // the full search term
+        };
+        MatrixCursor cursor = new MatrixCursor(sAutocompleteColNames);
+        suggestionsList.forEach(s -> {
+            cursor.addRow(new Object[] { cursor.getCount(), s});
+        });
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 LexemeRecyclerViewAdapter viewAdapter = ((LexemeRecyclerViewAdapter)lexiconView.getAdapter());
                 if (viewAdapter == null) return false;
                 viewAdapter.filter(query);
+                searchView.getSuggestionsAdapter().changeCursor(null);
                 return true;
             }
 
@@ -116,10 +143,58 @@ public class LexiconFragment extends Fragment implements LexemeRecyclerViewAdapt
                 LexemeRecyclerViewAdapter viewAdapter = ((LexemeRecyclerViewAdapter)lexiconView.getAdapter());
                 if (viewAdapter == null) return false;
                 viewAdapter.filter(newText);
+                if (LexemeRecyclerViewAdapter.FILTER_STARTS_PATTERN.matcher(newText).matches()){
+                    Cursor newCursor = null;
+                    if (newText.startsWith("pos:"))
+                        newCursor = getPOSSuggestions(newText.replace("pos:", ""));
+                    searchView.getSuggestionsAdapter().changeCursor(newCursor);
+                }
+                else{
+                    searchView.getSuggestionsAdapter().changeCursor(cursor);
+                }
                 return true;
             }
         });
+        String[] from = new String[]{SearchManager.SUGGEST_COLUMN_TEXT_1};
+        int[] to = new int[]{android.R.id.text1};
+        SimpleCursorAdapter cursorAdapter = new SimpleCursorAdapter(requireContext(), android.R.layout.simple_list_item_1, cursor, from, to, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+        searchView.setSuggestionsAdapter(cursorAdapter);
+        searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
+            @Override
+            public boolean onSuggestionSelect(int position) {
+                Cursor cursor = (Cursor) searchView.getSuggestionsAdapter().getItem(position);
+                String term = cursor.getString(cursor.getColumnIndex(SearchManager.SUGGEST_COLUMN_TEXT_1));
+                if (term.matches("pos:.+"))
+                    searchView.setQuery(term, false);
+                else
+                    searchView.setQuery(term + searchView.getQuery(), false);
+                return true;
+            }
+
+            @Override
+            public boolean onSuggestionClick(int position) {
+                return onSuggestionSelect(position);
+            }
+        });
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    private Cursor getPOSSuggestions(String filterText) {
+        String[] sAutocompleteColNames = new String[] {
+                BaseColumns._ID,                         // necessary for adapter
+                SearchManager.SUGGEST_COLUMN_TEXT_1      // the full search term
+        };
+        MatrixCursor cursor = new MatrixCursor(sAutocompleteColNames);
+        List<TypeNode> types =  Arrays.asList(core.getTypes().getNodes());
+        String regex = ".*" + filterText + ".*";
+        Pattern pattern = Pattern.compile(regex);
+        types.stream()
+                .filter(type -> pattern.matcher(type.getValue()).matches() ||
+                        pattern.matcher(type.getGloss()).matches())
+                .forEachOrdered(type -> {
+                    cursor.addRow(new Object[] { cursor.getCount(), "pos:" + type.getValue() });
+                });
+        return cursor;
     }
 
     @Override
