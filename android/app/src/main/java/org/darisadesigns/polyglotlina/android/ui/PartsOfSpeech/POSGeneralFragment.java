@@ -60,6 +60,8 @@ public class POSGeneralFragment extends Fragment {
         txtPOSName = root.findViewById(R.id.txtPOSName);
         txtGloss = root.findViewById(R.id.txtGloss);
         txtPattern = root.findViewById(R.id.txtPattern);
+        chkDefinitionMandatory = root.findViewById(R.id.chkDefinitionMandatory);
+        chkPronunciationMandatory = root.findViewById(R.id.chkPronunciationMandatory);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         HTMLEditorFragment htmlEditor = HTMLEditorFragment.newInstance(getResources().getString(R.string.label_pos_notes));
         transaction.replace(R.id.fragment_container_view, htmlEditor).commit();
