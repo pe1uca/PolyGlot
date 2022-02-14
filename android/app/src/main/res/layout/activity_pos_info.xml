@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.PartsOfSpeech.POSInfoActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/Theme.PolyGlot.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            app:titleTextColor="@android:color/white"
+            android:background="?attr/colorPrimary"/>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/pos_general_fragment_container_view"
+        android:name="org.darisadesigns.polyglotlina.android.ui.PartsOfSpeech.POSGeneralFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="60dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <LinearLayout
+        android:id="@+id/bottomSheet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+        android:background="?attr/colorPrimary"
+        app:behavior_peekHeight="60dp"
+        android:visibility="gone">
+        <TextView
+            android:id="@+id/sheetPeek"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="?attr/colorPrimaryVariant"
+            android:gravity="center"
+            android:text="@string/lexeme_utilities"
+            android:textColor="@android:color/white" />
+        <Button
+            android:id="@+id/btnConjugationsSetup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/colorOnPrimary"
+            android:text="Conjugations setup"
+            style="@style/Widget.MaterialComponents.Button.TextButton"/>
+        <Button
+            android:id="@+id/btnConjugationsAutogeneration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/colorOnPrimary"
+            android:text="Conjugations autogeneration"
+            style="@style/Widget.MaterialComponents.Button.TextButton"/>
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

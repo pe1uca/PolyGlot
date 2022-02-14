@@ -1,7 +1,6 @@
 package org.darisadesigns.polyglotlina.android.ui.Lexicon.Conjugations;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;

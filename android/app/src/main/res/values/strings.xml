@@ -14,6 +14,7 @@
     <string name="action_save">Save file</string>
     <string name="action_settings">Settings</string>
     <string name="action_search">Search</string>
+    <string name="action_delete">Delete</string>
 
     <string name="title_save_language">Save language</string>
     <string name="hint_file_name">File name</string>
@@ -57,7 +58,6 @@
     <string name="check_tooltip_local_word_display">Display the local word rather than the conlang word in the lexicon display.</string>
 
     <!-- Lexeme info screen -->
-    <string name="action_delete_lexeme">Delete lexeme</string>
     <string name="title_activity_lexeme_info">Lexeme info</string>
     <string name="lexeme_info_tab_general">General Info</string>
     <string name="lexeme_utilities">Lexeme utilities</string>
@@ -92,6 +92,19 @@
     <string name="etymology_tab_children">Derivatives</string>
     <string name="fab_add_etymon_internal">Add internal etymon</string>
     <string name="fab_add_etymon_external">Add external etymon</string>
+
+    <!-- Part of speech info screen -->
+    <string name="label_pos_name">Part of speech name</string>
+    <string name="label_pos_gloss">Part of speech gloss</string>
+    <string name="label_pos_pattern">Part of speech pattern</string>
+    <string name="label_pos_notes">Notes</string>
+
+    <string name="check_definition_mandatory">Definition mandatory</string>
+    <string name="check_tooltip_definition_mandatory">Enforce definition of lexemes</string>
+    <string name="check_pronunciation_mandatory">Pronunciation mandatory</string>
+    <string name="check_tooltip_pronunciation_mandatory">Enforces pronunciation of lexemes</string>
+
+    <string name="error_pos_name_empty">Name can\'t be empty</string>
 
     <!-- Toasts -->
     <string name="toast_lexeme_errors">Invalid word. Press back again to delete it.</string>

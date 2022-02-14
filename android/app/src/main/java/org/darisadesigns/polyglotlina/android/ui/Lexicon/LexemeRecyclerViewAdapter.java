@@ -52,7 +52,7 @@ public class LexemeRecyclerViewAdapter extends RecyclerView.Adapter<LexemeRecycl
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_lexeme_row, parent, false);
+                .inflate(R.layout.fragment_base_row, parent, false);
         return new ViewHolder(view);
     }
 
@@ -166,8 +166,8 @@ public class LexemeRecyclerViewAdapter extends RecyclerView.Adapter<LexemeRecycl
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            vConWord = (TextView) view.findViewById(R.id.lexeme_con_word);
-            vLocalWord = (TextView) view.findViewById(R.id.lexeme_local_word);
+            vConWord = view.findViewById(R.id.display_text_view);
+            vLocalWord = view.findViewById(R.id.gloss_text_view);
         }
 
         @NonNull

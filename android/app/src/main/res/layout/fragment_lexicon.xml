@@ -7,13 +7,13 @@
     tools:context=".ui.Lexicon.LexiconFragment">
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/lexiconList"
-        android:name="org.darisadesigns.polyglotlina.android.ui.LexiconFragment"
+        android:name="org.darisadesigns.polyglotlina.android.ui.Lexicon.LexiconFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         app:layoutManager="LinearLayoutManager"
-        tools:listitem="@layout/fragment_lexeme_row" />
+        tools:listitem="@layout/fragment_base_row" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_lexeme"

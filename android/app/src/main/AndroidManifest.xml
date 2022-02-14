@@ -14,6 +14,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PolyGlot">
         <activity
+            android:name=".ui.PartsOfSpeech.POSInfoActivity"
+            android:label="@string/title_activity_lexeme_info"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.PolyGlot.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+        <activity
             android:name=".ui.Lexicon.LexemeInfoActivity"
             android:label="@string/title_activity_lexeme_info"
             android:launchMode="singleTop"

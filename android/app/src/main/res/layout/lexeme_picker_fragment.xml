@@ -13,6 +13,6 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         app:layoutManager="LinearLayoutManager"
-        tools:listitem="@layout/fragment_lexeme_row" />
+        tools:listitem="@layout/fragment_base_row" />
 
 </FrameLayout>

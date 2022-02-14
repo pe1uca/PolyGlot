@@ -19,9 +19,9 @@
 
     <fragment
         android:id="@+id/nav_part_of_speech"
-        android:name="org.darisadesigns.polyglotlina.android.ui.SoonFragment"
+        android:name="org.darisadesigns.polyglotlina.android.ui.PartsOfSpeech.POSFragment"
         android:label="@string/menu_part_of_speech"
-        tools:layout="@layout/fragment_soon" />
+        tools:layout="@layout/fragment_pos" />
 
     <fragment
         android:id="@+id/nav_classes"
