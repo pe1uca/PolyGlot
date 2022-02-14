@@ -30,7 +30,7 @@ android {
         minSdkVersion 28
         targetSdkVersion 30
         versionCode 4
-        versionName "0.1.2"
+        versionName "0.2.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -53,6 +53,9 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
+    }
+    buildFeatures {
+        viewBinding true
     }
 }
 
