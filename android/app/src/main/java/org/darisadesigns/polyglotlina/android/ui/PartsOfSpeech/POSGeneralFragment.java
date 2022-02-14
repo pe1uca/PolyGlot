@@ -72,13 +72,13 @@ public class POSGeneralFragment extends Fragment {
 
         viewModel.getLiveData().observe(getViewLifecycleOwner(), node -> {
             if (null != node) {
-                Log.e(TAG, "onCreateView: " + node.getValue());
-                Log.e(TAG, "onCreateView: " + node.getGloss());
-                Log.e(TAG, "onCreateView: " + node.getPattern());
                 txtPOSName.setText(node.getValue());
                 txtGloss.setText(node.getGloss());
                 txtPattern.setText(node.getPattern());
                 editorViewModel.updateText(node.getNotes());
+
+                chkDefinitionMandatory.setChecked(node.isDefMandatory());
+                chkPronunciationMandatory.setChecked(node.isProcMandatory());
             }
         });
         return root;
@@ -90,6 +90,9 @@ public class POSGeneralFragment extends Fragment {
         node.setGloss(txtGloss.getText().toString());
         node.setPattern(txtPattern.getText().toString(), core);
         node.setNotes(editorViewModel.getLiveText().getValue());
+
+        node.setDefMandatory(chkDefinitionMandatory.isChecked());
+        node.setProcMandatory(chkPronunciationMandatory.isChecked());
     }
 
 
