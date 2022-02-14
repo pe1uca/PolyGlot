@@ -165,7 +165,10 @@ public class LexemeEtymologyActivity extends AppCompatActivity {
 
             @Override
             public void onBindViewHolder(@NonNull NodeViewHolder holder, int position) {
-                holder.vConWord.setText(Objects.requireNonNull(getNodeData(position)).toString());
+                Object obj = Objects.requireNonNull(getNodeData(position));
+                holder.vConWord.setText(obj.toString());
+                if (!(obj instanceof EtyExternalParent))
+                    ((AndroidPropertiesManager)core.getPropertiesManager()).setConViewTypeface(holder.vConWord);
             }
         };
         adapter.submitGraph(graph);
