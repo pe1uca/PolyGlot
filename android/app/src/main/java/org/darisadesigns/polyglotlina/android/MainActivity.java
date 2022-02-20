@@ -2,9 +2,13 @@ package org.darisadesigns.polyglotlina.android;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.UriPermission;
 import android.content.pm.PackageManager;
@@ -14,6 +18,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
@@ -44,6 +49,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import org.darisadesigns.polyglotlina.DictCore;
+import org.darisadesigns.polyglotlina.Nodes.ConjugationDimension;
 import org.darisadesigns.polyglotlina.OSHandler;
 import org.darisadesigns.polyglotlina.android.ui.LangPropertiesFragment;
 import org.darisadesigns.polyglotlina.android.ui.PViewModel;
@@ -126,6 +132,13 @@ public class MainActivity extends AppCompatActivity {
             Executor executor = ((PolyGlot)getApplicationContext()).getExecutorService();
             AndroidOSHandler.animateView(progressOverlay, View.VISIBLE, 0.4f, 200);
             executor.execute(() -> {
+                while (isSaveServiceRunning()) {
+                    try {
+                        Thread.sleep(50);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
                 readFile(tmpFile);
             });
         }
@@ -179,7 +192,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
-
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -455,11 +467,7 @@ public class MainActivity extends AppCompatActivity {
         if(!isChangingConfigurations()) {
             // deleteTempFiles(getCacheDir());
         }
-        try {
-            saveToTmpFile(this.core);
-        } catch (ParserConfigurationException | TransformerException | IOException e) {
-            core.getOSHandler().getIOHandler().writeErrorLog(e, "couldn't save tmp file");
-        }
+        startSaveService();
         super.onDestroy();
     }
 
@@ -491,6 +499,23 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return file.delete();
+    }
+
+    private void startSaveService() {
+        // Service is created to save tmp file in background.
+        // But seems that if user swipes the app this doesn't run properly.
+        startService(new Intent(getBaseContext(), SaveService.class));
+    }
+
+    @SuppressWarnings("deprecation")
+    private boolean isSaveServiceRunning() {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (SaveService.class.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public DictCore getCore() {
