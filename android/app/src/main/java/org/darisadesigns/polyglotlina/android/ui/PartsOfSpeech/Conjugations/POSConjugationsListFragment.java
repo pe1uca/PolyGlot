@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,16 +24,14 @@ import org.darisadesigns.polyglotlina.Nodes.TypeNode;
 import org.darisadesigns.polyglotlina.android.AndroidInfoBox;
 import org.darisadesigns.polyglotlina.android.PolyGlot;
 import org.darisadesigns.polyglotlina.android.R;
-import org.darisadesigns.polyglotlina.android.ui.Lexicon.Conjugations.LexemeConjugationsActivity;
-import org.darisadesigns.polyglotlina.android.ui.Lexicon.LexemeInfoActivity;
 import org.darisadesigns.polyglotlina.android.ui.PartsOfSpeech.POSInfoViewModel;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class POSConjugationsFragment extends Fragment implements POSConjugationsRecyclerViewAdapter.OnItemClickListener {
+public class POSConjugationsListFragment extends Fragment implements POSConjugationsRecyclerViewAdapter.OnItemClickListener {
 
-    private static final String TAG = "POSConjugationsFragment";
+    private static final String TAG = "POSConjugationsListFragment";
 
     private RecyclerView conjugationsView;
     private POSInfoViewModel viewModel;
@@ -47,7 +44,7 @@ public class POSConjugationsFragment extends Fragment implements POSConjugations
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View root = inflater.inflate(R.layout.fragment_pos_conjugations, container, false);
+        View root = inflater.inflate(R.layout.fragment_pos_conjugations_list, container, false);
 
         viewModel = new ViewModelProvider(requireActivity()).get(POSInfoViewModel.class);
 

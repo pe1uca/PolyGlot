@@ -37,7 +37,7 @@
 
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/pos_conjugations_fragment_container_view"
-                android:name="org.darisadesigns.polyglotlina.android.ui.PartsOfSpeech.Conjugations.POSConjugationsFragment"
+                android:name="org.darisadesigns.polyglotlina.android.ui.PartsOfSpeech.Conjugations.POSConjugationsListFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingBottom="60dp" />

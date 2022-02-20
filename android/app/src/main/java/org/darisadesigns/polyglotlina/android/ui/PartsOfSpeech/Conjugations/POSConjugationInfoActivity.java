@@ -8,19 +8,12 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -34,13 +27,10 @@ import org.darisadesigns.polyglotlina.android.PolyGlot;
 import org.darisadesigns.polyglotlina.android.R;
 import org.darisadesigns.polyglotlina.android.ui.EditorViewModel;
 import org.darisadesigns.polyglotlina.android.ui.HTMLEditorFragment;
-import org.darisadesigns.polyglotlina.android.ui.PartsOfSpeech.POSInfoViewModel;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.zip.Inflater;
 
 public class POSConjugationInfoActivity extends AppCompatActivity implements POSConjugationDimensionRecyclerViewAdapter.OnItemClickListener {
 
@@ -62,7 +52,7 @@ public class POSConjugationInfoActivity extends AppCompatActivity implements POS
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_posconjugation_info);
+        setContentView(R.layout.activity_pos_conjugation_info);
 
         setSupportActionBar((Toolbar) findViewById(R.id.app_bar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

@@ -96,8 +96,9 @@
     <!-- Part of speech info screen -->
     <string name="label_pos_name">Part of speech name</string>
     <string name="label_pos_gloss">Part of speech gloss</string>
-    <string name="label_pos_pattern">Part of speech pattern</string>
+    <string name="label_pos_pattern">Pattern</string>
     <string name="label_pos_notes">Notes</string>
+    <string name="label_conjugation_name">Conjugation name</string>
     <string name="pos_conjugations">Conjugations/Declensions</string>
     <string name="pos_conjugations_setup">Setup</string>
     <string name="pos_conjugations_autogeneration">Autogeneration</string>
