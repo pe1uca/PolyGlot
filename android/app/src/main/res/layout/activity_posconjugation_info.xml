@@ -1,17 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".ui.PartsOfSpeech.POSGeneralFragment">
+    tools:context=".ui.PartsOfSpeech.Conjugations.POSConjugationInfoActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/Theme.PolyGlot.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            app:titleTextColor="@android:color/white"
+            android:background="?attr/colorPrimary"/>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout_editor_absoluteX="188dp"
-        tools:layout_editor_absoluteY="606dp">
+        tools:layout_editor_absoluteY="606dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -33,7 +47,7 @@
                     android:orientation="vertical">
 
                     <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/txtPOSNameLayout"
+                        android:id="@+id/txtConjugationNameLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="4dp"
@@ -43,42 +57,7 @@
                         tools:layout_editor_absoluteX="4dp">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/txtPOSName"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="text"
-                            android:maxLines="1" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/txtGlossLayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="4dp"
-                        android:hint="@string/label_pos_gloss"
-                        app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
-                        app:errorEnabled="true"
-                        tools:layout_editor_absoluteX="4dp">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/txtGloss"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="text"
-                            android:maxLines="1" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/txtPatternLayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="4dp"
-                        android:hint="@string/label_pos_pattern"
-                        app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
-                        tools:layout_editor_absoluteX="4dp">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/txtPattern"
+                            android:id="@+id/txtConjugationName"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="text"
@@ -86,18 +65,11 @@
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <CheckBox
-                        android:id="@+id/chkDefinitionMandatory"
+                        android:id="@+id/chkDimensionless"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/check_definition_mandatory"
-                        android:tooltipText="@string/check_tooltip_definition_mandatory"/>
-
-                    <CheckBox
-                        android:id="@+id/chkPronunciationMandatory"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/check_pronunciation_mandatory"
-                        android:tooltipText="@string/check_tooltip_pronunciation_mandatory"/>
+                        android:text="@string/check_dimensionless"
+                        android:tooltipText="@string/check_tooltip_dimensionless"/>
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/editorLayout"
@@ -114,17 +86,27 @@
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <Button
-                        android:id="@+id/btnClearDeprecated"
+                        android:id="@+id/btnAddDimension"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="@string/btn_clear_deprecated"
+                        android:text="Add dimension"
                         style="@style/Widget.MaterialComponents.Button.TextButton"
                         />
 
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/dimensionsList"
+                        android:name="org.darisadesigns.polyglotlina.android.ui.PartsOfSpeech.Conjugations.POSConjugationInfoActivity"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        app:layoutManager="LinearLayoutManager"
+                        tools:listitem="@layout/fragment_text_delete_row"
+                        app:layout_constraintTop_toBottomOf="@id/add_row" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
-</FrameLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

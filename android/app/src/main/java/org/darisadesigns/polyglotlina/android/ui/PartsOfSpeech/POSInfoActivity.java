@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,7 +22,9 @@ import org.darisadesigns.polyglotlina.DictCore;
 import org.darisadesigns.polyglotlina.Nodes.TypeNode;
 import org.darisadesigns.polyglotlina.android.PolyGlot;
 import org.darisadesigns.polyglotlina.android.R;
+import org.darisadesigns.polyglotlina.android.ui.Lexicon.Conjugations.LexemeConjugationsActivity;
 import org.darisadesigns.polyglotlina.android.ui.Lexicon.LexemeGeneralFragment;
+import org.darisadesigns.polyglotlina.android.ui.Lexicon.LexemeInfoActivity;
 import org.darisadesigns.polyglotlina.android.ui.Lexicon.LexemeInfoViewModel;
 
 public class POSInfoActivity extends AppCompatActivity {
@@ -48,24 +51,10 @@ public class POSInfoActivity extends AppCompatActivity {
         core = polyGlot.getCore();
         int posId = intent.getIntExtra(POS_ID_EXTRA, -1);
         posNode = core.getTypes().getNodeById(posId);
-        getSupportActionBar().setTitle(posNode.getGloss());
+        getSupportActionBar().setTitle(posNode.getValue());
 
         POSInfoViewModel viewModel = new ViewModelProvider(this).get(POSInfoViewModel.class);
         viewModel.updateData(posNode);
-
-        TextView sheetPeek = findViewById(R.id.sheetPeek);
-        sheetPeek.setOnClickListener((view) -> {
-            LinearLayout bottomSheet = findViewById(R.id.bottomSheet);
-            BottomSheetBehavior<LinearLayout> bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
-            switch (bottomSheetBehavior.getState()) {
-                case BottomSheetBehavior.STATE_COLLAPSED:
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                    break;
-                case BottomSheetBehavior.STATE_EXPANDED:
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                    break;
-            }
-        });
     }
 
     @Override

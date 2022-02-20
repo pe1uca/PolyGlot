@@ -1,5 +1,6 @@
 package org.darisadesigns.polyglotlina.android.ui.PartsOfSpeech;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -18,6 +19,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import org.darisadesigns.polyglotlina.DictCore;
 import org.darisadesigns.polyglotlina.Nodes.ConWord;
 import org.darisadesigns.polyglotlina.Nodes.TypeNode;
+import org.darisadesigns.polyglotlina.android.AndroidInfoBox;
 import org.darisadesigns.polyglotlina.android.AndroidPropertiesManager;
 import org.darisadesigns.polyglotlina.android.PolyGlot;
 import org.darisadesigns.polyglotlina.android.R;
@@ -81,6 +83,7 @@ public class POSGeneralFragment extends Fragment {
 
                 chkDefinitionMandatory.setChecked(node.isDefMandatory());
                 chkPronunciationMandatory.setChecked(node.isProcMandatory());
+                root.findViewById(R.id.btnClearDeprecated).setOnClickListener(v -> clearDeprecatedValues(node));
             }
         });
         return root;
@@ -97,6 +100,19 @@ public class POSGeneralFragment extends Fragment {
         node.setProcMandatory(chkPronunciationMandatory.isChecked());
     }
 
+    private void clearDeprecatedValues(TypeNode node) {
+        ((AndroidInfoBox)core.getOSHandler().getInfoBox()).yesNoCancel(
+                "Wipe all deprecated conjugations?",
+                "Are you sure?\n" +
+                        "This cannot be undone, and will delete the values of all deprecated conjugations of the type: " +
+                        node.getValue(),
+                requireActivity(),
+                (dialog, which) -> {
+                    if (which != DialogInterface.BUTTON_POSITIVE) return;
+                    core.getWordCollection().clearDeprecatedDeclensions(node.getId());
+                }
+        );
+    }
 
     public boolean isDataValid() {
         txtPOSNameLayout.setError(null);

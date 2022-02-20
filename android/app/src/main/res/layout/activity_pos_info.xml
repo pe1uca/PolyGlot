@@ -20,45 +20,28 @@
             android:background="?attr/colorPrimary"/>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/pos_general_fragment_container_view"
-        android:name="org.darisadesigns.polyglotlina.android.ui.PartsOfSpeech.POSGeneralFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingBottom="60dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-    <LinearLayout
-        android:id="@+id/bottomSheet"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
-        android:background="?attr/colorPrimary"
-        app:behavior_peekHeight="60dp"
-        android:visibility="gone">
-        <TextView
-            android:id="@+id/sheetPeek"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="?attr/colorPrimaryVariant"
-            android:gravity="center"
-            android:text="@string/lexeme_utilities"
-            android:textColor="@android:color/white" />
-        <Button
-            android:id="@+id/btnConjugationsSetup"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="?attr/colorOnPrimary"
-            android:text="Conjugations setup"
-            style="@style/Widget.MaterialComponents.Button.TextButton"/>
-        <Button
-            android:id="@+id/btnConjugationsAutogeneration"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="?attr/colorOnPrimary"
-            android:text="Conjugations autogeneration"
-            style="@style/Widget.MaterialComponents.Button.TextButton"/>
-    </LinearLayout>
+            android:orientation="vertical">
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/pos_general_fragment_container_view"
+                android:name="org.darisadesigns.polyglotlina.android.ui.PartsOfSpeech.POSGeneralFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="60dp" />
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/pos_conjugations_fragment_container_view"
+                android:name="org.darisadesigns.polyglotlina.android.ui.PartsOfSpeech.Conjugations.POSConjugationsFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="60dp" />
+        </LinearLayout>
+    </ScrollView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

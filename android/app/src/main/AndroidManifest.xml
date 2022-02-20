@@ -28,6 +28,14 @@
                 android:value=".MainActivity" />
         </activity>
         <activity
+            android:name=".ui.PartsOfSpeech.Conjugations.POSConjugationInfoActivity"
+            android:label="POS Conjugations"
+            android:theme="@style/Theme.PolyGlot.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.PartsOfSpeech.POSInfoActivity" />
+        </activity>
+        <activity
             android:name=".ui.Lexicon.LexemeInfoActivity"
             android:label="@string/title_activity_lexeme_info"
             android:launchMode="singleTop"
