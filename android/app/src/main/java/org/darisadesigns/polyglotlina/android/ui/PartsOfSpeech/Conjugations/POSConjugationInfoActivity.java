@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -125,6 +127,28 @@ public class POSConjugationInfoActivity extends AppCompatActivity implements POS
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isValid()) {
+            super.onBackPressed();
+            return;
+        }
+        ((AndroidInfoBox)core.getOSHandler().getInfoBox()).error(
+                "Invalid conjugation",
+                "Conjugation should have name and at least one dimension (or be dimensionless)",
+                this
+        );
+    }
+
+    @Override
     public void onItemClick(ConjugationDimension item) {
         ((AndroidInfoBox)core.getOSHandler().getInfoBox()).stringInputDialog(
                 "Rename dimension",
@@ -146,6 +170,11 @@ public class POSConjugationInfoActivity extends AppCompatActivity implements POS
         updateDimensionsList();
     }
 
+    private boolean isValid() {
+        return !txtConjugationName.getText().toString().isEmpty() && (chkDimensionless.isChecked() ||
+                (!chkDimensionless.isChecked() && conjugationNode.getDimensions().size() > 0));
+    }
+
     private void addDimension() {
         ((AndroidInfoBox)core.getOSHandler().getInfoBox()).stringInputDialog(
                 "New dimension",
@@ -153,7 +182,7 @@ public class POSConjugationInfoActivity extends AppCompatActivity implements POS
                 "Name",
                 this,
                 s -> {
-                    if (null == s && s.isEmpty()) return;
+                    if (null == s || s.isEmpty()) return;
                     conjugationNode.clearBuffer();
                     ConjugationDimension buffer = conjugationNode.getBuffer();
                     buffer.setValue(s);
