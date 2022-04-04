@@ -94,6 +94,8 @@
     <string name="fab_add_etymon_external">Add external etymon</string>
 
     <!-- Part of speech info screen -->
+    <string name="menu_simple_autogeneration">Autogeneration (simple)</string>
+    <string name="menu_classic_autogeneration">Autogeneration rules</string>
     <string name="label_pos_name">Part of speech name</string>
     <string name="label_pos_gloss">Part of speech gloss</string>
     <string name="label_pos_pattern">Pattern</string>
@@ -103,6 +105,7 @@
     <string name="pos_conjugations_setup">Setup</string>
     <string name="pos_conjugations_autogeneration">Autogeneration</string>
     <string name="btn_clear_deprecated">Clear deprecated conjugations</string>
+    <string name="btn_add_rule">Add rule</string>
 
     <string name="check_definition_mandatory">Definition mandatory</string>
     <string name="check_tooltip_definition_mandatory">Enforce definition of lexemes</string>
@@ -112,6 +115,12 @@
     <string name="check_tooltip_dimensionless">If this is a dimensionless form, such as a gerund.</string>
 
     <string name="error_pos_name_empty">Name can\'t be empty</string>
+    
+    <!-- Autogeneration -->
+    <string name="label_autogen_rule_name">Rule name</string>
+    <string name="label_autogen_word_forms">Word form</string>
+    <string name="check_disable_word_form">Disable word form</string>
+    <string name="check_tooltip_disable_word_form">Disables and hide this conjugation.</string>
 
     <!-- Toasts -->
     <string name="toast_lexeme_errors">Invalid word. Press back again to delete it.</string>

@@ -11,7 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_margin"
         android:text="Text Sample"
-        android:textAppearance="?attr/textAppearanceListItem" />
+        android:textAppearance="?attr/textAppearanceListItem"
+        android:textColor="@color/select_text"/>
 
     <ImageView
         android:id="@+id/delete_icon"

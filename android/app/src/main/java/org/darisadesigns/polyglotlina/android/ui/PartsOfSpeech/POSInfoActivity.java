@@ -20,12 +20,16 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import org.darisadesigns.polyglotlina.DictCore;
 import org.darisadesigns.polyglotlina.Nodes.TypeNode;
+import org.darisadesigns.polyglotlina.android.AndroidPGTUtil;
 import org.darisadesigns.polyglotlina.android.PolyGlot;
 import org.darisadesigns.polyglotlina.android.R;
 import org.darisadesigns.polyglotlina.android.ui.Lexicon.Conjugations.LexemeConjugationsActivity;
 import org.darisadesigns.polyglotlina.android.ui.Lexicon.LexemeGeneralFragment;
 import org.darisadesigns.polyglotlina.android.ui.Lexicon.LexemeInfoActivity;
 import org.darisadesigns.polyglotlina.android.ui.Lexicon.LexemeInfoViewModel;
+import org.darisadesigns.polyglotlina.android.ui.PartsOfSpeech.Conjugations.AutogenerationActivity;
+import org.darisadesigns.polyglotlina.android.ui.PartsOfSpeech.Conjugations.AutogenerationSimpleActivity;
+import org.darisadesigns.polyglotlina.android.ui.PartsOfSpeech.Conjugations.POSConjugationInfoActivity;
 
 public class POSInfoActivity extends AppCompatActivity {
 
@@ -61,6 +65,8 @@ public class POSInfoActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.delete, menu);
+        getMenuInflater().inflate(R.menu.pos_autogeneration, menu);
+        ((AndroidPGTUtil)core.getPGTUtil()).fixOptionsMenuTextColor(menu, this);
         return true;
     }
 
@@ -78,6 +84,17 @@ public class POSInfoActivity extends AppCompatActivity {
                             "Unable to delete part of speech: " + e.getLocalizedMessage()
                     );
                 }
+                return true;
+            case R.id.action_autogenerate_simple:
+                Intent autogenerateSimpleIntent = new Intent(this, AutogenerationSimpleActivity.class);
+//                conjugationsIntent.putExtra(POSConjugationInfoActivity.POS_ID_EXTRA, typeNode.getId());
+//                conjugationsIntent.putExtra(POSConjugationInfoActivity.CONJUGATION_ID_EXTRA, item.getId());
+                startActivity(autogenerateSimpleIntent);
+                return true;
+            case R.id.action_autogenerate_classic:
+                Intent autogenerateIntent = new Intent(this, AutogenerationActivity.class);
+                autogenerateIntent.putExtra(AutogenerationActivity.POS_ID_EXTRA, posNode.getId());
+                startActivity(autogenerateIntent);
                 return true;
             case android.R.id.home:
                 onBackPressed();

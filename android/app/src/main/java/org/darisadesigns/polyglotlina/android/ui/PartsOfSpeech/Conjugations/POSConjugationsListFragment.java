@@ -139,7 +139,7 @@ public class POSConjugationsListFragment extends Fragment implements POSConjugat
     private void deprecateAndAdd(String name) {
         core.getConjugationManager().deprecateAllConjugations(typeNode.getId());
 
-        core.getConjugationManager().addConjugationToTemplate(typeNode.getId(), name);
+        this.onItemClick(core.getConjugationManager().addConjugationToTemplate(typeNode.getId(), name));
         updateConjugationsList();
     }
 }

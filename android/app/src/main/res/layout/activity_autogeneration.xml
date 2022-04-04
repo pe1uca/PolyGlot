@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.PartsOfSpeech.Conjugations.AutogenerationActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/Theme.PolyGlot.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            app:titleTextColor="@android:color/white"
+            android:background="?attr/colorPrimary"/>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/generalCardView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    app:contentPadding="16dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:layout_editor_absoluteX="16dp">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/posInputLayout"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="4dp"
+                            android:hint="@string/label_autogen_word_forms"
+                            app:errorEnabled="true"
+                            tools:layout_editor_absoluteX="4dp" >
+
+                            <AutoCompleteTextView
+                                android:id="@+id/autogenConjugations"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="none" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <CheckBox
+                            android:id="@+id/chkDisableForm"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/check_disable_word_form"
+                            android:tooltipText="@string/check_tooltip_disable_word_form"/>
+
+                        <Button
+                            android:id="@+id/btnAddRule"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="@string/btn_add_rule"
+                            style="@style/Widget.MaterialComponents.Button.TextButton"/>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rulesList"
+                            android:name="org.darisadesigns.polyglotlina.android.ui.PartsOfSpeech.Conjugations.AutogenerationActivity"
+                            android:layout_width="match_parent"
+                            android:layout_height="200dp"
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginRight="16dp"
+                            app:layoutManager="LinearLayoutManager"
+                            tools:listitem="@layout/fragment_text_delete_row"
+                            app:layout_constraintTop_toBottomOf="@id/add_row" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/pos_conjugations_fragment_container_view"
+                android:name="org.darisadesigns.polyglotlina.android.ui.PartsOfSpeech.Conjugations.AutogenerationRuleFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="60dp" />
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -150,15 +150,7 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
 
-        /* Hack to change text color, otherwise it stays white on white */
-        for (int i = 0; i < menu.size(); i++) {
-            MenuItem item = menu.getItem(i);
-            SpannableString s = new SpannableString(item.getTitle());
-            int color = (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_YES) == 0 ?
-                    R.color.design_default_color_on_secondary : R.color.design_default_color_on_primary;
-            s.setSpan(new ForegroundColorSpan(getColor(color)), 0, s.length(), 0);
-            item.setTitle(s);
-        }
+        ((AndroidPGTUtil)core.getPGTUtil()).fixOptionsMenuTextColor(menu, this);
         return true;
     }
 
