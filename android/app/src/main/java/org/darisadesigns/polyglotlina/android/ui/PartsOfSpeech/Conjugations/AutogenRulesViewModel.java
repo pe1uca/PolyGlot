@@ -4,27 +4,17 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import org.darisadesigns.polyglotlina.Nodes.ConjugationPair;
-import org.darisadesigns.polyglotlina.Nodes.TypeNode;
+import org.darisadesigns.polyglotlina.Nodes.ConjugationGenRule;
 
 public class AutogenRulesViewModel extends ViewModel {
 
-    private TypeNode posNode;
-    private final MutableLiveData<ConjugationPair> liveData = new MutableLiveData<>();
+    private final MutableLiveData<ConjugationGenRule> liveData = new MutableLiveData<>();
 
-    public void updateData(ConjugationPair node) {
+    public void updateData(ConjugationGenRule node) {
         this.liveData.setValue(node);
     }
 
-    public LiveData<ConjugationPair> getLiveData() {
+    public LiveData<ConjugationGenRule> getLiveData() {
         return this.liveData;
-    }
-
-    public TypeNode getPosNode() {
-        return posNode;
-    }
-
-    public void setPosNode(TypeNode posNode) {
-        this.posNode = posNode;
     }
 }

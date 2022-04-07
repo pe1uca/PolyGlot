@@ -2,11 +2,13 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.PartsOfSpeech.Conjugations.AutogenerationActivity">
 
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/Theme.PolyGlot.AppBarOverlay">
@@ -88,14 +90,31 @@
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
             </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/pos_conjugations_fragment_container_view"
-                android:name="org.darisadesigns.polyglotlina.android.ui.PartsOfSpeech.Conjugations.AutogenerationRuleFragment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="60dp" />
         </LinearLayout>
     </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/bottomSheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+        android:background="@color/default_background"
+        app:behavior_peekHeight="80dp">
+        <TextView
+            android:id="@+id/sheetPeek"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/default_sheet_peek"
+            android:background="?attr/colorPrimaryVariant"
+            android:gravity="center"
+            android:text="@string/rule_information"
+            android:textColor="@android:color/white" />
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/pos_conjugations_fragment_container_view"
+            android:name="org.darisadesigns.polyglotlina.android.ui.PartsOfSpeech.Conjugations.AutogenerationRuleFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="60dp" />
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

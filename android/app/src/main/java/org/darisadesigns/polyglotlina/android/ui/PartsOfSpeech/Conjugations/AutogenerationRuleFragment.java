@@ -9,9 +9,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import org.darisadesigns.polyglotlina.DictCore;
-import org.darisadesigns.polyglotlina.Nodes.ConjugationGenRule;
 import org.darisadesigns.polyglotlina.Nodes.TypeNode;
 import org.darisadesigns.polyglotlina.android.PolyGlot;
 import org.darisadesigns.polyglotlina.android.R;
@@ -34,11 +34,15 @@ public class AutogenerationRuleFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_autogeneration_rules, container, false);
         core = ((PolyGlot)requireActivity().getApplicationContext()).getCore();
 
-        AutogenRulesViewModel rulesViewModel = new ViewModelProvider(requireActivity()).get(AutogenRulesViewModel.class);
-        TypeNode posNode = rulesViewModel.getPosNode();
+        TextView ruleName = root.findViewById(R.id.txtRuleName);
+        TextView ruleRegex = root.findViewById(R.id.txtRuleRegex);
 
-        rulesViewModel.getLiveData().observe(getViewLifecycleOwner(), conjugationPair -> {
-            // if (null == conjugationPair) return;
+        AutogenRulesViewModel rulesViewModel = new ViewModelProvider(requireActivity()).get(AutogenRulesViewModel.class);
+
+        rulesViewModel.getLiveData().observe(getViewLifecycleOwner(), conjugationGenRule -> {
+             if (null == conjugationGenRule) return;
+            ruleName.setText(conjugationGenRule.getName());
+            ruleRegex.setText(conjugationGenRule.getRegex());
         });
         return root;
     }

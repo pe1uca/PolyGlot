@@ -32,17 +32,17 @@
                     android:orientation="vertical">
 
                     <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/txtConWordLayout"
+                        android:id="@+id/txtRuleNameLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="4dp"
-                        android:hint="@string/label_con_word"
+                        android:hint="@string/label_autogen_rule_name"
                         app:layout_constraintTop_toTopOf="parent"
                         app:errorEnabled="true"
                         tools:layout_editor_absoluteX="4dp">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/txtConWord"
+                            android:id="@+id/txtRuleName"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="text"
@@ -50,17 +50,17 @@
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/txtLocalWordLayout"
+                        android:id="@+id/txtRuleRegexLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="4dp"
-                        android:hint="@string/label_local_word"
+                        android:hint="@string/label_autogen_rule_regex"
                         app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
                         app:errorEnabled="true"
                         tools:layout_editor_absoluteX="4dp">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/txtLocalWord"
+                            android:id="@+id/txtRuleRegex"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="text"

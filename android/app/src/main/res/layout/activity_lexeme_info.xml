@@ -35,11 +35,11 @@
         android:orientation="vertical"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
         android:background="?attr/colorPrimary"
-        app:behavior_peekHeight="60dp">
+        app:behavior_peekHeight="@dimen/default_sheet_peek">
         <TextView
             android:id="@+id/sheetPeek"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="@dimen/default_sheet_peek"
             android:background="?attr/colorPrimaryVariant"
             android:gravity="center"
             android:text="@string/lexeme_utilities"

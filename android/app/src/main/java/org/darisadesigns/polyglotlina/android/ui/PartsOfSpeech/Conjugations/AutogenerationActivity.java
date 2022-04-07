@@ -4,21 +4,27 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+
 import org.darisadesigns.polyglotlina.DictCore;
 import org.darisadesigns.polyglotlina.Nodes.ConjugationGenRule;
-import org.darisadesigns.polyglotlina.Nodes.ConjugationNode;
 import org.darisadesigns.polyglotlina.Nodes.ConjugationPair;
 import org.darisadesigns.polyglotlina.Nodes.TypeNode;
 import org.darisadesigns.polyglotlina.android.PolyGlot;
@@ -52,8 +58,6 @@ public class AutogenerationActivity extends AppCompatActivity implements Conjuga
         core = polyGlot.getCore();
         int posId = intent.getIntExtra(POS_ID_EXTRA, -1);
         posNode = core.getTypes().getNodeById(posId);
-        AutogenRulesViewModel rulesViewModel = new ViewModelProvider(this).get(AutogenRulesViewModel.class);
-        rulesViewModel.setPosNode(posNode);
 
         getSupportActionBar().setTitle(posNode.getValue());
 
@@ -75,18 +79,46 @@ public class AutogenerationActivity extends AppCompatActivity implements Conjuga
         autogenConjugations.setAdapter(spinnerArrayAdapter);
         conjugationPair = conjugationPairs[0];
         autogenConjugations.setText(conjugationPair.toString(), false);
-        rulesViewModel.updateData(conjugationPair);
         autogenConjugations.setOnItemClickListener((parent, view, position, id) -> {
             conjugationPair = spinnerArrayAdapter.getItem(position);
             updateRulesList();
             // rulesViewModel.updateData(conjugationPair);
         });
         updateRulesList();
+
+        CoordinatorLayout coordinatorLayout = findViewById(R.id.coordinatorLayout);
+        AppBarLayout appBarLayout = findViewById(R.id.appBarLayout);
+        TextView sheetPeek = findViewById(R.id.sheetPeek);
+        LinearLayout bottomSheetLayout = findViewById(R.id.bottomSheet);
+        BottomSheetBehavior<LinearLayout> bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
+        sheetPeek.setOnClickListener((view) -> {
+            switch (bottomSheetBehavior.getState()) {
+                case BottomSheetBehavior.STATE_COLLAPSED:
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    break;
+                case BottomSheetBehavior.STATE_EXPANDED:
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    break;
+            }
+        });
+        var ref = new Object() {
+            boolean firstEvent = true;
+        };
+        coordinatorLayout.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+            if (!ref.firstEvent) return;
+            /* Hack to have the peek not to go under the top bar */
+            LayoutParams prevLayoutParams = bottomSheetLayout.getLayoutParams();
+            prevLayoutParams.height = bottomSheetLayout.getHeight() - appBarLayout.getHeight();
+            bottomSheetLayout.setLayoutParams(prevLayoutParams);
+            /* The code above fires this event again so it causes infinite calls */
+            ref.firstEvent = false;
+        });
     }
 
     @Override
     public void onItemClick(ConjugationGenRule item) {
-
+        AutogenRulesViewModel rulesViewModel = new ViewModelProvider(this).get(AutogenRulesViewModel.class);
+        rulesViewModel.updateData(item);
     }
 
     @Override

@@ -118,6 +118,8 @@
     
     <!-- Autogeneration -->
     <string name="label_autogen_rule_name">Rule name</string>
+    <string name="label_autogen_rule_regex">Filter regex</string>
+    <string name="rule_information">Rule information</string>
     <string name="label_autogen_word_forms">Word form</string>
     <string name="check_disable_word_form">Disable word form</string>
     <string name="check_tooltip_disable_word_form">Disables and hide this conjugation.</string>
