@@ -1,5 +1,6 @@
 package org.darisadesigns.polyglotlina.android.ui.PartsOfSpeech.Conjugations;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +9,8 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -27,6 +30,7 @@ import org.darisadesigns.polyglotlina.DictCore;
 import org.darisadesigns.polyglotlina.Nodes.ConjugationGenRule;
 import org.darisadesigns.polyglotlina.Nodes.ConjugationPair;
 import org.darisadesigns.polyglotlina.Nodes.TypeNode;
+import org.darisadesigns.polyglotlina.android.AndroidInfoBox;
 import org.darisadesigns.polyglotlina.android.PolyGlot;
 import org.darisadesigns.polyglotlina.android.R;
 
@@ -44,6 +48,8 @@ public class AutogenerationActivity extends AppCompatActivity implements Conjuga
     private TypeNode posNode;
     private ConjugationPair conjugationPair;
 
+    private AutogenRulesViewModel rulesViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +64,7 @@ public class AutogenerationActivity extends AppCompatActivity implements Conjuga
         core = polyGlot.getCore();
         int posId = intent.getIntExtra(POS_ID_EXTRA, -1);
         posNode = core.getTypes().getNodeById(posId);
+        rulesViewModel = new ViewModelProvider(this).get(AutogenRulesViewModel.class);
 
         getSupportActionBar().setTitle(posNode.getValue());
 
@@ -73,6 +80,11 @@ public class AutogenerationActivity extends AppCompatActivity implements Conjuga
         Button addRuleBtn = findViewById(R.id.btnAddRule);
         addRuleBtn.setOnClickListener(view -> addRule());
 
+        CheckBox chkDisableForm = findViewById(R.id.chkDisableForm);
+        chkDisableForm.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            core.getConjugationManager().setCombinedConjSuppressed(conjugationPair.combinedId, posNode.getId(), isChecked);
+        });
+
         AutoCompleteTextView autogenConjugations = findViewById(R.id.autogenConjugations);
         ArrayAdapter<ConjugationPair> spinnerArrayAdapter = new ArrayAdapter<>
                 (this, R.layout.list_item, conjugationPairs);
@@ -81,8 +93,13 @@ public class AutogenerationActivity extends AppCompatActivity implements Conjuga
         autogenConjugations.setText(conjugationPair.toString(), false);
         autogenConjugations.setOnItemClickListener((parent, view, position, id) -> {
             conjugationPair = spinnerArrayAdapter.getItem(position);
+            chkDisableForm.setChecked(
+                    core.getConjugationManager().isCombinedConjlSurpressed(
+                            conjugationPair.combinedId,
+                            posNode.getId()
+                    )
+            );
             updateRulesList();
-            // rulesViewModel.updateData(conjugationPair);
         });
         updateRulesList();
 
@@ -117,17 +134,32 @@ public class AutogenerationActivity extends AppCompatActivity implements Conjuga
 
     @Override
     public void onItemClick(ConjugationGenRule item) {
-        AutogenRulesViewModel rulesViewModel = new ViewModelProvider(this).get(AutogenRulesViewModel.class);
         rulesViewModel.updateData(item);
     }
 
     @Override
     public void onItemDeleteClick(ConjugationGenRule item) {
-
+        ((AndroidInfoBox)core.getOSHandler().getInfoBox()).yesNoCancel(
+                "Are you sure?",
+                "Do you want to delete this rule?\nThis action can't be undone.",
+                this,
+                (dialog, which) -> {
+                    if (which != DialogInterface.BUTTON_POSITIVE) {
+                        return;
+                    }
+                    core.getConjugationManager().deleteConjugationGenRule(item);
+                    rulesViewModel.updateData(null);
+                    updateRulesList();
+                }
+        );
     }
 
     private void addRule() {
-
+        ConjugationGenRule newRule = new ConjugationGenRule(posNode.getId(), conjugationPair.combinedId);
+        newRule.setRegex(".*");
+        core.getConjugationManager().addConjugationGenRule(newRule);
+        rulesViewModel.updateData(newRule);
+        updateRulesList();
     }
 
     private void updateRulesList() {
@@ -136,8 +168,5 @@ public class AutogenerationActivity extends AppCompatActivity implements Conjuga
         List<ConjugationGenRule> rules = Arrays.asList(ruleList);
         ConjugationRuleRecyclerViewAdapter adapter = new ConjugationRuleRecyclerViewAdapter(core, rules, this);
         rulesView.setAdapter(adapter);
-        for (var tmp: ruleList) {
-            Log.e(TAG, "updateRulesList: " + tmp.getName());
-        }
     }
 }
