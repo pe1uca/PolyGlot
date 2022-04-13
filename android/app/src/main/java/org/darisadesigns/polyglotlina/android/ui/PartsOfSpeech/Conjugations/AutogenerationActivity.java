@@ -12,12 +12,14 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.fragment.app.FragmentContainerView;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -65,6 +67,7 @@ public class AutogenerationActivity extends AppCompatActivity implements Conjuga
         int posId = intent.getIntExtra(POS_ID_EXTRA, -1);
         posNode = core.getTypes().getNodeById(posId);
         rulesViewModel = new ViewModelProvider(this).get(AutogenRulesViewModel.class);
+        rulesViewModel.updateData(null);
 
         getSupportActionBar().setTitle(posNode.getValue());
 
@@ -104,6 +107,8 @@ public class AutogenerationActivity extends AppCompatActivity implements Conjuga
         updateRulesList();
 
         CoordinatorLayout coordinatorLayout = findViewById(R.id.coordinatorLayout);
+        ScrollView scrollView = findViewById(R.id.scrollView);
+        FragmentContainerView ruleContainerView = findViewById(R.id.rule_info_fragment_container_view);
         AppBarLayout appBarLayout = findViewById(R.id.appBarLayout);
         TextView sheetPeek = findViewById(R.id.sheetPeek);
         LinearLayout bottomSheetLayout = findViewById(R.id.bottomSheet);
@@ -118,15 +123,33 @@ public class AutogenerationActivity extends AppCompatActivity implements Conjuga
                     break;
             }
         });
+        bottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (BottomSheetBehavior.STATE_COLLAPSED != newState) return;
+                updateRulesList();
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+            }
+        });
         var ref = new Object() {
             boolean firstEvent = true;
         };
         coordinatorLayout.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
             if (!ref.firstEvent) return;
-            /* Hack to have the peek not to go under the top bar */
+            /* Hack to fix some heights of elements to use most of the screen */
             LayoutParams prevLayoutParams = bottomSheetLayout.getLayoutParams();
             prevLayoutParams.height = bottomSheetLayout.getHeight() - appBarLayout.getHeight();
             bottomSheetLayout.setLayoutParams(prevLayoutParams);
+            prevLayoutParams = scrollView.getLayoutParams();
+            prevLayoutParams.height = coordinatorLayout.getHeight() - appBarLayout.getHeight() - bottomSheetBehavior.getPeekHeight();
+            scrollView.setLayoutParams(prevLayoutParams);
+            prevLayoutParams = ruleContainerView.getLayoutParams();
+            prevLayoutParams.height = coordinatorLayout.getHeight() - appBarLayout.getHeight();
+            ruleContainerView.setLayoutParams(prevLayoutParams);
             /* The code above fires this event again so it causes infinite calls */
             ref.firstEvent = false;
         });
@@ -163,10 +186,15 @@ public class AutogenerationActivity extends AppCompatActivity implements Conjuga
     }
 
     private void updateRulesList() {
+        int prevSelectedPos = RecyclerView.NO_POSITION;
+        if (rulesView.getAdapter() != null) {
+            prevSelectedPos = ((ConjugationRuleRecyclerViewAdapter)rulesView.getAdapter()).getSelectedPos();
+        }
         ConjugationGenRule[] ruleList = core.getConjugationManager()
                 .getConjugationRulesForTypeAndCombId(posNode.getId(), conjugationPair.combinedId);
         List<ConjugationGenRule> rules = Arrays.asList(ruleList);
         ConjugationRuleRecyclerViewAdapter adapter = new ConjugationRuleRecyclerViewAdapter(core, rules, this);
+        adapter.setSelectedPos(prevSelectedPos);
         rulesView.setAdapter(adapter);
     }
 }

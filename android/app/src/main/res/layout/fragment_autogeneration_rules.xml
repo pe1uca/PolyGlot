@@ -66,6 +66,25 @@
                             android:inputType="text"
                             android:maxLines="1" />
                     </com.google.android.material.textfield.TextInputLayout>
+
+                    <Button
+                        android:id="@+id/btnAddTransform"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/btn_add_rule"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"/>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/transformsList"
+                        android:name="org.darisadesigns.polyglotlina.android.ui.PartsOfSpeech.Conjugations.AutogenerationRuleFragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        app:layoutManager="LinearLayoutManager"
+                        tools:listitem="@layout/fragment_inputs_delete_row"
+                        app:layout_constraintTop_toBottomOf="@id/add_row" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
         </androidx.constraintlayout.widget.ConstraintLayout>

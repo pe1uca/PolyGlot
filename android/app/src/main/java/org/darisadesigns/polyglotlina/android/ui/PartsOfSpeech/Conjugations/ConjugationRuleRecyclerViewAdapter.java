@@ -58,6 +58,15 @@ public class ConjugationRuleRecyclerViewAdapter extends RecyclerView.Adapter<Con
         return items.size();
     }
 
+    public void setSelectedPos(int selectedPos) {
+        this.selectedPos = selectedPos;
+        notifyItemChanged(selectedPos);
+    }
+
+    public int getSelectedPos(){
+        return this.selectedPos;
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView vDisplay;
