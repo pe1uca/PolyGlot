@@ -109,6 +109,7 @@ public class AutogenerationActivity extends AppCompatActivity implements Conjuga
         CoordinatorLayout coordinatorLayout = findViewById(R.id.coordinatorLayout);
         ScrollView scrollView = findViewById(R.id.scrollView);
         FragmentContainerView ruleContainerView = findViewById(R.id.rule_info_fragment_container_view);
+        AutogenerationRuleFragment ruleFragment = (AutogenerationRuleFragment) getSupportFragmentManager().findFragmentById(R.id.rule_info_fragment_container_view);
         AppBarLayout appBarLayout = findViewById(R.id.appBarLayout);
         TextView sheetPeek = findViewById(R.id.sheetPeek);
         LinearLayout bottomSheetLayout = findViewById(R.id.bottomSheet);
@@ -127,6 +128,10 @@ public class AutogenerationActivity extends AppCompatActivity implements Conjuga
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 if (BottomSheetBehavior.STATE_COLLAPSED != newState) return;
+                if (ruleFragment == null || !ruleFragment.isRuleValid()) {
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    return;
+                }
                 updateRulesList();
             }
 

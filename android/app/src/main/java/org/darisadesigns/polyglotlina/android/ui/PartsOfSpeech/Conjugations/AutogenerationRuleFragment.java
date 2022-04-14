@@ -19,6 +19,7 @@ import android.widget.TextView;
 import org.darisadesigns.polyglotlina.DictCore;
 import org.darisadesigns.polyglotlina.Nodes.ConjugationGenRule;
 import org.darisadesigns.polyglotlina.Nodes.ConjugationGenTransform;
+import org.darisadesigns.polyglotlina.android.AndroidInfoBox;
 import org.darisadesigns.polyglotlina.android.AndroidPropertiesManager;
 import org.darisadesigns.polyglotlina.android.PolyGlot;
 import org.darisadesigns.polyglotlina.android.R;
@@ -27,6 +28,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 public class AutogenerationRuleFragment extends Fragment implements RuleTransformRecyclerViewAdapter.OnItemClickListener {
 
@@ -130,6 +133,39 @@ public class AutogenerationRuleFragment extends Fragment implements RuleTransfor
 
         RuleTransformRecyclerViewAdapter adapter = new RuleTransformRecyclerViewAdapter(core, transforms, this);
         transformsView.setAdapter(adapter);
+    }
+
+    public boolean isRuleValid() {
+        if (null == this.conjugationGenRule) return true;
+        StringBuilder sb = new StringBuilder();
+        boolean isValid = true;
+        try {
+            Pattern.compile(this.ruleRegex.getText().toString());
+        } catch (PatternSyntaxException e) {
+            sb.append("Invalid filter regex: ");
+            sb.append(e.getMessage());
+            sb.append('\n');
+            isValid = false;
+        }
+        for (ConjugationGenTransform transform :
+                conjugationGenRule.getTransforms()) {
+            try {
+                Pattern.compile(transform.regex);
+            } catch (PatternSyntaxException e) {
+                sb.append("Invalid rule regex '");
+                sb.append(transform.regex);
+                sb.append("' -> '");
+                sb.append(transform.replaceText);
+                sb.append("': ");
+                sb.append(e.getMessage());
+                sb.append('\n');
+                isValid = false;
+            }
+        }
+        if (!isValid) {
+            ((AndroidInfoBox)core.getOSHandler().getInfoBox()).error("Rule errors", sb.toString(), requireActivity());
+        }
+        return isValid;
     }
 
     private void addTransform() {
