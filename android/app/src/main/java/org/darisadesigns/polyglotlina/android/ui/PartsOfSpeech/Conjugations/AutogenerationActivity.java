@@ -52,6 +52,9 @@ public class AutogenerationActivity extends AppCompatActivity implements Conjuga
 
     private AutogenRulesViewModel rulesViewModel;
 
+    private final ConjugationPair deprecatedRulesSelector = new ConjugationPair("", "DEPRECATED RULES");
+    private ConjugationGenRule[] deprecatedRules;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,7 +74,7 @@ public class AutogenerationActivity extends AppCompatActivity implements Conjuga
 
         getSupportActionBar().setTitle(posNode.getValue());
 
-        ConjugationGenRule[] deprecatedRules = core.getConjugationManager().getAllDepGenerationRules(posNode.getId());
+        deprecatedRules = core.getConjugationManager().getAllDepGenerationRules(posNode.getId());
         ConjugationPair[] conjugationPairs = core.getConjugationManager().getAllCombinedIds(posNode.getId());
 
         rulesView = findViewById(R.id.rulesList);
@@ -91,6 +94,9 @@ public class AutogenerationActivity extends AppCompatActivity implements Conjuga
         AutoCompleteTextView autogenConjugations = findViewById(R.id.autogenConjugations);
         ArrayAdapter<ConjugationPair> spinnerArrayAdapter = new ArrayAdapter<>
                 (this, R.layout.list_item, conjugationPairs);
+        if (0 < deprecatedRules.length) {
+            spinnerArrayAdapter.add(deprecatedRulesSelector);
+        }
         autogenConjugations.setAdapter(spinnerArrayAdapter);
         conjugationPair = conjugationPairs[0];
         autogenConjugations.setText(conjugationPair.toString(), false);
@@ -102,6 +108,7 @@ public class AutogenerationActivity extends AppCompatActivity implements Conjuga
                             posNode.getId()
                     )
             );
+            rulesViewModel.updateData(null);
             updateRulesList();
         });
         updateRulesList();
@@ -195,8 +202,14 @@ public class AutogenerationActivity extends AppCompatActivity implements Conjuga
         if (rulesView.getAdapter() != null) {
             prevSelectedPos = ((ConjugationRuleRecyclerViewAdapter)rulesView.getAdapter()).getSelectedPos();
         }
-        ConjugationGenRule[] ruleList = core.getConjugationManager()
-                .getConjugationRulesForTypeAndCombId(posNode.getId(), conjugationPair.combinedId);
+        ConjugationGenRule[] ruleList;
+        if (conjugationPair == deprecatedRulesSelector) {
+            ruleList = deprecatedRules;
+        }
+        else {
+            ruleList = core.getConjugationManager()
+                    .getConjugationRulesForTypeAndCombId(posNode.getId(), conjugationPair.combinedId);
+        }
         List<ConjugationGenRule> rules = Arrays.asList(ruleList);
         ConjugationRuleRecyclerViewAdapter adapter = new ConjugationRuleRecyclerViewAdapter(core, rules, this);
         adapter.setSelectedPos(prevSelectedPos);
