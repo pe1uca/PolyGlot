@@ -45,6 +45,7 @@ public class AutogenerationActivity extends AppCompatActivity implements Conjuga
     public static final String POS_ID_EXTRA = "part-of-speech-id";
 
     private RecyclerView rulesView;
+    private BottomSheetBehavior<LinearLayout> bottomSheetBehavior;
 
     private DictCore core;
     private TypeNode posNode;
@@ -120,7 +121,7 @@ public class AutogenerationActivity extends AppCompatActivity implements Conjuga
         AppBarLayout appBarLayout = findViewById(R.id.appBarLayout);
         TextView sheetPeek = findViewById(R.id.sheetPeek);
         LinearLayout bottomSheetLayout = findViewById(R.id.bottomSheet);
-        BottomSheetBehavior<LinearLayout> bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
         sheetPeek.setOnClickListener((view) -> {
             switch (bottomSheetBehavior.getState()) {
                 case BottomSheetBehavior.STATE_COLLAPSED:
@@ -194,7 +195,7 @@ public class AutogenerationActivity extends AppCompatActivity implements Conjuga
         newRule.setRegex(".*");
         core.getConjugationManager().addConjugationGenRule(newRule);
         rulesViewModel.updateData(newRule);
-        updateRulesList();
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
     private void updateRulesList() {

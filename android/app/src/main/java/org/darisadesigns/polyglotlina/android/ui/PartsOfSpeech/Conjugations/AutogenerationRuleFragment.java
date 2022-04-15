@@ -1,5 +1,6 @@
 package org.darisadesigns.polyglotlina.android.ui.PartsOfSpeech.Conjugations;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -175,13 +176,25 @@ public class AutogenerationRuleFragment extends Fragment implements RuleTransfor
 
     @Override
     public void onItemDeleteClick(ConjugationGenTransform item) {
-        List<ConjugationGenTransform> transforms = ((RuleTransformRecyclerViewAdapter) Objects.requireNonNull(transformsView.getAdapter())).getItems();
-        conjugationGenRule.wipeTransforms();
-        transforms.stream()
-                .filter(conjugationGenTransform -> conjugationGenTransform != item)
-                .forEach(conjugationGenTransform -> {
-                    conjugationGenRule.addTransform(conjugationGenTransform);
-                });
-        updateTransformsList();
+        ((AndroidInfoBox)core.getOSHandler().getInfoBox()).yesNoCancel(
+                "Are you sure?",
+                "Do you want to delete this transform?\nThis action can't be undone.",
+                requireActivity(),
+                (dialog, which) -> {
+                    if (which != DialogInterface.BUTTON_POSITIVE) {
+                        return;
+                    }
+                    RuleTransformRecyclerViewAdapter adapter = (RuleTransformRecyclerViewAdapter) Objects.requireNonNull(transformsView.getAdapter());
+                    List<ConjugationGenTransform> transforms = (adapter).getItems();
+                    conjugationGenRule.wipeTransforms();
+                    transforms.stream()
+                            .filter(conjugationGenTransform -> conjugationGenTransform != item)
+                            .forEach(conjugationGenTransform -> {
+                                conjugationGenRule.addTransform(conjugationGenTransform);
+                            });
+                    updateTransformsList();
+                }
+        );
+
     }
 }

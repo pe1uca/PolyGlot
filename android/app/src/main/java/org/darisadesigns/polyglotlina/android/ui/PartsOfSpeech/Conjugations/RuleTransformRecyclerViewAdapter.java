@@ -44,7 +44,6 @@ public class RuleTransformRecyclerViewAdapter extends RecyclerView.Adapter<RuleT
     public void onBindViewHolder(final ViewHolder holder, int position) {
         ConjugationGenTransform transform = items.get(position);
         holder.vTxtLeft.setText(transform.regex);
-        ((AndroidPropertiesManager)core.getPropertiesManager()).setConViewTypeface(holder.vTxtLeft);
         holder.vTxtLeft.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -62,7 +61,11 @@ public class RuleTransformRecyclerViewAdapter extends RecyclerView.Adapter<RuleT
             }
         });
         holder.vTxtRight.setText(transform.replaceText);
-        ((AndroidPropertiesManager)core.getPropertiesManager()).setConViewTypeface(holder.vTxtRight);
+        if (!core.getPropertiesManager().isOverrideRegexFont()) {
+            AndroidPropertiesManager propertiesManager = (AndroidPropertiesManager)core.getPropertiesManager();
+            propertiesManager.setConViewTypeface(holder.vTxtLeft);
+            propertiesManager.setConViewTypeface(holder.vTxtRight);
+        }
         holder.vTxtRight.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

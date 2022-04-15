@@ -125,6 +125,7 @@
     <string name="check_tooltip_disable_word_form">Disables and hide this conjugation.</string>
     <string name="label_transform_regex">Regex</string>
     <string name="label_transform_replace">Replacement</string>
+    <string name="btn_add_transform">Add transform</string>
 
     <!-- Toasts -->
     <string name="toast_lexeme_errors">Invalid word. Press back again to delete it.</string>
