@@ -115,17 +115,22 @@
     <string name="check_tooltip_dimensionless">If this is a dimensionless form, such as a gerund.</string>
 
     <string name="error_pos_name_empty">Name can\'t be empty</string>
-    
+
     <!-- Autogeneration -->
     <string name="label_autogen_rule_name">Rule name</string>
     <string name="label_autogen_rule_regex">Filter regex</string>
     <string name="rule_information">Rule information</string>
-    <string name="label_autogen_word_forms">Word form</string>
-    <string name="check_disable_word_form">Disable word form</string>
+    <string name="label_autogen_wordforms">Wordform</string>
+    <string name="check_disable_wordform">Disable wordform</string>
     <string name="check_tooltip_disable_word_form">Disables and hide this conjugation.</string>
     <string name="label_transform_regex">Regex</string>
     <string name="label_transform_replace">Replacement</string>
     <string name="btn_add_transform">Add transform</string>
+    <string name="btn_test_wordform">Test wordform</string>
+
+    <string name="label_test_form_base_word">Base test word</string>
+    <string name="label_test_form_generated_word">Generated word</string>
+    <string name="btn_run_test_wordform">Run test</string>
 
     <!-- Toasts -->
     <string name="toast_lexeme_errors">Invalid word. Press back again to delete it.</string>

@@ -148,6 +148,11 @@ public class AutogenerationActivity extends AppCompatActivity implements Conjuga
 
             }
         });
+
+        Button btnTestWordform = findViewById(R.id.btnTestWordForm);
+        btnTestWordform.setOnClickListener(v -> {
+            startActivity(TestWordformActivity.getIntent(this, posNode.getId(), conjugationPair));
+        });
         var ref = new Object() {
             boolean firstEvent = true;
         };

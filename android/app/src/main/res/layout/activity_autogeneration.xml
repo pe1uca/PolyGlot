@@ -52,7 +52,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="4dp"
-                            android:hint="@string/label_autogen_word_forms"
+                            android:hint="@string/label_autogen_wordforms"
                             app:errorEnabled="true"
                             tools:layout_editor_absoluteX="4dp" >
 
@@ -63,11 +63,19 @@
                                 android:inputType="none" />
                         </com.google.android.material.textfield.TextInputLayout>
 
+                        <Button
+                            android:id="@+id/btnTestWordForm"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="@string/btn_test_wordform"
+                            style="@style/Widget.MaterialComponents.Button.TextButton"/>
+
                         <CheckBox
                             android:id="@+id/chkDisableForm"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/check_disable_word_form"
+                            android:text="@string/check_disable_wordform"
                             android:tooltipText="@string/check_tooltip_disable_word_form"/>
 
                         <Button

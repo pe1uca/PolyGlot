@@ -37,18 +37,25 @@
         </activity>
         <activity
             android:name=".ui.PartsOfSpeech.Conjugations.AutogenerationActivity"
-            android:exported="false"
+            android:launchMode="singleTop"
             android:label="Autogeneration"
-            android:theme="@style/Theme.PolyGlot.NoActionBar" >
+            android:theme="@style/Theme.PolyGlot.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.PartsOfSpeech.POSInfoActivity" />
         </activity>
         <activity
+            android:name=".ui.PartsOfSpeech.Conjugations.TestWordformActivity"
+            android:theme="@style/Theme.PolyGlot.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.PartsOfSpeech.Conjugations.AutogenerationActivity" />
+        </activity>
+        <activity
             android:name=".ui.PartsOfSpeech.Conjugations.AutogenerationSimpleActivity"
             android:exported="false"
             android:label="Autogeneration simple"
-            android:theme="@style/Theme.PolyGlot.NoActionBar" >
+            android:theme="@style/Theme.PolyGlot.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.PartsOfSpeech.POSInfoActivity" />
