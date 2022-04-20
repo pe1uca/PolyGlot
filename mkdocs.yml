@@ -1,0 +1,8 @@
+site_name: PolyGlot
+theme: readthedocs
+nav:
+  - index.md
+  - Android:
+    - android/index.md
+    - android/properties.md
+    - android/lexicon.md
