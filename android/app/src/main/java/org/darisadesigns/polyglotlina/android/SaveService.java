@@ -87,9 +87,10 @@ public class SaveService extends Service {
             editor.putString(getString(R.string.settings_key_tmp_file), tmpFilePath);
             editor.apply();
         }
-        Log.e(TAG, "saveToTmpFile: saving");
+        if (core.getPropertiesManager().getFontStyle() == null) {
+            core.getPropertiesManager().setFontStyle(0);
+        }
         core.writeFile(tmpFilePath, false);
-        Log.e(TAG, "saveToTmpFile: saved");
     }
 
     @Override

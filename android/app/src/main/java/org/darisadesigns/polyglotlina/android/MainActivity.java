@@ -376,6 +376,9 @@ public class MainActivity extends AppCompatActivity {
             editor.putString(getString(R.string.settings_key_tmp_file), tmpFilePath);
             editor.apply();
         }
+        if (core.getPropertiesManager().getFontStyle() == null) {
+            core.getPropertiesManager().setFontStyle(0);
+        }
         core.writeFile(tmpFilePath, false);
         return tmpFilePath;
     }
