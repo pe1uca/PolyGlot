@@ -12,5 +12,7 @@
 As the creator of PolyGlot says, this tool set will help you build your own constructed languages.  
 Being an open source project I took the initiative to port this great application to Android.  
 
+This version can be downloaded from the [github releases page](https://github.com/pe1uca/PolyGlot/releases) or directly from the [Google play store](https://play.google.com/store/apps/details?id=org.darisadesigns.polyglotlina.android)
+
 You can find the [source code in github](https://github.com/pe1uca/PolyGlot/tree/android) where you can [report issues or suggestions](https://github.com/pe1uca/PolyGlot/issues).  
 You can also contact me at <pe1ucadev@gmail.com> or on [reddit](https://www.reddit.com/user/pe1uca).  

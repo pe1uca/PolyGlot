@@ -1,4 +1,4 @@
-# Starting to use PolyGlot  
+# Starting to use PolyGlot in Android  
 
 PolyGlot for android welcomes you directly in the screen to start configuring your new conlang.  
 
