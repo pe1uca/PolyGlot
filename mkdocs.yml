@@ -6,3 +6,7 @@ nav:
     - android/index.md
     - android/properties.md
     - android/lexicon.md
+    - android/lexeme-utilities.md
+    - android/pos.md
+    - android/pos-inflections.md    
+    - android/inflection-auto-generation.md    

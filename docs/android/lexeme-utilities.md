@@ -3,10 +3,11 @@
 This is a collection of small screens that show some tools to use your lexeme.  
 
 You can find this menu in the bottom part of the [lexeme info screen](lexicon.md#lexeme-info-screen).  
+Click the button "Lexeme utilities" to see the list.  
 
 ## Conjugation   
 
-Auto-generation of conjugations/declensions for the [part of speech](pos.md) of this lexeme is used in these screens.  
+[Auto-generation of conjugations/declensions](inflection-auto-generation.md) for the [part of speech](pos.md) of this lexeme is used in these screens.  
 
 ### Tables  
 

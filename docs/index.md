@@ -5,12 +5,15 @@
 > Welcome to PolyGlot, an [open source](https://github.com/DraqueT/PolyGlot) tool set that helps to build constructed languages! PolyGlot is a project that I have been working on for some time, and it continues to become more stable and capable with each release. If you have ideas, find bugs, or have any comments at all, please feel free to email me at <draquemail@gmail.com> or post them on [PolyGlot's issues page](https://github.com/DraqueT/PolyGlot/issues)!  
 <div style="text-align: right">Draque Thompson</div>
 
-<br><br>
+<br><br>  
+PolyGlot heavily uses regexes, the site [regex101.com](https://regex101.com/) is recommended.  
 
 ## Android version
 <div style="text-align: right">By pe1uca</div><br>
 As the creator of PolyGlot says, this tool set will help you build your own constructed languages.  
 Being an open source project I took the initiative to port this great application to Android.  
+
+With PolyGlot for desktop already having a great number of tools, and the Android version being relatively new, there is a lot of functionality that is still being ported.  
 
 This version can be downloaded from the [github releases page](https://github.com/pe1uca/PolyGlot/releases) or directly from the [Google play store](https://play.google.com/store/apps/details?id=org.darisadesigns.polyglotlina.android)
 

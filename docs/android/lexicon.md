@@ -38,7 +38,7 @@ They filter based on your [lexeme properties](#lexeme-properties) as follows:
 	</p>  
 </div>  
 
-In the top right corner you'll see a trash, click it to delete this lexeme (This can not be undone).  
+In the top right corner you'll see a trash can, click it to delete this lexeme (This can not be undone).  
 
 When you click the back button PolyGlot will validate the lexeme.  
 If it's valid the lexeme will be saved and you'll return to your lexicon.  
