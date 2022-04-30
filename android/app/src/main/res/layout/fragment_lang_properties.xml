@@ -166,7 +166,8 @@
                         android:layout_margin="4dp"
                         android:hint="@string/label_kerning"
                         app:layout_constraintTop_toTopOf="parent"
-                        tools:layout_editor_absoluteX="4dp">
+                        tools:layout_editor_absoluteX="4dp"
+                        android:visibility="gone">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/txtKerning"
