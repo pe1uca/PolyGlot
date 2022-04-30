@@ -15,6 +15,7 @@ import org.darisadesigns.polyglotlina.Nodes.ConWord;
 import org.darisadesigns.polyglotlina.Nodes.ConjugationGenRule;
 import org.darisadesigns.polyglotlina.Nodes.ConjugationPair;
 import org.darisadesigns.polyglotlina.android.AndroidInfoBox;
+import org.darisadesigns.polyglotlina.android.AndroidPropertiesManager;
 import org.darisadesigns.polyglotlina.android.PolyGlot;
 import org.darisadesigns.polyglotlina.android.R;
 
@@ -65,6 +66,9 @@ public class TestWordformActivity extends AppCompatActivity {
         this.txtWord = findViewById(R.id.txtTestWord);
         this.txtGenerated = findViewById(R.id.txtGenerated);
         this.txtDebug = findViewById(R.id.txtDebug);
+        AndroidPropertiesManager manager = ((AndroidPropertiesManager)core.getPropertiesManager());
+        manager.setConViewTypeface(this.txtWord);
+        manager.setConViewTypeface(this.txtGenerated);
         Button btnTest = findViewById(R.id.btnRunTest);
         btnTest.setOnClickListener(v -> {
             testWord();
