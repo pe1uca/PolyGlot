@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,6 +21,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import org.darisadesigns.polyglotlina.DictCore;
 import org.darisadesigns.polyglotlina.Nodes.TypeNode;
+import org.darisadesigns.polyglotlina.android.AndroidInfoBox;
 import org.darisadesigns.polyglotlina.android.AndroidPGTUtil;
 import org.darisadesigns.polyglotlina.android.PolyGlot;
 import org.darisadesigns.polyglotlina.android.R;
@@ -74,16 +76,26 @@ public class POSInfoActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_delete:
-                try {
-                    core.getTypes().deleteNodeById(posNode.getId());
-                    finish();
-                } catch (Exception e) {
-                    core.getOSHandler().getIOHandler().writeErrorLog(e);
-                    core.getOSHandler().getInfoBox().error(
-                            "Deletion Error",
-                            "Unable to delete part of speech: " + e.getLocalizedMessage()
-                    );
-                }
+                ((AndroidInfoBox)core.getOSHandler().getInfoBox()).yesNoCancel(
+                        "Are you sure?",
+                        "Do you want to delete this PoS?\nThis action can't be undone.",
+                        this,
+                        (dialog, which) -> {
+                            if (which != DialogInterface.BUTTON_POSITIVE) {
+                                return;
+                            }
+                            try {
+                                core.getTypes().deleteNodeById(posNode.getId());
+                                finish();
+                            } catch (Exception e) {
+                                core.getOSHandler().getIOHandler().writeErrorLog(e);
+                                core.getOSHandler().getInfoBox().error(
+                                        "Deletion Error",
+                                        "Unable to delete part of speech: " + e.getLocalizedMessage()
+                                );
+                            }
+                        }
+                );
                 return true;
             case R.id.action_autogenerate_simple:
                 Intent autogenerateSimpleIntent = new Intent(this, AutogenerationSimpleActivity.class);

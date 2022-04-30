@@ -166,8 +166,18 @@ public class POSConjugationInfoActivity extends AppCompatActivity implements POS
 
     @Override
     public void onItemDeleteClick(ConjugationDimension item) {
-        conjugationNode.deleteDimension(item.getId());
-        updateDimensionsList();
+        ((AndroidInfoBox)core.getOSHandler().getInfoBox()).yesNoCancel(
+                "Are you sure?",
+                "Do you want to delete this dimension?\nThis action can't be undone.",
+                this,
+                (dialog, which) -> {
+                    if (which != DialogInterface.BUTTON_POSITIVE) {
+                        return;
+                    }
+                    conjugationNode.deleteDimension(item.getId());
+                    updateDimensionsList();
+                }
+        );
     }
 
     private boolean isValid() {
