@@ -13,15 +13,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.EditText;
 
 import com.google.android.material.textfield.TextInputEditText;
 
 import org.darisadesigns.polyglotlina.DictCore;
 import org.darisadesigns.polyglotlina.ManagersCollections.PropertiesManager;
+import org.darisadesigns.polyglotlina.android.AndroidInfoBox;
 import org.darisadesigns.polyglotlina.android.R;
 
 public class LangPropertiesFragment extends Fragment {
+
+    private DictCore core;
 
     private PViewModel pViewModel;
     private EditorViewModel editorViewModel;
@@ -64,10 +66,24 @@ public class LangPropertiesFragment extends Fragment {
         HTMLEditorFragment htmlEditor = HTMLEditorFragment.newInstance(getResources().getString(R.string.label_author));
         transaction.replace(R.id.fragment_container_view, htmlEditor).commit();
 
+        chkPosMandatory.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (!isChecked) return;
+            if (core.getTypes().getNodes().length > 0) return;
+            ((AndroidInfoBox)core.getOSHandler().getInfoBox()).error(
+                    "PoS not registered",
+                    "There are no Parts of speech registered,\n" +
+                            "this will make your words invalid and have them removed by accident.\n" +
+                            "Set up at least one PoS before turning on this flag.",
+                    requireActivity()
+            );
+            chkPosMandatory.setChecked(false);
+        });
+
         pViewModel.getLiveCore().observe(getViewLifecycleOwner(), new Observer<DictCore>() {
             @Override
             public void onChanged(@Nullable DictCore core) {
                 if (core != null) {
+                    LangPropertiesFragment.this.core = core;
                     PropertiesManager manager = core.getPropertiesManager();
                     txtLangName.setText(manager.getLangName());
                     txtLocalLang.setText(manager.getLocalLangName());
