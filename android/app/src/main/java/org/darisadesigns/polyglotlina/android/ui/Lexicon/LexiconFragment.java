@@ -35,6 +35,7 @@ import org.darisadesigns.polyglotlina.DictCore;
 import org.darisadesigns.polyglotlina.ManagersCollections.ConWordCollection;
 import org.darisadesigns.polyglotlina.Nodes.ConWord;
 import org.darisadesigns.polyglotlina.Nodes.TypeNode;
+import org.darisadesigns.polyglotlina.android.AndroidPGTUtil;
 import org.darisadesigns.polyglotlina.android.R;
 import org.darisadesigns.polyglotlina.android.ui.PViewModel;
 
@@ -120,6 +121,7 @@ public class LexiconFragment extends Fragment implements LexemeRecyclerViewAdapt
         inflater.inflate(R.menu.search, menu);
         MenuItem menuItem = menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) menuItem.getActionView();
+        ((AndroidPGTUtil)core.getPGTUtil()).fixAutocompleteBackground(searchView, requireContext());
         String[] sAutocompleteColNames = new String[] {
                 BaseColumns._ID,                         // necessary for adapter
                 SearchManager.SUGGEST_COLUMN_TEXT_1      // the full search term
