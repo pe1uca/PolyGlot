@@ -104,6 +104,15 @@ public class POSInfoActivity extends AppCompatActivity {
                 startActivity(autogenerateSimpleIntent);
                 return true;
             case R.id.action_autogenerate_classic:
+                if (core.getConjugationManager().getFullConjugationListTemplate(posNode.getId()).length <= 0) {
+                    ((AndroidInfoBox)core.getOSHandler().getInfoBox()).error(
+                            "Invalid state",
+                            "PoS doesn't have conjugation/declensions.\n" +
+                                    "Finish the set up to access the autogeneration screen",
+                            this
+                    );
+                    return true;
+                }
                 Intent autogenerateIntent = new Intent(this, AutogenerationActivity.class);
                 autogenerateIntent.putExtra(AutogenerationActivity.POS_ID_EXTRA, posNode.getId());
                 startActivity(autogenerateIntent);
