@@ -3,6 +3,7 @@
 Here you'll find the complete list of words you've included in your conlang.  
 You'll be able to filter them and manage them.  
 
+![lexicon](/img/lexicon.png)
 <p align="center">  
 	<img src="/img/lexicon.png" alt="Lexicon" width="250"/>  
 </p>  
