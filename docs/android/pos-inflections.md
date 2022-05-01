@@ -8,7 +8,7 @@
 Inflections are managed inside the [part of speech screen](pos.md#pos-info-screen).  
 
 <p align="center">  
-	<img src="/img/arrow_pos_inflections.png" alt="PoS access auto-generation" width="250"/>  
+	<img src="../../img/arrow_pos_inflections.png" alt="PoS access auto-generation" width="250"/>  
 </p>  
 
 <div class="admonition note">  
@@ -25,7 +25,7 @@ You'll be asked to provide a name for this inflection.
 After that you'll see the inflection information screen.  
 
 <p align="center">  
-	<img src="/img/pos_inflection_info.png" alt="PoS inflection info" width="250"/>  
+	<img src="../../img/pos_inflection_info.png" alt="PoS inflection info" width="250"/>  
 </p>  
 
 ### Inflection properties  

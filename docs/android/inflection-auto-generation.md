@@ -11,7 +11,7 @@ It's recommended that you keep it simple and just have a single rule with a sing
 From a [PoS info screen](pos.md#pos-info-screen), click the 3 dots in the top right corner of the screen, you'll find the menu to access the auto-generation rules.  
 
 <p align="center">  
-	<img src="/img/arrow_pos_context_menu.png" alt="Point to PoS context menu" width="500"/>  
+	<img src="../../img/arrow_pos_context_menu.png" alt="Point to PoS context menu" width="500"/>  
 </p>  
 
 ## Testing the auto-generation    
@@ -20,7 +20,7 @@ You can access the [lexeme utility](lexeme-utilities.md#conjugation) after setti
 Or you can quickly test any string in the "Text wordform" screen.  
 
 <p align="center">  
-	<img src="/img/autogen_test.png" alt="Auto-generation test" width="250"/>  
+	<img src="../../img/autogen_test.png" alt="Auto-generation test" width="250"/>  
 </p>  
 
 - **Base test word**  
@@ -36,7 +36,7 @@ Or you can quickly test any string in the "Text wordform" screen.
 ## Setting up the auto-generation  
 
 <p align="center">  
-	<img src="/img/autogen_form_info.png" alt="Auto-generation wordform info" width="250"/>  
+	<img src="../../img/autogen_form_info.png" alt="Auto-generation wordform info" width="250"/>  
 </p>  
 
 The dropdown **Wordform** lists the combinations of each dimension of each inflection you have configured.  
@@ -50,7 +50,7 @@ The list of rules will show up below this button, to remove a rule you can click
 ### Rule information  
 
 <p align="center">  
-	<img src="/img/autogen_rule.png" alt="Auto-generation rule info" width="250"/>  
+	<img src="../../img/autogen_rule.png" alt="Auto-generation rule info" width="250"/>  
 </p>  
 
 - **Rule name**  

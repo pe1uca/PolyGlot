@@ -5,7 +5,7 @@ This is the first screen that you'll see when you open PolyGlot.
 Here you'll find the description of your conlang as well as some options of how the app behaves.  
 
 <p align="center">  
-	<img src="/img/main_screen.png" alt="Language properties" width="250"/>  
+	<img src="../../img/main_screen.png" alt="Language properties" width="250"/>  
 </p>  
 
 ### Properties  

@@ -6,7 +6,7 @@ You can find this menu in the bottom part of the [lexeme info screen](lexicon.md
 Click the button "Lexeme utilities" to see the list.  
 
 <p align="center">  
-	<img src="/img/lexeme_utilities.png" alt="Lexeme utilities" width="500"/>  
+	<img src="../../img/lexeme_utilities.png" alt="Lexeme utilities" width="500"/>  
 </p>  
 
 ## Conjugation   
@@ -18,7 +18,7 @@ Click the button "Lexeme utilities" to see the list.
 This screen will show all the possible conjugations/declensions this part of speech has.  
 
 <p align="center">  
-	<img src="/img/lexeme_inflections.png" alt="Lexeme inflection tables" width="300"/>  
+	<img src="../../img/lexeme_inflections.png" alt="Lexeme inflection tables" width="300"/>  
 </p>  
 
 If your part of speech is configured with one conjugation class this will show a simple table.  
@@ -35,7 +35,7 @@ If you have multiple conjugations classes this screen will have dropdowns and ta
 This screen will only show you a single conjugation/declension based on the conjugation classes configured for the part of speech this lexeme has.  
 
 <p align="center">  
-	<img src="/img/lexeme_inflections_selectors.png" alt="Lexeme inflection selectors" width="300"/>  
+	<img src="../../img/lexeme_inflections_selectors.png" alt="Lexeme inflection selectors" width="300"/>  
 </p>  
 
 <div class="admonition note">  
@@ -48,7 +48,7 @@ This screen will only show you a single conjugation/declension based on the conj
 You can visualize the roots (etymons) and derivatives this lexeme has.  
 
 <p align="center">  
-	<img src="/img/lexeme_etymology.png" alt="Lexeme etymology" width="250"/>  
+	<img src="../../img/lexeme_etymology.png" alt="Lexeme etymology" width="250"/>  
 </p>  
 
 Add a root from your conlang with the "+" button in the bottom right corner.  

@@ -8,7 +8,7 @@
 Part of speech (PoS) should not be confused with noun classes (a.k.a grammatical gender).  
 
 <p align="center">  
-	<img src="/img/pos.png" alt="Parts of speech" width="250"/>  
+	<img src="../../img/pos.png" alt="Parts of speech" width="250"/>  
 </p>  
 
 ## Adding a PoS  
@@ -33,7 +33,7 @@ Once you have a PoS listed in for your conlang, you'll be able to click on it to
 </div>  
 
 <p align="center">  
-	<img src="/img/pos_info.png" alt="Part of speech info" width="250"/>  
+	<img src="../../img/pos_info.png" alt="Part of speech info" width="250"/>  
 </p>  
 
 In the top right corner you'll see a trash can, click it to delete this PoS (This can not be undone).  
