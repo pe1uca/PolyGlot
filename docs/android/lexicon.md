@@ -3,10 +3,18 @@
 Here you'll find the complete list of words you've included in your conlang.  
 You'll be able to filter them and manage them.  
 
+<p align="center">  
+	<img src="/img/lexicon.png" alt="Lexicon" width="250"/>  
+</p>  
+
 ## Adding your first word  
 
 In the bottom right corner you'll find the "+" button to add a word in your lexicon.  
 When you click it you'll be taken to the [lexeme info screen](#lexeme-info-screen), where you'll be able to add the information about your lexeme.  
+
+<p align="center">  
+	<img src="/img/arrow_lexicon_fab.png" alt="Lexicon add word button" width="500"/>  
+</p>  
 
 ## Editing an existing word  
 
@@ -16,15 +24,31 @@ Once you have a word listed in your lexicon, you'll be able to click on it to op
 
 In the top right corner your find a magnifying glass, click it to open the search bar.  
 
+<p align="center">  
+	<img src="/img/arrow_lexicon_search.png" alt="Lexicon search bar" width="500"/>  
+</p>  
+
 You can start typing to filter your lexicon by your conlang words.  
 
+<p align="center">  
+	<img src="/img/lexicon_search.png" alt="Lexicon search autocomplete" width="250"/>  
+</p>  
+
 There are other types of filters that show up as you keep typing.  
-If you click one the type will be appended at the start of your search.
-They filter based on your [lexeme properties](#lexeme-properties) as follows:
+If you click one the type will be appended at the start of your search.  
+They filter based on your [lexeme properties](#lexeme-properties) as follows:  
 - `local:` The local language word of the lexeme.  
 - `def:` The definition of the lexeme.  
 - `pos:` The part of speech (a list of your parts of speech will show up to and filter as you type).  
 - `pronunciation:` The pronunciation of the lexeme.  
+
+<div class="admonition note">  
+	<p class="admonition-title">Tip</p>  
+	<p>Part of speech filter shows in the autocomplete the list from your conlang.</p>  
+	<p align="center">  
+		<img src="/img/lexicon_search_pos.png" alt="Lexicon search PoS autocomplete" width="250"/>  
+	</p>  
+</div>  
 
 ## Lexeme info screen  
 
@@ -37,6 +61,10 @@ They filter based on your [lexeme properties](#lexeme-properties) as follows:
 		it'll be deleted when you double click the back button.  
 	</p>  
 </div>  
+
+<p align="center">  
+	<img src="/img/lexeme_info.png" alt="Lexeme info screen" width="250"/>  
+</p>  
 
 In the top right corner you'll see a trash can, click it to delete this lexeme (This can not be undone).  
 

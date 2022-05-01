@@ -7,6 +7,10 @@
 
 Inflections are managed inside the [part of speech screen](pos.md#pos-info-screen).  
 
+<p align="center">  
+	<img src="/img/arrow_pos_inflections.png" alt="PoS access auto-generation" width="250"/>  
+</p>  
+
 <div class="admonition note">  
 	<p class="admonition-title">Note</p>  
 	<p>In the current version of PolyGlot android, inflections are labeled as "conjugations" or "conjugations/declensions".</p>  
@@ -19,6 +23,10 @@ This operation might need to clear up some internal values, instead of deleting 
 
 You'll be asked to provide a name for this inflection.  
 After that you'll see the inflection information screen.  
+
+<p align="center">  
+	<img src="/img/pos_inflection_info.png" alt="PoS inflection info" width="250"/>  
+</p>  
 
 ### Inflection properties  
 
