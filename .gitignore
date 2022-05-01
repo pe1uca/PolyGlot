@@ -21,3 +21,4 @@ docs/beta_builds/
 *.deb
 *.dmg
 *.exe
+/site/
