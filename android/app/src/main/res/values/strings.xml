@@ -134,6 +134,7 @@
 
     <!-- Word classes -->
     <string name="fab_add_word_class">Add new word class</string>
+    <string name="fab_add_class_value">Add new value</string>
     <string name="title_activity_word_class_info">Word class info</string>
     <string name="label_word_class_name">Class name</string>
     <string name="check_free_text_class">Free text value</string>

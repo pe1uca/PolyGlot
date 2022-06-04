@@ -6,14 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".ui.WordClasses.WordClassesFragment">
 <androidx.recyclerview.widget.RecyclerView
-    android:id="@+id/nounClassesList"
-    android:name="org.darisadesigns.polyglotlina.android.ui.NounClasses.NounClassesFragment"
+    android:id="@+id/wordClassesList"
+    android:name="org.darisadesigns.polyglotlina.android.ui.WordClasses.WordClassesFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
-    tools:listitem="@layout/fragment_base_row" />
+    tools:listitem="@layout/fragment_text_delete_row" />
 
 <com.google.android.material.floatingactionbutton.FloatingActionButton
     android:id="@+id/add_word_class"

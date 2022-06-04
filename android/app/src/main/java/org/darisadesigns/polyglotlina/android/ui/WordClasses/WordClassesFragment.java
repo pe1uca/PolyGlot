@@ -54,7 +54,7 @@ public class WordClassesFragment extends Fragment implements WordClassesRecycler
             }
         });
 
-        wordClassesRecyclerView = view.findViewById(R.id.nounClassesList);
+        wordClassesRecyclerView = view.findViewById(R.id.wordClassesList);
         Context context = view.getContext();
         wordClassesRecyclerView.setLayoutManager(new LinearLayoutManager(context));
 

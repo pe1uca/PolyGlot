@@ -2,12 +2,13 @@ package org.darisadesigns.polyglotlina.android.ui.WordClasses;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.transition.AutoTransition;
 import androidx.transition.TransitionManager;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -15,15 +16,21 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 
 import org.darisadesigns.polyglotlina.DictCore;
 import org.darisadesigns.polyglotlina.Nodes.TypeNode;
 import org.darisadesigns.polyglotlina.Nodes.WordClass;
+import org.darisadesigns.polyglotlina.Nodes.WordClassValue;
+import org.darisadesigns.polyglotlina.android.AndroidInfoBox;
 import org.darisadesigns.polyglotlina.android.PolyGlot;
 import org.darisadesigns.polyglotlina.android.R;
 
-public class WordClassInfoActivity extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.List;
+
+public class WordClassInfoActivity extends AppCompatActivity implements ClassValuesRecyclerViewAdapter.OnItemClickListener {
 
     private static final String TAG = "WordClassInfoActivity";
     public static final String WORD_CLASS_ID_EXTRA = "word-class-id";
@@ -37,9 +44,14 @@ public class WordClassInfoActivity extends AppCompatActivity {
     private CheckBox chkAssociative;
     private CheckBox chkAllPos;
 
-    private ImageButton arrow;
+    private ImageButton posArrow;
     private LinearLayout posLayout;
+    private ImageButton valuesArrow;
+    private RecyclerView valuesRecyclerView;
+    private LinearLayout valuesArrowLayout;
     private MaterialCardView infoCardView;
+
+    private FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +69,35 @@ public class WordClassInfoActivity extends AppCompatActivity {
         wordClass = core.getWordClassCollection().getNodeById(nounClassId);
         getSupportActionBar().setTitle(wordClass.getValue());
 
+        fab = findViewById(R.id.add_value);
+        fab.setOnClickListener(eventView -> {
+            ((AndroidInfoBox)core.getOSHandler().getInfoBox()).stringInputDialog(
+                    "New value",
+                    "What is the new value?",
+                    "Value",
+                    this,
+                    s -> {
+                        if (null == s || s.isEmpty()) return;
+                        try {
+                            wordClass.addValue(s);
+                            updateValuesList();
+                        } catch (Exception e) {
+                            ((AndroidInfoBox)core.getOSHandler().getInfoBox()).error(
+                                    "Couldn't add value",
+                                    e.getLocalizedMessage(),
+                                    WordClassInfoActivity.this
+                            );
+                        }
+                    }
+            );
+        });
+
         txtWordClass = findViewById(R.id.txtWordClass);
         chkFreeText = findViewById(R.id.chkFreeText);
         chkAssociative = findViewById(R.id.chkAssociative);
+
+        chkFreeText.setOnCheckedChangeListener(this::handleCheckboxes);
+        chkAssociative.setOnCheckedChangeListener(this::handleCheckboxes);
 
         txtWordClass.setText(wordClass.getValue());
         chkFreeText.setChecked(wordClass.isFreeText());
@@ -67,11 +105,17 @@ public class WordClassInfoActivity extends AppCompatActivity {
 
         chkAllPos = findViewById(R.id.chkAllPos);
         posLayout = findViewById(R.id.posLayout);
+        valuesRecyclerView = findViewById(R.id.classValuesList);
         infoCardView = findViewById(R.id.infoCardView);
-        arrow = findViewById(R.id.arrow_button);
-        LinearLayout arrowLayout = findViewById(R.id.arrow_layout);
-        arrow.setOnClickListener(view -> handleExpandable());
-        arrowLayout.setOnClickListener(view -> handleExpandable());
+        posArrow = findViewById(R.id.pos_arrow_button);
+        valuesArrow = findViewById(R.id.values_arrow_button);
+        LinearLayout posArrowLayout = findViewById(R.id.pos_arrow_layout);
+        valuesArrowLayout = findViewById(R.id.values_arrow_layout);
+
+        posArrow.setOnClickListener(view -> handlePosExpandable());
+        posArrowLayout.setOnClickListener(view -> handlePosExpandable());
+        valuesArrow.setOnClickListener(view -> handleValuesExpandable());
+        valuesArrowLayout.setOnClickListener(view -> handleValuesExpandable());
 
         chkAllPos.setOnCheckedChangeListener((compoundButton, b) -> {
             if (b) {
@@ -104,6 +148,7 @@ public class WordClassInfoActivity extends AppCompatActivity {
             posLayout.addView(posChk);
         }
         chkAllPos.setChecked(wordClass.appliesToType(-1));
+        updateValuesList();
     }
 
     @Override
@@ -115,20 +160,95 @@ public class WordClassInfoActivity extends AppCompatActivity {
         wordClass.setAssociative(chkAssociative.isChecked());
     }
 
-    private void handleExpandable() {
+    private void handlePosExpandable() {
         if (posLayout.getVisibility() == View.VISIBLE) {
             TransitionManager.beginDelayedTransition(infoCardView,
                     new AutoTransition());
             posLayout.setVisibility(View.GONE);
             chkAllPos.setVisibility(View.GONE);
-            arrow.setImageResource(R.drawable.ic_baseline_expand_more_24);
+            posArrow.setImageResource(R.drawable.ic_baseline_expand_more_24);
         }
         else {
             TransitionManager.beginDelayedTransition(infoCardView,
                     new AutoTransition());
             posLayout.setVisibility(View.VISIBLE);
             chkAllPos.setVisibility(View.VISIBLE);
-            arrow.setImageResource(R.drawable.ic_baseline_expand_less_24);
+            posArrow.setImageResource(R.drawable.ic_baseline_expand_less_24);
         }
+    }
+
+    private void handleValuesExpandable() {
+        if (valuesRecyclerView.getVisibility() == View.VISIBLE) {
+            TransitionManager.beginDelayedTransition(infoCardView,
+                    new AutoTransition());
+            valuesRecyclerView.setVisibility(View.GONE);
+            valuesArrow.setImageResource(R.drawable.ic_baseline_expand_more_24);
+        }
+        else {
+            TransitionManager.beginDelayedTransition(infoCardView,
+                    new AutoTransition());
+            valuesRecyclerView.setVisibility(View.VISIBLE);
+            valuesArrow.setImageResource(R.drawable.ic_baseline_expand_less_24);
+        }
+    }
+
+    private void handleCheckboxes(CompoundButton compoundButton, boolean b) {
+        if (compoundButton == chkFreeText && b) {
+            chkAssociative.setChecked(false);
+        }
+        if (compoundButton == chkAssociative && b) {
+            chkFreeText.setChecked(false);
+        }
+        if (chkFreeText.isChecked() || chkAssociative.isChecked()) {
+            valuesArrowLayout.setVisibility(View.GONE);
+            fab.setVisibility(View.GONE);
+            valuesRecyclerView.setVisibility(View.GONE);
+        }
+        else {
+            valuesArrowLayout.setVisibility(View.VISIBLE);
+            fab.setVisibility(View.VISIBLE);
+            handleValuesExpandable();
+        }
+    }
+
+    private void updateValuesList() {
+        List<WordClassValue> nodes = new ArrayList<>(wordClass.getValues());
+        valuesRecyclerView.setAdapter(new ClassValuesRecyclerViewAdapter(core, nodes, this));
+    }
+
+    @Override
+    public void onItemClick(WordClassValue item) {
+        ((AndroidInfoBox)core.getOSHandler().getInfoBox()).stringInputDialog(
+                "Update value",
+                "What is the replacement for this value?",
+                item.getValue(),
+                this,
+                s -> {
+                    if (null != s && !s.isEmpty()) {
+                        item.setValue(s);
+                        updateValuesList();
+                    }
+                }
+        );
+    }
+
+    @Override
+    public void onItemDeleteClick(WordClassValue item) {
+        ((AndroidInfoBox)core.getOSHandler().getInfoBox()).yesNoCancel(
+                "Are you sure?",
+                "Do you want to delete this value?\nThis action can't be undone.",
+                this,
+                (dialog, which) -> {
+                    if (which != DialogInterface.BUTTON_POSITIVE) {
+                        return;
+                    }
+                    try {
+                        wordClass.deleteValue(item.getId());
+                        updateValuesList();
+                    } catch (Exception e) {
+                      // Can be ignore
+                    }
+                }
+        );
     }
 }

@@ -76,7 +76,7 @@
                         android:tooltipText="@string/check_tooltip_associative_class"/>
 
                     <LinearLayout
-                        android:id="@+id/arrow_layout"
+                        android:id="@+id/pos_arrow_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
@@ -87,7 +87,7 @@
                             android:text="Applies to"
                             android:layout_marginTop="10dp" />
                         <ImageButton
-                            android:id="@+id/arrow_button"
+                            android:id="@+id/pos_arrow_button"
                             android:layout_weight="0"
                             android:layout_gravity="right"
                             android:layout_width="wrap_content"
@@ -109,9 +109,49 @@
                         android:orientation="vertical"
                         android:visibility="gone" />
 
+                    <LinearLayout
+                        android:id="@+id/values_arrow_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Values list"
+                            android:layout_marginTop="10dp" />
+                        <ImageButton
+                            android:id="@+id/values_arrow_button"
+                            android:layout_weight="0"
+                            android:layout_gravity="right"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_baseline_expand_more_24" />
+                    </LinearLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/classValuesList"
+                        android:name="org.darisadesigns.polyglotlina.android.ui.WordClasses.WordClassInfoActivity"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:visibility="gone"
+                        app:layoutManager="LinearLayoutManager"
+                        tools:listitem="@layout/fragment_text_delete_row" />
+
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/add_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@android:drawable/ic_input_add"
+        android:contentDescription="@string/fab_add_class_value" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
