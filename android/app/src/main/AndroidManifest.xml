@@ -19,6 +19,15 @@
             android:exported="false" ></service>
 
         <activity
+            android:name=".ui.WordClasses.WordClassInfoActivity"
+            android:label="@string/title_activity_word_class_info"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.PolyGlot.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+        <activity
             android:name=".ui.PartsOfSpeech.POSInfoActivity"
             android:label="@string/title_activity_lexeme_info"
             android:launchMode="singleTop"
@@ -37,8 +46,8 @@
         </activity>
         <activity
             android:name=".ui.PartsOfSpeech.Conjugations.AutogenerationActivity"
-            android:launchMode="singleTop"
             android:label="Autogeneration"
+            android:launchMode="singleTop"
             android:theme="@style/Theme.PolyGlot.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -104,9 +113,9 @@
         </activity>
         <activity
             android:name=".MainActivity"
+            android:exported="true"
             android:label="@string/app_name"
             android:launchMode="singleTop"
-            android:exported="true"
             android:theme="@style/Theme.PolyGlot.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

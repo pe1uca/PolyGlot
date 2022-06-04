@@ -132,6 +132,15 @@
     <string name="label_test_form_generated_word">Generated word</string>
     <string name="btn_run_test_wordform">Run test</string>
 
+    <!-- Word classes -->
+    <string name="fab_add_word_class">Add new word class</string>
+    <string name="title_activity_word_class_info">Word class info</string>
+    <string name="label_word_class_name">Class name</string>
+    <string name="check_free_text_class">Free text value</string>
+    <string name="check_tooltip_free_text_class">Makes class freely editable text instead of list of possible values.</string>
+    <string name="check_associative_class">Associative</string>
+    <string name="check_tooltip_associative_class">Makes class a link to another word in your lexicon (e.g. antonyms). </string>
+
     <!-- Toasts -->
     <string name="toast_lexeme_errors">Invalid word. Press back again to delete it.</string>
     <string name="toast_same_dimension_error">Please select differing Row and Column values.</string>

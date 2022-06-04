@@ -94,13 +94,12 @@ public class LexemeConjugationsActivity extends AppCompatActivity {
         AdapterView.OnItemSelectedListener spinnersListener = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Log.e(TAG, "item selected");
                 populateConjugationsTable();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                Log.e(TAG, "Nothing selected");
+                Log.d(TAG, "Nothing selected");
             }
         };
 

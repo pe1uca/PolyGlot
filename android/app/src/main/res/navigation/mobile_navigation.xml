@@ -25,9 +25,9 @@
 
     <fragment
         android:id="@+id/nav_classes"
-        android:name="org.darisadesigns.polyglotlina.android.ui.SoonFragment"
+        android:name="org.darisadesigns.polyglotlina.android.ui.WordClasses.WordClassesFragment"
         android:label="@string/menu_classes"
-        tools:layout="@layout/fragment_soon" />
+        tools:layout="@layout/fragment_word_classes" />
 
     <fragment
         android:id="@+id/nav_grammar"
