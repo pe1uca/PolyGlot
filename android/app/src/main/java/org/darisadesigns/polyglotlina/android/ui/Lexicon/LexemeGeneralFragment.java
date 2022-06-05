@@ -1,7 +1,12 @@
 package org.darisadesigns.polyglotlina.android.ui.Lexicon;
 
+import static android.app.Activity.RESULT_OK;
+
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
@@ -34,6 +39,9 @@ import org.darisadesigns.polyglotlina.android.PolyGlot;
 import org.darisadesigns.polyglotlina.android.R;
 import org.darisadesigns.polyglotlina.android.ui.EditorViewModel;
 import org.darisadesigns.polyglotlina.android.ui.HTMLEditorFragment;
+import org.darisadesigns.polyglotlina.android.ui.WordClasses.SelectAssocLexemeActivity;
+
+import java.util.HashMap;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -63,9 +71,22 @@ public class LexemeGeneralFragment extends Fragment {
     private TextInputLayout posInputLayout;
     private AutoCompleteTextView posAutocomplete;
 
+    private final HashMap<Integer, TextInputEditText> assocClassesTextMap = new HashMap<>();
+
     private TextView errorMessage;
 
     private boolean forceUpdate = false;
+
+    ActivityResultLauncher<Intent> resultAssocClass = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK) {
+                    Intent data = result.getData();
+                    int classId = data.getIntExtra(SelectAssocLexemeActivity.WORD_CLASS_EXTRA, -1);
+                    int wordId = data.getIntExtra(SelectAssocLexemeActivity.ASSOC_WORD_ID_EXTRA, -1);
+                    updateAssocClassValue(classId, wordId);
+                }
+            }
+    );
 
     public static LexemeGeneralFragment newInstance() {
         return new LexemeGeneralFragment();
@@ -273,7 +294,7 @@ public class LexemeGeneralFragment extends Fragment {
             int classId = curClass.getId();
             View classInputLayout;
             if (curClass.isFreeText()) {
-                classInputLayout = getLayoutInflater().inflate(R.layout.class_free_text, classesLinearLayout);
+                classInputLayout = getLayoutInflater().inflate(R.layout.class_free_text, classesLinearLayout, false);
                 TextInputLayout txtInputLayout = classInputLayout.findViewById(R.id.textInputLayout);
                 txtInputLayout.setHint(curClass.getValue());
                 TextInputEditText txtClass = classInputLayout.findViewById(R.id.txtClass);
@@ -292,9 +313,30 @@ public class LexemeGeneralFragment extends Fragment {
                 });
 
                 txtClass.setText(conWord.getClassTextValue(classId));
+                classesLinearLayout.addView(classInputLayout);
+            }
+            else if (curClass.isAssociative()) {
+                classInputLayout = getLayoutInflater().inflate(R.layout.class_free_text, classesLinearLayout, false);
+                TextInputLayout txtInputLayout = classInputLayout.findViewById(R.id.textInputLayout);
+                txtInputLayout.setHint(curClass.getValue());
+                TextInputEditText txtClass = classInputLayout.findViewById(R.id.txtClass);
+                txtClass.setFocusable(false);
+                int assocWordId = conWord.getClassValue(classId);
+                if (-1 != assocWordId)
+                    txtClass.setText(core.getWordCollection().getNodeById(assocWordId).getValue());
+
+                txtClass.setOnClickListener(view -> {
+                    Intent intent = new Intent(requireContext(), SelectAssocLexemeActivity.class);
+                    intent.putExtra(SelectAssocLexemeActivity.WORD_CLASS_EXTRA, curClass.getId());
+                    intent.putExtra(SelectAssocLexemeActivity.PARENT_ACTIVITY_CLASS_EXTRA, requireActivity().getClass().getName());
+                    resultAssocClass.launch(intent);
+                });
+
+                assocClassesTextMap.put(curClass.getId(), txtClass);
+                classesLinearLayout.addView(classInputLayout);
             }
             else {
-                classInputLayout = getLayoutInflater().inflate(R.layout.class_spinner, classesLinearLayout);
+                classInputLayout = getLayoutInflater().inflate(R.layout.class_spinner, classesLinearLayout, false);
                 TextInputLayout txtInputLayout = classInputLayout.findViewById(R.id.textInputLayout);
                 txtInputLayout.setHint(curClass.getValue());
                 AutoCompleteTextView classAutocomplete = classInputLayout.findViewById(R.id.classAutocomplete);
@@ -315,7 +357,17 @@ public class LexemeGeneralFragment extends Fragment {
                 } catch (Exception e) {
                     Log.d(TAG, "No value for class", e);
                 }
+                classesLinearLayout.addView(classInputLayout);
             }
         }
+    }
+
+    private void updateAssocClassValue(int classId, int wordId) {
+        viewModel.getLiveWord().getValue().setClassValue(classId, wordId);
+        TextInputEditText assocTxt = assocClassesTextMap.get(classId);
+        if (-1 != wordId)
+            assocTxt.setText(core.getWordCollection().getNodeById(wordId).getValue());
+        else
+            assocTxt.setText("");
     }
 }

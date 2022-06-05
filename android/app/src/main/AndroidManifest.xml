@@ -28,6 +28,11 @@
                 android:value=".MainActivity" />
         </activity>
         <activity
+            android:name=".ui.WordClasses.SelectAssocLexemeActivity"
+            android:label="Select associative lexeme"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.PolyGlot.NoActionBar" />
+        <activity
             android:name=".ui.PartsOfSpeech.POSInfoActivity"
             android:label="@string/title_activity_lexeme_info"
             android:launchMode="singleTop"

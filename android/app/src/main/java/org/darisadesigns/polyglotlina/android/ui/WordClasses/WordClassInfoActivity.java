@@ -99,10 +99,6 @@ public class WordClassInfoActivity extends AppCompatActivity implements ClassVal
         chkFreeText.setOnCheckedChangeListener(this::handleCheckboxes);
         chkAssociative.setOnCheckedChangeListener(this::handleCheckboxes);
 
-        txtWordClass.setText(wordClass.getValue());
-        chkFreeText.setChecked(wordClass.isFreeText());
-        chkAssociative.setChecked(wordClass.isAssociative());
-
         chkAllPos = findViewById(R.id.chkAllPos);
         posLayout = findViewById(R.id.posLayout);
         valuesRecyclerView = findViewById(R.id.classValuesList);
@@ -147,6 +143,9 @@ public class WordClassInfoActivity extends AppCompatActivity implements ClassVal
 
             posLayout.addView(posChk);
         }
+        txtWordClass.setText(wordClass.getValue());
+        chkFreeText.setChecked(wordClass.isFreeText());
+        chkAssociative.setChecked(wordClass.isAssociative());
         chkAllPos.setChecked(wordClass.appliesToType(-1));
         updateValuesList();
     }
