@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.FragmentContainerView;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -117,7 +118,9 @@ public class AutogenerationActivity extends AppCompatActivity implements Conjuga
         CoordinatorLayout coordinatorLayout = findViewById(R.id.coordinatorLayout);
         ScrollView scrollView = findViewById(R.id.scrollView);
         FragmentContainerView ruleContainerView = findViewById(R.id.rule_info_fragment_container_view);
-        AutogenerationRuleFragment ruleFragment = (AutogenerationRuleFragment) getSupportFragmentManager().findFragmentById(R.id.rule_info_fragment_container_view);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        AutogenerationRuleFragment ruleFragment = AutogenerationRuleFragment.newInstance(posId);
+        transaction.replace(R.id.rule_info_fragment_container_view, ruleFragment).commit();
         AppBarLayout appBarLayout = findViewById(R.id.appBarLayout);
         TextView sheetPeek = findViewById(R.id.sheetPeek);
         LinearLayout bottomSheetLayout = findViewById(R.id.bottomSheet);

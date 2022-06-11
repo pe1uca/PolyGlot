@@ -2,13 +2,22 @@ package org.darisadesigns.polyglotlina.android.ui.PartsOfSpeech.Conjugations;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentContainerView;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.transition.AutoTransition;
+import androidx.transition.TransitionManager;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.google.android.material.card.MaterialCardView;
 
 import org.darisadesigns.polyglotlina.DictCore;
 import org.darisadesigns.polyglotlina.Nodes.ConWord;
@@ -18,6 +27,10 @@ import org.darisadesigns.polyglotlina.android.AndroidInfoBox;
 import org.darisadesigns.polyglotlina.android.AndroidPropertiesManager;
 import org.darisadesigns.polyglotlina.android.PolyGlot;
 import org.darisadesigns.polyglotlina.android.R;
+import org.darisadesigns.polyglotlina.android.ui.WordClasses.MatchClassesFragment;
+import org.darisadesigns.polyglotlina.android.ui.WordClasses.MatchClassesViewModel;
+
+import java.util.Map;
 
 public class TestWordformActivity extends AppCompatActivity {
 
@@ -34,6 +47,10 @@ public class TestWordformActivity extends AppCompatActivity {
     private TextView txtWord;
     private TextView txtGenerated;
     private TextView txtDebug;
+
+    private ImageButton classesArrow;
+    private FragmentContainerView classesFragment;
+    private MaterialCardView infoCardView;
 
     public static Intent getIntent(Context context, int posId, ConjugationPair conjugationPair) {
         Intent intent = new Intent(context, TestWordformActivity.class);
@@ -63,6 +80,8 @@ public class TestWordformActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(conjugationLabel);
         ruleClasses.setTypeId(posId);
 
+        this.classesFragment = findViewById(R.id.classesFragment);
+        this.infoCardView = findViewById(R.id.infoCardView);
         this.txtWord = findViewById(R.id.txtTestWord);
         this.txtGenerated = findViewById(R.id.txtGenerated);
         this.txtDebug = findViewById(R.id.txtDebug);
@@ -73,6 +92,19 @@ public class TestWordformActivity extends AppCompatActivity {
         btnTest.setOnClickListener(v -> {
             testWord();
         });
+
+        classesArrow = findViewById(R.id.classes_arrow_button);
+        LinearLayout classesArrowLayout = findViewById(R.id.classes_arrow_layout);
+        classesArrow.setOnClickListener(view -> handleClassesExpandable());
+        classesArrowLayout.setOnClickListener(view -> handleClassesExpandable());
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        MatchClassesFragment fragment = MatchClassesFragment.newInstance(posId, false);
+        transaction.replace(R.id.classesFragment, fragment).commit();
+
+        MatchClassesViewModel classesMatchViewModel = new ViewModelProvider(this).get(MatchClassesViewModel.class);
+
+        classesMatchViewModel.updateData(ruleClasses);
     }
 
     private void testWord() {
@@ -89,7 +121,10 @@ public class TestWordformActivity extends AppCompatActivity {
         testWord.setValue(txtWord.getText().toString());
         testWord.setWordTypeId(posId);
         testWord.setCore(core);
-        // TODO: Set class of the test word
+
+        for (Map.Entry<Integer, Integer> applicableClass : ruleClasses.getApplicableClasses()) {
+            testWord.setClassValue(applicableClass.getKey(), applicableClass.getValue());
+        }
 
         String generatedWord = "";
         try {
@@ -109,5 +144,20 @@ public class TestWordformActivity extends AppCompatActivity {
             sb.append("\n");
         }
         txtDebug.setText(sb.toString());
+    }
+
+    private void handleClassesExpandable() {
+        if (classesFragment.getVisibility() == View.VISIBLE) {
+            TransitionManager.beginDelayedTransition(infoCardView,
+                    new AutoTransition());
+            classesFragment.setVisibility(View.GONE);
+            classesArrow.setImageResource(R.drawable.ic_baseline_expand_more_24);
+        }
+        else {
+            TransitionManager.beginDelayedTransition(infoCardView,
+                    new AutoTransition());
+            classesFragment.setVisibility(View.VISIBLE);
+            classesArrow.setImageResource(R.drawable.ic_baseline_expand_less_24);
+        }
     }
 }
