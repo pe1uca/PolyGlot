@@ -1,14 +1,13 @@
 package org.darisadesigns.polyglotlina.android.ui.Lexicon.Etymology;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.textfield.TextInputEditText;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -16,18 +15,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import org.darisadesigns.polyglotlina.DictCore;
 import org.darisadesigns.polyglotlina.ManagersCollections.EtymologyManager;
 import org.darisadesigns.polyglotlina.Nodes.ConWord;
 import org.darisadesigns.polyglotlina.Nodes.EtyExternalParent;
-import org.darisadesigns.polyglotlina.Nodes.TypeNode;
+import org.darisadesigns.polyglotlina.android.AndroidInfoBox;
 import org.darisadesigns.polyglotlina.android.AndroidPropertiesManager;
 import org.darisadesigns.polyglotlina.android.PolyGlot;
 import org.darisadesigns.polyglotlina.android.R;
@@ -92,8 +89,7 @@ public class LexemeEtymologyActivity extends AppCompatActivity {
         fab_external.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Coming soon", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                showAddExternalRoot();
             }
         });
 
@@ -120,6 +116,40 @@ public class LexemeEtymologyActivity extends AppCompatActivity {
         conWord.setEtymNotes(conWord.getEtymNotes());
     }
 
+    private void showAddExternalRoot() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getString(R.string.msg_new_external_etymon))
+                .setTitle(getString(R.string.title_new_external_etymon));
+
+        View viewInflated = LayoutInflater.from(this).inflate(R.layout.dialog_new_external_etymon, null, false);
+
+        final TextInputEditText txtExternalEtymon = viewInflated.findViewById(R.id.txtExternalEtymon);
+        final TextInputEditText txtSourceLanguage = viewInflated.findViewById(R.id.txtSourceLanguage);
+        final TextInputEditText txtDefinition = viewInflated.findViewById(R.id.txtDefinition);
+
+        builder.setPositiveButton(android.R.string.ok, (dialogInterface, i) -> {
+            if (txtExternalEtymon.getText().toString().isEmpty()) {
+                 return;
+            }
+            EtyExternalParent newExtEtymon = new EtyExternalParent();
+            newExtEtymon.setValue(txtExternalEtymon.getText().toString());
+            newExtEtymon.setExternalLanguage(txtSourceLanguage.getText().toString());
+            newExtEtymon.setDefinition(txtDefinition.getText().toString());
+
+            core.getEtymologyManager().addExternalRelation(newExtEtymon, conWord.getId());
+
+            if (tabLayout.getSelectedTabPosition() == TAB_PARENTS_POSITION) inflateEtymologyTree(TAB_PARENTS_POSITION);
+            else tabLayout.selectTab(tabLayout.getTabAt(TAB_PARENTS_POSITION));
+        });
+        builder.setNegativeButton(android.R.string.cancel, null);
+        builder.setView(viewInflated);
+        builder.setCancelable(false);
+
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+    }
+
     private void addInternalRoot(int rootId) {
         if (rootId == -1) return;
         try {
@@ -128,7 +158,11 @@ public class LexemeEtymologyActivity extends AppCompatActivity {
             else tabLayout.selectTab(tabLayout.getTabAt(TAB_PARENTS_POSITION));
         } catch (EtymologyManager.IllegalLoopException e) {
             core.getOSHandler().getIOHandler().writeErrorLog(e);
-            core.getOSHandler().getInfoBox().error("Illegal Loop: Parent not Added", e.getLocalizedMessage());
+            ((AndroidInfoBox)core.getOSHandler().getInfoBox()).error(
+                    "Illegal Loop: Parent not Added",
+                    e.getLocalizedMessage(),
+                    this
+            );
         }
     }
 
