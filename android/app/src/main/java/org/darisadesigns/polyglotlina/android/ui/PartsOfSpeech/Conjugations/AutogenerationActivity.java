@@ -37,6 +37,7 @@ import org.darisadesigns.polyglotlina.android.AndroidInfoBox;
 import org.darisadesigns.polyglotlina.android.PolyGlot;
 import org.darisadesigns.polyglotlina.android.R;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -94,8 +95,9 @@ public class AutogenerationActivity extends AppCompatActivity implements Conjuga
         });
 
         AutoCompleteTextView autogenConjugations = findViewById(R.id.autogenConjugations);
+        ArrayList<ConjugationPair> conjugationPairArrayList = new ArrayList<>(Arrays.asList(conjugationPairs));
         ArrayAdapter<ConjugationPair> spinnerArrayAdapter = new ArrayAdapter<>
-                (this, R.layout.list_item, conjugationPairs);
+                (this, R.layout.list_item, conjugationPairArrayList);
         if (0 < deprecatedRules.length) {
             spinnerArrayAdapter.add(deprecatedRulesSelector);
         }
