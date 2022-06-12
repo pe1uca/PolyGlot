@@ -14,4 +14,22 @@
         android:textColor="@android:color/white"
         android:textStyle="bold"
         tools:text="Node text here" />
+
+    <LinearLayout
+        android:id="@+id/deleteLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:visibility="gone" >
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="4dp"
+            android:background="@color/black" />
+        <ImageView
+            android:id="@+id/deleteIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/outline_delete_24" />
+    </LinearLayout>
 </LinearLayout>

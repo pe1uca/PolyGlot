@@ -1,6 +1,7 @@
 package org.darisadesigns.polyglotlina.android.ui.Lexicon.Etymology;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -18,6 +19,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.darisadesigns.polyglotlina.DictCore;
@@ -29,6 +32,7 @@ import org.darisadesigns.polyglotlina.android.AndroidPropertiesManager;
 import org.darisadesigns.polyglotlina.android.PolyGlot;
 import org.darisadesigns.polyglotlina.android.R;
 
+import java.util.List;
 import java.util.Objects;
 
 import dev.bandb.graphview.AbstractGraphAdapter;
@@ -200,6 +204,15 @@ public class LexemeEtymologyActivity extends AppCompatActivity {
             @Override
             public void onBindViewHolder(@NonNull NodeViewHolder holder, int position) {
                 Object obj = Objects.requireNonNull(getNodeData(position));
+                Node node = this.getNode(position);
+                if (tabPosition == TAB_PARENTS_POSITION && this.getGraph().hasPredecessor(node)) {
+                    List<Node> lstNode = this.getGraph().predecessorsOf(node);
+                    Node root = this.getGraph().getNodeAtPosition(conWord);
+                    holder.deleteLayout.setVisibility(lstNode.contains(root) ? View.VISIBLE : View.GONE);
+                    holder.deleteIcon.setOnClickListener(view -> {
+                        confirmEtymonDelete(obj, tabPosition);
+                    });
+                }
                 holder.vConWord.setText(obj.toString());
                 if (!(obj instanceof EtyExternalParent))
                     ((AndroidPropertiesManager)core.getPropertiesManager()).setConViewTypeface(holder.vConWord);
@@ -208,6 +221,26 @@ public class LexemeEtymologyActivity extends AppCompatActivity {
         adapter.submitGraph(graph);
         recyclerView.setVisibility(View.VISIBLE);
         recyclerView.setAdapter(adapter);
+    }
+
+    private void confirmEtymonDelete(Object obj, int tabPosition) {
+        ((AndroidInfoBox)core.getOSHandler().getInfoBox()).yesNoCancel(
+                "Are you sure?",
+                "Do you want to delete this etymon?\nThis action can't be undone.",
+                this,
+                (dialog, which) -> {
+                    if (which != DialogInterface.BUTTON_POSITIVE) {
+                        return;
+                    }
+                    if (obj instanceof EtyExternalParent) {
+                        core.getEtymologyManager().delExternalRelation(((EtyExternalParent) obj), conWord.getId());
+                    }
+                    else if (obj instanceof ConWord) {
+                        core.getEtymologyManager().delRelation(((ConWord) obj).getId(), conWord.getId());
+                    }
+                    inflateEtymologyTree(tabPosition);
+                }
+        );
     }
 
     private void addEtymologyParents(Graph graph, Node node) {
@@ -237,10 +270,14 @@ public class LexemeEtymologyActivity extends AppCompatActivity {
 
     public static class NodeViewHolder extends RecyclerView.ViewHolder {
         public final TextView vConWord;
+        public final LinearLayout deleteLayout;
+        public final ImageView deleteIcon;
 
         public NodeViewHolder(View view) {
             super(view);
             vConWord = view.findViewById(R.id.textView);
+            deleteLayout = view.findViewById(R.id.deleteLayout);
+            deleteIcon = view.findViewById(R.id.deleteIcon);
         }
 
         @Override

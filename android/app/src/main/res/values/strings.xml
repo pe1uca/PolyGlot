@@ -92,6 +92,10 @@
     <string name="etymology_tab_children">Derivatives</string>
     <string name="fab_add_etymon_internal">Add internal etymon</string>
     <string name="fab_add_etymon_external">Add external etymon</string>
+    <string name="title_new_external_etymon">New external etymon</string>
+    <string name="msg_new_external_etymon">Enter details for new external etymon</string>
+    <string name="label_external_etymon">External etymon</string>
+    <string name="label_source_language">Source language</string>
 
     <!-- Part of speech info screen -->
     <string name="menu_simple_autogeneration">Autogeneration (simple)</string>
