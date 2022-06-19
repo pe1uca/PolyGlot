@@ -22,6 +22,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -316,21 +317,24 @@ public class LexemeGeneralFragment extends Fragment {
                 classesLinearLayout.addView(classInputLayout);
             }
             else if (curClass.isAssociative()) {
-                classInputLayout = getLayoutInflater().inflate(R.layout.class_free_text, classesLinearLayout, false);
+                classInputLayout = getLayoutInflater().inflate(R.layout.class_assoc, classesLinearLayout, false);
                 TextInputLayout txtInputLayout = classInputLayout.findViewById(R.id.textInputLayout);
                 txtInputLayout.setHint(curClass.getValue());
                 TextInputEditText txtClass = classInputLayout.findViewById(R.id.txtClass);
-                txtClass.setFocusable(false);
+                ImageButton searchBtn = classInputLayout.findViewById(R.id.search);
                 int assocWordId = conWord.getClassValue(classId);
                 if (-1 != assocWordId)
                     txtClass.setText(core.getWordCollection().getNodeById(assocWordId).getValue());
 
-                txtClass.setOnClickListener(view -> {
+                View.OnClickListener listener = view -> {
                     Intent intent = new Intent(requireContext(), SelectAssocLexemeActivity.class);
                     intent.putExtra(SelectAssocLexemeActivity.WORD_CLASS_EXTRA, curClass.getId());
                     intent.putExtra(SelectAssocLexemeActivity.PARENT_ACTIVITY_CLASS_EXTRA, requireActivity().getClass().getName());
                     resultAssocClass.launch(intent);
-                });
+                };
+
+                txtClass.setOnClickListener(listener);
+                searchBtn.setOnClickListener(listener);
 
                 assocClassesTextMap.put(curClass.getId(), txtClass);
                 classesLinearLayout.addView(classInputLayout);
