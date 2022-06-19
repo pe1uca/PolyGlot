@@ -17,14 +17,18 @@ From a [PoS info screen](pos.md#pos-info-screen), click the 3 dots in the top ri
 ## Testing the auto-generation    
 
 You can access the [lexeme utility](lexeme-utilities.md#conjugation) after setting up a lexeme with for this PoS.  
-Or you can quickly test any string in the "Text wordform" screen.  
+Or you can quickly test any value in the "Text wordform" screen.  
 
 <p align="center">  
 	<img src="../../img/autogen_test.png" alt="Auto-generation test" width="250"/>  
 </p>  
 
 - **Base test word**  
-	Any string to test the selected wordform.  
+	Any value to test the selected wordform.  
+
+- **Match classes**  
+	List of all [Noun classes](classes.md) with [default behavior](classes.md#normal-class) that apply to this PoS.  
+	The selected classes will be applied to the test word to filter the rules.  
 
 - **Test wordform**  
 	When you click the button, PolyGlot runs the auto-generation as normal, checking if the rule's filters apply and then running the transformations.  
@@ -59,6 +63,12 @@ The list of rules will show up below this button, to remove a rule you can click
 - **Filter regex**  
 	A regex used to filter which lexemes will use this rule.  
 	If the word matches the regex, then each transform will be applied.  
+
+- **Match classes**  
+	List of classes that this rule can apply to (only classes with default behavior are listed).  
+	If the word does not match all the classes selected the rule will not be applied.  
+	If a value is not selected for a given class, all values will apply.  
+	If 'All' is selected the rule will apply to all words of this PoS regardless of the value of the classes.  
 
 - **Transforms**  
 	List of transforms this rule makes to a lexeme.  
