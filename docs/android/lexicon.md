@@ -64,6 +64,7 @@ They filter based on your [lexeme properties](#lexeme-properties) as follows:
 
 <p align="center">  
 	<img src="../../img/lexeme_info.png" alt="Lexeme info screen" width="250"/>  
+	<img src="../../img/lexeme_info2.png" alt="Lexeme info screen" width="250"/>  
 </p>  
 
 In the top right corner you'll see a trash can, click it to delete this lexeme (This can not be undone).  
@@ -84,6 +85,10 @@ When you double click the back button with an invalid lexeme, PolyGlot will dele
 - **Part of speech**  
 	The grammatical category to which this lexeme belongs.  
 	([Parts of speech](pos.md))  
+
+- **Noun classes**  
+	The list of [classes](classes.md) available for this lexeme based on the part of speech selected.  
+	Each class will have its own field with [corresponding behavior](classes.md#classes-in-lexeme-info-screen).  
 
 - **Pronunciation**  
 	How the lexeme is pronounced in your conlang.  

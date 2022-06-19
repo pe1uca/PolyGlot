@@ -84,7 +84,7 @@ This type of class gives a field to type any value.
 	<img src="../../img/class_free.png" alt="Free text class" width="250"/>  
 </p>  
 
-## Associative class  
+### Associative class  
 
 This type of class opens your lexicon to select a lexeme that will show as the value.  
 
