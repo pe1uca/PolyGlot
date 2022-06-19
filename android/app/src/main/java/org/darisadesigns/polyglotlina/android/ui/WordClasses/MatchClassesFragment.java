@@ -121,6 +121,18 @@ public class MatchClassesFragment extends Fragment {
             }
         });
 
+        chkAllClasses.setOnCheckedChangeListener((compoundButton, b) -> {
+            for (int i = 0; i < checkboxesLayout.getChildCount(); i++) {
+                View childView = checkboxesLayout.getChildAt(i);
+                if (!(childView instanceof RadioGroup)) continue;
+                RadioGroup group = (RadioGroup) childView;
+                group.clearCheck();
+                for (int j = 0; j < group.getChildCount(); j++) {
+                    group.getChildAt(j).setEnabled(!b);
+                }
+            }
+        });
+
         return view;
     }
 }
