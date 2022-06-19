@@ -10,3 +10,4 @@ nav:
     - android/pos.md
     - android/pos-inflections.md    
     - android/inflection-auto-generation.md    
+    - android/classes.md
