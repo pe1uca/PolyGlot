@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
@@ -15,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -322,9 +324,14 @@ public class LexemeGeneralFragment extends Fragment {
                 txtInputLayout.setHint(curClass.getValue());
                 TextInputEditText txtClass = classInputLayout.findViewById(R.id.txtClass);
                 ImageButton searchBtn = classInputLayout.findViewById(R.id.search);
+                ((AndroidPropertiesManager)core.getPropertiesManager()).setConViewTypeface(txtClass);
                 int assocWordId = conWord.getClassValue(classId);
+                String assocWord = "";
+                if (core.getPropertiesManager().isEnforceRTL())
+                    assocWord = PGTUtil.RTL_CHARACTER;
                 if (-1 != assocWordId)
-                    txtClass.setText(core.getWordCollection().getNodeById(assocWordId).getValue());
+                    assocWord += core.getWordCollection().getNodeById(assocWordId).getValue();
+                txtClass.setText(assocWord);
 
                 View.OnClickListener listener = view -> {
                     Intent intent = new Intent(requireContext(), SelectAssocLexemeActivity.class);
@@ -364,6 +371,13 @@ public class LexemeGeneralFragment extends Fragment {
                 classesLinearLayout.addView(classInputLayout);
             }
         }
+
+        View divider = new View(requireContext());
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParams.height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, getResources().getDisplayMetrics());
+        divider.setLayoutParams(layoutParams);
+        divider.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.teal_700));
+        classesLinearLayout.addView(divider);
     }
 
     private void updateAssocClassValue(int classId, int wordId) {
