@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.Phonology.PhonologyFragment"
+    android:orientation="vertical"
+    android:layout_margin="4dp">
+
+    <LinearLayout
+        android:id="@+id/phonology_arrow_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Phonemic Orthography"
+            android:layout_marginTop="10dp" />
+        <ImageButton
+            android:id="@+id/phonology_arrow_button"
+            android:layout_weight="0"
+            android:layout_gravity="right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_expand_more_24" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/phonologyLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:visibility="gone">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Phonemic Orthography"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/romanization_arrow_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Romanization"
+            android:layout_marginTop="10dp" />
+        <ImageButton
+            android:id="@+id/romanization_arrow_button"
+            android:layout_weight="0"
+            android:layout_gravity="right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_expand_more_24" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/romanizationLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:visibility="gone">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Romanization"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/replacement_arrow_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Character Replacement"
+            android:layout_marginTop="10dp" />
+        <ImageButton
+            android:id="@+id/replacement_arrow_button"
+            android:layout_weight="0"
+            android:layout_gravity="right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_expand_more_24" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/replacementLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:visibility="gone">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Character Replacement"/>
+    </LinearLayout>
+
+</LinearLayout>
